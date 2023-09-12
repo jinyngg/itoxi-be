@@ -20,30 +20,30 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pet_id")
-    Long id;
+    private Long id;
 
 //    @ManyToOne
 //    @JoinColumn(name = "member_id")
-//    Member member;
+//    private Member member;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    PetType species;
+    private PetType species;
 
     @Column(nullable = false)
-    String petName;
+    private String petName;
 
-    String image;
+    private String image;
 
     @Column(nullable = false)
-    String breed;
+    private String breed;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    PetGender petGender;
+    private PetGender petGender;
 
     @Column(nullable = false)
-    Integer petAge;
+    private Integer petAge;
 
 
 }
