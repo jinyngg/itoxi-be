@@ -1,5 +1,8 @@
 package com.itoxi.petnuri.domain.petTalk.type;
 
-public enum MainCategory {
+import lombok.Getter;
 
+@Getter
+public enum MainCategory {
+    ALL, CONSULT, CHAT, CHALLENGE,
 }
