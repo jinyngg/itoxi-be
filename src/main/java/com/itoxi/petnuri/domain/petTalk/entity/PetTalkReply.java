@@ -1,7 +1,9 @@
 package com.itoxi.petnuri.domain.petTalk.entity;
 
+import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.global.common.BaseTimeEntity;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,8 +11,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "pet_talk_reply")
 @Entity
 public class PetTalkReply extends BaseTimeEntity {
@@ -19,9 +23,9 @@ public class PetTalkReply extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Member writer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_talk_id")
