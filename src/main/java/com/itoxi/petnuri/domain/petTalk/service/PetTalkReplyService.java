@@ -2,12 +2,16 @@ package com.itoxi.petnuri.domain.petTalk.service;
 
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.dto.request.WritePetTalkReplyReq;
+import com.itoxi.petnuri.domain.petTalk.dto.response.GetAllPetTalkReplyResp;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkReply;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkReplyRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,5 +38,19 @@ public class PetTalkReplyService {
         }
 
         petTalkReplyRepository.save(petTalkReply);
+    }
+
+    public GetAllPetTalkReplyResp getAll(Long petTalkId) {
+        List<PetTalkReply> replyList = petTalkReplyRepository.findAllByPetTalkId(petTalkId);
+
+        List<GetAllPetTalkReplyResp.ReplyDTO> ReplyDTOList = replyList.stream()
+                .map(reply -> {
+                    PetTalkReply parent = reply.getParent();
+                    GetAllPetTalkReplyResp.TagDTO tag = (parent == null) ? null : new GetAllPetTalkReplyResp.TagDTO(parent.getWriter());
+                    return new GetAllPetTalkReplyResp.ReplyDTO(reply, tag);
+                })
+                .collect(Collectors.toList());
+
+        return new GetAllPetTalkReplyResp(ReplyDTOList);
     }
 }

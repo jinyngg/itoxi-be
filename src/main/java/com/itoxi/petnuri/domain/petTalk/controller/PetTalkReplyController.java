@@ -2,6 +2,7 @@ package com.itoxi.petnuri.domain.petTalk.controller;
 
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.dto.request.WritePetTalkReplyReq;
+import com.itoxi.petnuri.domain.petTalk.dto.response.GetAllPetTalkReplyResp;
 import com.itoxi.petnuri.domain.petTalk.service.PetTalkReplyService;
 import com.itoxi.petnuri.global.common.customValid.valid.ValidId;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,13 @@ public class PetTalkReplyController {
         Member member = principalDetails.getMember();
         petTalkReplyService.write(member, petTalkId, request);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{petTalkId}/replys")
+    public ResponseEntity<GetAllPetTalkReplyResp> getAll(
+            @PathVariable @ValidId Long petTalkId
+    ) {
+        GetAllPetTalkReplyResp response = petTalkReplyService.getAll(petTalkId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
