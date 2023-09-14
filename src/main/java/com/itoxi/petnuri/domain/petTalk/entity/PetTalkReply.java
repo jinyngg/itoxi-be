@@ -41,4 +41,15 @@ public class PetTalkReply extends BaseTimeEntity {
     @OneToMany(mappedBy = "parent", orphanRemoval = true)
     private List<PetTalkReply> children = new ArrayList<>();
 
+    public static PetTalkReply create(Member writer, PetTalk petTalk, String content) {
+        return PetTalkReply.builder()
+                .writer(writer)
+                .petTalk(petTalk)
+                .content(content)
+                .build();
+    }
+
+    public void updateParent(PetTalkReply parent) {
+        this.parent = parent;
+    }
 }
