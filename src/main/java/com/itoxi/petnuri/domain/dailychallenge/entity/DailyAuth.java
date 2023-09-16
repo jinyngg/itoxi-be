@@ -1,13 +1,17 @@
-package com.itoxi.petnuri.domain.dailychallenge;
+package com.itoxi.petnuri.domain.dailychallenge.entity;
 
+import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.global.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * author         : matrix
  * date           : 2023-09-13
- * description    :
+ * description    : 데일리 챌린지 인증글
  */
 @Entity
 @Getter
@@ -22,16 +26,17 @@ public class DailyAuth extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "daily_participate_id")
-    private DailyParticipate dailyParticipate;
+    @OneToMany(mappedBy = "dailyAuth")
+    private List<DailyParticipate> dailyParticipates = new ArrayList<>();
 
-    @Column(nullable = false)
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     // 기획안에 인증샷은 최대 1개로 되어 있어 인증샷 테이블 -> 인증글로 통합
     @Column(nullable = false)
     private String imgName; // 인증샹 파일명
+
     @Column(nullable = false)
     private String imgUrl;  // 인증샷 S3 url
 }
