@@ -6,6 +6,7 @@ import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkEmotion;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkEmotionRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
+import com.itoxi.petnuri.domain.petTalk.type.EmojiType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,15 @@ public class PetTalkEmotionService {
 
         PetTalkEmotion petTalkEmotion = PetTalkEmotion.create(member, petTalk, request.getEmoji());
         petTalkEmotionRepository.save(petTalkEmotion);
+    }
+
+    public void delete(Member member, Long petTalkId, EmojiType emoji) {
+        PetTalk petTalk = petTalkRepository.findById(petTalkId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
+
+        PetTalkEmotion petTalkEmotion = petTalkEmotionRepository.findByMemberAndPetTalkAndEmoji(member, petTalk, emoji)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 데이터입니다."));
+        
+        petTalkEmotionRepository.delete(petTalkEmotion);
     }
 }
