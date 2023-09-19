@@ -37,7 +37,7 @@ public class GetAllPetTalkReplyResp {
 
         public WriterDTO(Member member) {
             this.writerId = member.getId();
-            this.profileImageUrl = member.getImage();
+            this.profileImageUrl = member.getProfileImageUrl();
             this.nickname = member.getNickname();
         }
     }
