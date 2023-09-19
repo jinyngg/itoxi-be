@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: env.yml, application-api.yml
 
   h2:
     console:

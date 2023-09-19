@@ -1,0 +1,8 @@
+spring:
+  config:
+    import: env.yml
+
+  redis:
+    host: ${redis.ec2.host}
+    port: 6379
+    password: ${redis.ec2.password}
