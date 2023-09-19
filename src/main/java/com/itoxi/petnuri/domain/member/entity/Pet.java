@@ -1,4 +1,4 @@
-package com.itoxi.petnuri.domain.petTalk.entity;
+package com.itoxi.petnuri.domain.member.entity;
 
 import com.itoxi.petnuri.domain.petTalk.type.PetGender;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
@@ -22,9 +22,9 @@ public class Pet {
     @Column(name = "pet_id")
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
