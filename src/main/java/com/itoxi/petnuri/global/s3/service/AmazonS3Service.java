@@ -2,7 +2,7 @@ package com.itoxi.petnuri.global.s3.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPost;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +30,7 @@ public class AmazonS3Service {
     private static final String PET_TALK_PHOTO_PREFIX = "pet_talk/";
 
     @Transactional
-    public List<PetTalkPhoto> uploadPetTalkPhotos(MultipartFile[] files, PetTalkPost petTalkPost) {
+    public List<PetTalkPhoto> uploadPetTalkPhotos(MultipartFile[] files, PetTalk petTalk) {
         List<PetTalkPhoto> petTalkPhotos = new ArrayList<>();
 
         try {
@@ -43,7 +43,7 @@ public class AmazonS3Service {
                 petTalkPhotos.add(PetTalkPhoto.builder()
                         .name(file.getOriginalFilename())
                         .url(getUrlFromBucket(fileKey))
-                        .petTalkPost(petTalkPost)
+                        .petTalk(petTalk)
                         .build());
             }
 
