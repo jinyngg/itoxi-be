@@ -51,7 +51,7 @@ dependencies {
 
 processResources.dependsOn('petnuri-private')
 
-tasks.register('ppetnuri-private', Copy) {
+tasks.register('petnuri-private', Copy) {
 	from './petnuri-private'
 	include "application.yml"  // 복사할 파일들
 	into 'src/main/resources'  // 복사 위치
