@@ -18,12 +18,12 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "point_hist_tb")
+@Table(name = "point_history_tb")
 public class PointHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "point_hist_id", nullable = false)
+    @Column(name = "point_history_id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

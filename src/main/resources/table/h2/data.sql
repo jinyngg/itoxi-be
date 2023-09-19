@@ -19,3 +19,7 @@ VALUES ('질병/질환', 1),
 
 -- INSERT INTO pet_talk (title, content, main_category_id, sub_category_id, pet_type, status, view_count, member_id)
 -- VALUES ('제목1', '내용1', 1, 1, 'DOG', 'ACTIVE', 0, 1);
+
+-- 데일리 챌린지 데이터 생성
+insert into daily_challenge (name, auth_method, payment, start_date, end_date, challenge_status, created_at, updated_at)
+values ('데일리 간식주기', '반려동물에게 간식주는 사진을 인증해요!', 100, '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
