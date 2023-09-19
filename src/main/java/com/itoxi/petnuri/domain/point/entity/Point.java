@@ -5,8 +5,6 @@ import com.itoxi.petnuri.global.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * author         : matrix
@@ -30,13 +28,15 @@ public class Point extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(nullable = false)
-    private Long totalPoint;
+    @Column(name = "total_point", nullable = false)
+    private Long totalPoint;    // 현재 보유 포인트
 
-    @OneToMany(mappedBy = "point")
-    private List<GetPoint> getPoints = new ArrayList<>();
+    public void addPoint(Long point) {
+        this.totalPoint += point;
+    }
 
-    @OneToMany(mappedBy = "")
-    private List<UsePoint> usePoints = new ArrayList<>();
+    public void usePoint(Long point) {
+        this.totalPoint -= point;
+    }
 
 }
