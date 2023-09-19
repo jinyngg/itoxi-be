@@ -49,9 +49,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
-processResources.dependsOn('petnuri')
+processResources.dependsOn('petnuri-private')
 
-tasks.register('petnuri', Copy) {
+tasks.register('ppetnuri-private', Copy) {
 	from './petnuri-private'
 	include "application.yml"  // 복사할 파일들
 	into 'src/main/resources'  // 복사 위치
