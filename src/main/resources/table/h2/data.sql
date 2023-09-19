@@ -17,5 +17,5 @@ VALUES ('질병/질환', 1),
        ('양육/관리', 1),
        ('반려용품', 1);
 
--- INSERT INTO pet_talk (title, content, main_category_id, sub_category_id, pet_type, status, view_count, member_id)
--- VALUES ('제목1', '내용1', 1, 1, 'DOG', 'ACTIVE', 0, 1);
+INSERT INTO pet_talk (title, content, main_category_id, sub_category_id, pet_type, status, view_count, member_id)
+VALUES ('제목1', '내용1', 1, 1, 'DOG', 'ACTIVE', 0, 1);
