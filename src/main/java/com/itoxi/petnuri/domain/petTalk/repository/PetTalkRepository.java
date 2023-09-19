@@ -1,7 +1,7 @@
 package com.itoxi.petnuri.domain.petTalk.repository;
 
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
-import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPost;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
 import java.util.List;
@@ -17,34 +17,34 @@ public class PetTalkRepository {
     private final AmazonS3Service amazonS3Service;
     private final PetTalkJpaRepository petTalkJpaRepository;
 
-    public PetTalkPost getById(Long petTalkId) {
+    public PetTalk getById(Long petTalkId) {
         return petTalkJpaRepository.findById(petTalkId)
                 .orElseThrow(() -> new RuntimeException("펫톡커스텀"));
     }
 
-    public PetTalkPost write(PetTalkPost petTalkPost) {
-        return petTalkJpaRepository.save(petTalkPost);
+    public PetTalk write(PetTalk petTalk) {
+        return petTalkJpaRepository.save(petTalk);
     }
 
-    public void uploadPetTalkPhotos(MultipartFile[] files, PetTalkPost petTalkPost) {
-        List<PetTalkPhoto> photos = amazonS3Service.uploadPetTalkPhotos(files, petTalkPost);
+    public void uploadPetTalkPhotos(MultipartFile[] files, PetTalk petTalk) {
+        List<PetTalkPhoto> photos = amazonS3Service.uploadPetTalkPhotos(files, petTalk);
 
         if (!photos.isEmpty()) {
             String thumbnail = photos.get(0).getUrl();
-            petTalkPost.uploadThumbnail(thumbnail);
+            petTalk.uploadThumbnail(thumbnail);
         }
 
-        petTalkPost.uploadPetTalkPhotos(photos);
-        petTalkJpaRepository.save(petTalkPost);
+        petTalk.uploadPetTalkPhotos(photos);
+        petTalkJpaRepository.save(petTalk);
     }
 
-    public Page<PetTalkPost> loadLatestPetTalkPostsByCategoryAndPetType(
+    public Page<PetTalk> loadLatestPetTalkPostsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
         return petTalkJpaRepository.loadLatestPetTalkPostsByCategoryAndPetType(
                 page, size, mainCategoryId, subCategoryId, petType);
     }
 
-    public Page<PetTalkPost> loadBestPetTalkPostsByCategoryAndPetType(
+    public Page<PetTalk> loadBestPetTalkPostsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
         return petTalkJpaRepository.loadBestPetTalkPostsByCategoryAndPetType(
                 page, size, mainCategoryId, subCategoryId, petType);

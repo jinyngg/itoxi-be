@@ -2,8 +2,8 @@ package com.itoxi.petnuri.domain.petTalk.repository.impl;
 
 import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.ACTIVE;
 
-import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPost;
-import com.itoxi.petnuri.domain.petTalk.entity.QPetTalkPost;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
+import com.itoxi.petnuri.domain.petTalk.entity.QPetTalk;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkJpaRepositoryCustom;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -23,52 +23,51 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
 
     private final JPAQueryFactory queryFactory;
 
-    QPetTalkPost qPetTalkPost = QPetTalkPost.petTalkPost;
+    QPetTalk qPetTalk = QPetTalk.petTalk;
 
     @Override
-    public Page<PetTalkPost> loadLatestPetTalkPostsByCategoryAndPetType(
+    public Page<PetTalk> loadLatestPetTalkPostsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
         Pageable pageable = PageRequest.of(page, size);
 
-        List<PetTalkPost> petTalkPosts = queryFactory
-                .selectFrom(qPetTalkPost)
+        List<PetTalk> petTalks = queryFactory
+                .selectFrom(qPetTalk)
                 .where(isStatusActive()
-                        .and(qPetTalkPost.mainCategory.id.eq(mainCategoryId))
-                        .and(qPetTalkPost.petType.eq(petType)))
-                .orderBy(qPetTalkPost.updatedAt.desc())
+                        .and(qPetTalk.mainCategory.id.eq(mainCategoryId))
+                        .and(qPetTalk.petType.eq(petType)))
+                .orderBy(qPetTalk.updatedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long totalCount = petTalkPosts.size();
+        long totalCount = petTalks.size();
 
-        return PageableExecutionUtils.getPage(petTalkPosts, pageable, () -> totalCount);
+        return PageableExecutionUtils.getPage(petTalks, pageable, () -> totalCount);
     }
 
     @Override
-    public Page<PetTalkPost> loadBestPetTalkPostsByCategoryAndPetType(
+    public Page<PetTalk> loadBestPetTalkPostsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
         Pageable pageable = PageRequest.of(page, size);
 
-        List<PetTalkPost> petTalkPosts = queryFactory
-                .selectFrom(qPetTalkPost)
+        List<PetTalk> petTalks = queryFactory
+                .selectFrom(qPetTalk)
                 .where(isStatusActive()
-                        .and(qPetTalkPost.createdAt.after(LocalDateTime.now().minusDays(3)))
-                        .and(qPetTalkPost.petType.eq(petType)))
-                // 조회수 > TODO 좋아요 > 댓글
+                        .and(qPetTalk.createdAt.after(LocalDateTime.now().minusDays(3)))
+                        .and(qPetTalk.petType.eq(petType)))
                 .orderBy(
-                        qPetTalkPost.viewCount.desc(),
-                        qPetTalkPost.updatedAt.desc())
+                        qPetTalk.viewCount.desc(),
+                        qPetTalk.updatedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long totalCount = petTalkPosts.size();
+        long totalCount = petTalks.size();
 
-        return PageableExecutionUtils.getPage(petTalkPosts, pageable, () -> totalCount);
+        return PageableExecutionUtils.getPage(petTalks, pageable, () -> totalCount);
     }
 
     private BooleanExpression isStatusActive() {
-        return qPetTalkPost.status.eq(ACTIVE);
+        return qPetTalk.status.eq(ACTIVE);
     }
 }
