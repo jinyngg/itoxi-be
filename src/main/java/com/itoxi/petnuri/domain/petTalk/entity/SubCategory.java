@@ -37,6 +37,6 @@ public class SubCategory {
     private MainCategory mainCategory;
 
     @OneToMany(mappedBy = "subCategory")
-    private List<PetTalkPost> petTalkPosts = new ArrayList<>();
+    private List<PetTalk> petTalks = new ArrayList<>();
 
 }

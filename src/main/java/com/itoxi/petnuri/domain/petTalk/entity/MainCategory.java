@@ -35,6 +35,6 @@ public class MainCategory {
     private List<SubCategory> subCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "mainCategory")
-    private List<PetTalkPost> petTalkPosts = new ArrayList<>();
+    private List<PetTalk> petTalks = new ArrayList<>();
 
 }

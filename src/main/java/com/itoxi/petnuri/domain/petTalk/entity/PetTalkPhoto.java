@@ -36,5 +36,5 @@ public class PetTalkPhoto extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_talk_id")
-    private PetTalkPost petTalkPost;
+    private PetTalk petTalk;
 }

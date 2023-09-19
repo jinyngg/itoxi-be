@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "pet_talk")
-public class PetTalkPost extends BaseTimeEntity {
+public class PetTalk extends BaseTimeEntity {
 
     @Id
     @Column(name = "pet_talk_id", nullable = false)
@@ -57,15 +57,6 @@ public class PetTalkPost extends BaseTimeEntity {
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
     
-    // TODO 카테고리를 DB에서 관리할 경우, enum으로 작성된 내용 삭제
-//    @Column(name = "main_category", nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private MainCategory mainCategory;
-//
-//    @Column(name = "sub_category", nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private SubCategory subCategory;
-
     @Column(name = "pet_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private PetType petType;
@@ -83,7 +74,7 @@ public class PetTalkPost extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member writer;
 
-    @OneToMany(mappedBy = "petTalkPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "petTalk", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("createdAt ASC")
     private List<PetTalkPhoto> petTalkPhotos = new ArrayList<>();
 
