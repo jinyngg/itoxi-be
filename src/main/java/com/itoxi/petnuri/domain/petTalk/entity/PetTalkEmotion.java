@@ -25,8 +25,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "pet_talk_emotion")
 @Entity
 public class PetTalkEmotion {
+
     @Id
-    @Column(name = "pet_talk_like_id", nullable = false)
+    @Column(name = "pet_talk_emotion_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -49,4 +50,5 @@ public class PetTalkEmotion {
                 .emoji(emoji)
                 .build();
     }
+
 }
