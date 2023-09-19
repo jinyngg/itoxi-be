@@ -1,7 +1,7 @@
 package com.itoxi.petnuri.domain.petTalk.service;
 
 import com.itoxi.petnuri.domain.petTalk.dto.request.WritePetTalkRequest;
-import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPost;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import com.itoxi.petnuri.domain.petTalk.type.OrderType;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
@@ -25,9 +25,11 @@ public class PetTalkService {
         // TODO CustomUserDetails 관련 문의
 
         // 2. 게시글 저장
-        PetTalkPost petTalkPost = petTalkRepository.write(PetTalkPost.builder()
+        PetTalk petTalk = petTalkRepository.write(PetTalk.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
+                .mainCategory(request.getMainCategory())
+                .subCategory(request.getSubCategory())
 //                .mainCategory(request.getMainCategory())
 //                .subCategory(request.getSubCategory())
                 .petType(request.getPetType())
@@ -35,11 +37,11 @@ public class PetTalkService {
                 .build());
 
         // 3. 게시글 이미지 업로드
-        petTalkRepository.uploadPetTalkPhotos(files, petTalkPost);
+        petTalkRepository.uploadPetTalkPhotos(files, petTalk);
     }
 
     @Transactional(readOnly = true)
-    public Page<PetTalkPost> loadPetTalkPosts(
+    public Page<PetTalk> loadPetTalkPosts(
             Long mainCategoryId, Long subCategoryId, PetType petType, OrderType order, int page, int size) {
         switch (order) {
             case BEST:

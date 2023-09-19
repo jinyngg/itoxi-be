@@ -20,8 +20,9 @@ public class PetTalkReplyService {
     private final PetTalkReplyRepository petTalkReplyRepository;
 
     public void write(Member writer, Long petTalkId, WritePetTalkReplyReq request) {
-        PetTalk petTalk = petTalkRepository.findById(petTalkId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
+//        PetTalkPost petTalkPost = petTalkRepository.findById(petTalkId)
+//                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
+        PetTalk petTalk = petTalkRepository.getById(petTalkId);
         PetTalkReply petTalkReply = PetTalkReply.create(writer, petTalk, request.getContent());
 
         // 자식 댓글인 경우 부모 update

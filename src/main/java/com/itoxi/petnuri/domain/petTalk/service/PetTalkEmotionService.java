@@ -17,11 +17,13 @@ public class PetTalkEmotionService {
     private final PetTalkEmotionRepository petTalkEmotionRepository;
 
     public void create(Member member, Long petTalkId, CreatePetTalkEmotionReq request) {
-        PetTalk petTalk = petTalkRepository.findById(petTalkId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
+//        PetTalk petTalkPost = petTalkRepository.findById(petTalkId)
+//                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
+        PetTalk petTalk = petTalkRepository.getById(petTalkId);
 
         // 중복 레코드 검사
-        boolean isExists = petTalkEmotionRepository.existsByMemberAndPetTalkAndEmoji(member, petTalk, request.getEmoji());
+        boolean isExists = petTalkEmotionRepository.existsByMemberAndPetTalkAndEmoji(member,
+                petTalk, request.getEmoji());
         if (isExists) {
             throw new RuntimeException("이미 등록된 데이터입니다.");
         }
@@ -31,10 +33,12 @@ public class PetTalkEmotionService {
     }
 
     public void delete(Member member, Long petTalkId, EmojiType emoji) {
-        PetTalk petTalk = petTalkRepository.findById(petTalkId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
+//        PetTalkPost petTalkPost = petTalkRepository.findById(petTalkId)
+//                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
+        PetTalk petTalk = petTalkRepository.getById(petTalkId);
 
-        PetTalkEmotion petTalkEmotion = petTalkEmotionRepository.findByMemberAndPetTalkAndEmoji(member, petTalk, emoji)
+        PetTalkEmotion petTalkEmotion = petTalkEmotionRepository.findByMemberAndPetTalkAndEmoji(member,
+                        petTalk, emoji)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 데이터입니다."));
         
         petTalkEmotionRepository.delete(petTalkEmotion);
