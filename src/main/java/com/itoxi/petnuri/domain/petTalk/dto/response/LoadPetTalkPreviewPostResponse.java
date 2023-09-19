@@ -1,6 +1,6 @@
 package com.itoxi.petnuri.domain.petTalk.dto.response;
 
-import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPost;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,16 +19,16 @@ public class LoadPetTalkPreviewPostResponse {
 //    private Long likeCount;
     private Long replyCount;
 
-    public static LoadPetTalkPreviewPostResponse fromEntity(PetTalkPost petTalkPost) {
+    public static LoadPetTalkPreviewPostResponse fromEntity(PetTalk petTalk) {
         return LoadPetTalkPreviewPostResponse.builder()
-                .id(petTalkPost.getId())
-                .title(petTalkPost.getTitle())
-                .content(petTalkPost.getContent())
-                .viewCount(petTalkPost.getViewCount())
+                .id(petTalk.getId())
+                .title(petTalk.getTitle())
+                .content(petTalk.getContent())
+                .viewCount(petTalk.getViewCount())
 //                .writer(petTalkPost.getWriter())
-                .thumbnail(petTalkPost.getThumbnail())
+                .thumbnail(petTalk.getThumbnail())
 //                .likeCount(petTalkPost.getLikeCount())
-                .replyCount(petTalkPost.getReplyCount())
+                .replyCount(petTalk.getReplyCount())
                 .build();
     }
 

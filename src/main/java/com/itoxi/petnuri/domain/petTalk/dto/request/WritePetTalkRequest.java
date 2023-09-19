@@ -1,8 +1,8 @@
 package com.itoxi.petnuri.domain.petTalk.dto.request;
 
-import com.itoxi.petnuri.domain.petTalk.type.MainCategory;
+import com.itoxi.petnuri.domain.petTalk.entity.MainCategory;
+import com.itoxi.petnuri.domain.petTalk.entity.SubCategory;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
-import com.itoxi.petnuri.domain.petTalk.type.SubCategory;
 import lombok.Builder;
 import lombok.Getter;
 

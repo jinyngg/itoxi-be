@@ -1,6 +1,6 @@
 package com.itoxi.petnuri.domain.petTalk.dto.response;
 
-import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPost;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -17,7 +17,7 @@ public class LoadPetTalkPostsResponse {
 
     private List<LoadPetTalkPreviewPostResponse> petTalkPosts;
 
-    public static LoadPetTalkPostsResponse fromPage(Page<PetTalkPost> page) {
+    public static LoadPetTalkPostsResponse fromPage(Page<PetTalk> page) {
         List<LoadPetTalkPreviewPostResponse> loadPetTalkPreviewPostResponses =
                 page.getContent()
                         .stream()
