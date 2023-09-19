@@ -3,11 +3,12 @@ package com.itoxi.petnuri.domain.petTalk.entity;
 import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.ACTIVE;
 
 import com.itoxi.petnuri.domain.member.entity.Member;
-import com.itoxi.petnuri.domain.petTalk.type.MainCategory;
 import com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
-import com.itoxi.petnuri.domain.petTalk.type.SubCategory;
 import com.itoxi.petnuri.global.common.BaseTimeEntity;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,6 +20,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -32,7 +35,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "pet_talk")
-public class PetTalk extends BaseTimeEntity {
+public class PetTalkPost extends BaseTimeEntity {
 
     @Id
     @Column(name = "pet_talk_id", nullable = false)
@@ -46,13 +49,22 @@ public class PetTalk extends BaseTimeEntity {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "main_category", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "main_category_id")
     private MainCategory mainCategory;
 
-    @Column(name = "sub_category", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
+    
+    // TODO 카테고리를 DB에서 관리할 경우, enum으로 작성된 내용 삭제
+//    @Column(name = "main_category", nullable = false)
+//    @Enumerated(EnumType.STRING)
+//    private MainCategory mainCategory;
+//
+//    @Column(name = "sub_category", nullable = false)
+//    @Enumerated(EnumType.STRING)
+//    private SubCategory subCategory;
 
     @Column(name = "pet_type", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -71,6 +83,10 @@ public class PetTalk extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member writer;
 
+    @OneToMany(mappedBy = "petTalkPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt ASC")
+    private List<PetTalkPhoto> petTalkPhotos = new ArrayList<>();
+
     @Transient
     private String thumbnail;
 
@@ -82,5 +98,13 @@ public class PetTalk extends BaseTimeEntity {
 
     @Transient
     private Long replyCount;
+
+    public void uploadThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public void uploadPetTalkPhotos(List<PetTalkPhoto> petTalkPhotos) {
+        this.petTalkPhotos = petTalkPhotos;
+    }
 
 }
