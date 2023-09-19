@@ -1,6 +1,5 @@
 package com.itoxi.petnuri.domain.member.entity;
 
-import com.itoxi.petnuri.domain.member.type.MemberProvider;
 import com.itoxi.petnuri.domain.member.type.MemberRole;
 import com.itoxi.petnuri.global.common.BaseTimeEntity;
 import lombok.AllArgsConstructor;
@@ -26,21 +25,14 @@ public class Member extends BaseTimeEntity {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
     @Column(name = "nickname", unique = true, nullable = false)
     private String nickname;
 
-    @Column(name = "phone", nullable = false)
-    private String phone;
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
 
-    @Column(name = "profile_image")
-    private String image;
-
-    @Column(name = "provider", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private MemberProvider provider;
+    @Column(name = "provider_id", unique = true, nullable = false)
+    private String providerId;
 
     @Builder.Default
     @Column(name = "role", nullable = false)
@@ -49,4 +41,13 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "referral_code")
     private String referralCode;
+
+    public static Member createMember(String email,String nickname, String referralCode, String providerId) {
+        return Member.builder()
+                .email(email)
+                .nickname(nickname)
+                .referralCode(referralCode)
+                .providerId(providerId)
+                .build();
+    }
 }
