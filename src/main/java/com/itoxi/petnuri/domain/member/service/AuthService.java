@@ -2,8 +2,8 @@ package com.itoxi.petnuri.domain.member.service;
 
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
-import com.itoxi.petnuri.domain.member.dto.LoginResDto;
-import com.itoxi.petnuri.domain.member.dto.KakaoInfo;
+import com.itoxi.petnuri.domain.member.dto.response.LoginResDto;
+import com.itoxi.petnuri.domain.member.dto.response.KakaoInfo;
 import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;

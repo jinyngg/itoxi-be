@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/oauth")
+@RequestMapping("/auth")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
@@ -16,7 +16,7 @@ public class AuthController {
     private final AuthService authService;
 
     //프론트에서 넘긴 코드 받고 사용자 정보 넘겨주기
-    @GetMapping("/kakao/callback")
+    @GetMapping("/kakao/login")
     public ResponseEntity<?> kakaoCallback(@RequestParam String code){
         return ResponseEntity.ok(authService.kakaoLogin(code));
 
