@@ -1,13 +1,12 @@
 package com.itoxi.petnuri.domain.member.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itoxi.petnuri.domain.member.dto.response.KakaoInfo;
 import com.itoxi.petnuri.domain.member.dto.response.KakaoToken;
 import com.itoxi.petnuri.domain.member.dto.response.LoginResDto;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
+import com.itoxi.petnuri.global.util.JsonConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -27,6 +26,8 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final InMemoryClientRegistrationRepository inMemoryRepository;
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final JsonConverter jsonConverter;
 
 
     //프론트에서 전달받은 code로 accessToken 발급 받기
@@ -48,14 +49,8 @@ public class AuthService {
                 .bodyToMono(String.class)
                 .block();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        KakaoToken kakaoToken = null;
+        KakaoToken kakaoToken = jsonConverter.jsonToObject(response, KakaoToken.class);
 
-        try {
-            kakaoToken = objectMapper.readValue(response, KakaoToken.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
 
         return kakaoToken;
 
