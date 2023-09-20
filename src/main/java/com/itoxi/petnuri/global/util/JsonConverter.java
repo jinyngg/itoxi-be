@@ -1,9 +1,11 @@
 package com.itoxi.petnuri.global.util;
 
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.JSON_PARSE_FAILED;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.itoxi.petnuri.global.error.exception.Exception500;
+import com.itoxi.petnuri.global.common.exception.Exception500;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +28,7 @@ public class JsonConverter {
             jsonStr = objectMapper.writeValueAsString(obj);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new Exception500("Json 파싱 오류(1)");
+            throw new Exception500(JSON_PARSE_FAILED);
         }
         return jsonStr;
     }
@@ -37,7 +39,7 @@ public class JsonConverter {
             obj = objectMapper.readValue(json, clazz);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new Exception500("Json 파싱 오류(2)");
+            throw new Exception500(JSON_PARSE_FAILED);
         }
         return obj;
     }

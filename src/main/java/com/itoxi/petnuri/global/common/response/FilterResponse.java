@@ -1,9 +1,10 @@
-package com.itoxi.petnuri.global.util;
+package com.itoxi.petnuri.global.common.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itoxi.petnuri.global.error.exception.Exception400;
-import com.itoxi.petnuri.global.error.exception.Exception401;
-import com.itoxi.petnuri.global.error.exception.Exception403;
+import com.itoxi.petnuri.global.common.exception.Exception400;
+import com.itoxi.petnuri.global.common.exception.Exception401;
+import com.itoxi.petnuri.global.common.exception.Exception403;
+import com.itoxi.petnuri.global.common.response.ErrorResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -22,26 +23,29 @@ public class FilterResponse {
     }
 
     public static void badRequest(HttpServletResponse response, Exception400 exception) throws IOException {
-        response.setStatus(exception.status().value());
+        response.setStatus(exception.getHttpStatus().value());
         response.setContentType(CONTENT_TYPE);
 
-        String responseBody = OBJECT_MAPPER.writeValueAsString(exception.body());
+        String responseBody =
+                OBJECT_MAPPER.writeValueAsString(new ErrorResponse(exception.getMessage()));
         response.getWriter().println(responseBody);
     }
 
     public static void unAuthorized(HttpServletResponse response, Exception401 exception) throws IOException {
-        response.setStatus(exception.status().value());
+        response.setStatus(exception.getHttpStatus().value());
         response.setContentType(CONTENT_TYPE);
 
-        String responseBody = OBJECT_MAPPER.writeValueAsString(exception.body());
+        String responseBody =
+                OBJECT_MAPPER.writeValueAsString(new ErrorResponse(exception.getMessage()));
         response.getWriter().println(responseBody);
     }
 
     public static void forbidden(HttpServletResponse response, Exception403 exception) throws IOException {
-        response.setStatus(exception.status().value());
+        response.setStatus(exception.getHttpStatus().value());
         response.setContentType(CONTENT_TYPE);
 
-        String responseBody = OBJECT_MAPPER.writeValueAsString(exception.body());
+        String responseBody =
+                OBJECT_MAPPER.writeValueAsString(new ErrorResponse(exception.getMessage()));
         response.getWriter().println(responseBody);
     }
 }
