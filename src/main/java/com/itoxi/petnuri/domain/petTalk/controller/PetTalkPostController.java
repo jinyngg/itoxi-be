@@ -1,16 +1,18 @@
 package com.itoxi.petnuri.domain.petTalk.controller;
 
+import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.dto.request.WritePetTalkRequest;
 import com.itoxi.petnuri.domain.petTalk.dto.response.LoadPetTalkPostsResponse;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.service.PetTalkService;
 import com.itoxi.petnuri.domain.petTalk.type.OrderType;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
+import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +31,11 @@ public class PetTalkPostController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Object> write(
-            Authentication authentication,
             @RequestPart MultipartFile[] files,
-            @RequestPart WritePetTalkRequest request) {
-        petTalkService.write(authentication, files, request);
+            @RequestPart WritePetTalkRequest request,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Member member = principalDetails.getMember();
+        petTalkService.write(principalDetails, files, request);
         return ResponseEntity.ok(null);
     }
 
