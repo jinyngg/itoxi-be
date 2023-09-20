@@ -1,7 +1,6 @@
 -- 회원 더미 데이터 생성
-INSERT INTO member (email, password, nickname, phone, provider, role, referral_code)
-VALUES ('test', '$2a$10$co2T64NBAT5yAPcNKnlgmemUBxm2.Gk3TnsYM7SFX3Dci7/lhmt5a', '테스트',
-        '010-1234-5678', 'GOOGLE', 'USER', '');
+INSERT INTO member (email, nickname, profile_image_url, role, referral_code)
+VALUES ('test', '테스트','', 'USER', '');
 
 -- 메인 카테고리 더미 데이터 생성(전체 제외)
 INSERT INTO main_category (name)

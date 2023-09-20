@@ -42,9 +42,6 @@ public class Member extends BaseTimeEntity {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
-    @Column(name = "provider_id", unique = true, nullable = false)
-    private String providerId;
-
     @Builder.Default
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -59,12 +56,11 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "challenger")
     private List<RewardChallengeReview> rewardChallengeReviews = new ArrayList<>();
 
-    public static Member createMember(String email,String nickname, String referralCode, String providerId) {
+    public static Member createMember(String email,String nickname, String referralCode) {
         return Member.builder()
                 .email(email)
                 .nickname(nickname)
                 .referralCode(referralCode)
-                .providerId(providerId)
                 .build();
     }
 }
