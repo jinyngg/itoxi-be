@@ -1,6 +1,5 @@
 package com.itoxi.petnuri.domain.eventChallenge.entity;
 
-
 import static com.itoxi.petnuri.domain.eventChallenge.type.RewardChallengeReviewStatus.ACTIVE;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
