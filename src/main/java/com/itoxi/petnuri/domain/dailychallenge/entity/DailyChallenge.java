@@ -4,17 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itoxi.petnuri.domain.dailychallenge.type.ChallengeStatus;
 import com.itoxi.petnuri.global.common.BaseTimeEntity;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,23 +30,21 @@ public class DailyChallenge extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String name;        // 챌린지명
+    private String name;         // 챌린지명
     @Column(nullable = false)
-    private String authMethod;  // 챌린지 인증 방법
+    private String authMethod;   // 챌린지 인증 방법
     @Column(nullable = false)
-    private Long payment;       // 챌린지 인증 완료시 지급 포인트
+    private Long payment;        // 챌린지 인증 완료시 지급 포인트
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
     @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime startDate;    // 챌린지 시작 일자 : 2023-09-12 00:00:00
 
+    @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime endDate;      // 챌린지 종료 일자 : 2023-09-12 23:59:59
+    private LocalDateTime endDate;      // 챌린지 종료 일자 : 9999-12-31 23:59:59
 
     @Enumerated(value = EnumType.STRING)
     private ChallengeStatus challengeStatus;
-
-    @OneToMany(mappedBy = "dailyChallenge")
-    private List<DailyParticipate> dailyParticipate = new ArrayList<>(); // 챌린지 참여 매핑
 
 }
