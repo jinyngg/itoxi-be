@@ -5,8 +5,7 @@ VALUES ('test', '테스트','', 'USER', '');
 -- 메인 카테고리 더미 데이터 생성(전체 제외)
 INSERT INTO main_category (name)
 VALUES ('고민상담'),
-       ('자유수다'),
-       ('챌린지');
+       ('자유수다');
 
 -- 서브 카테고리 더미 데이터 생성
 INSERT INTO sub_category (name, main_category_id)
