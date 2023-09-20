@@ -1,30 +1,28 @@
 package com.itoxi.petnuri.domain.member.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itoxi.petnuri.domain.member.dto.response.KakaoInfo;
+import com.itoxi.petnuri.domain.member.dto.response.KakaoToken;
+import com.itoxi.petnuri.domain.member.dto.response.LoginResDto;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
-import com.itoxi.petnuri.domain.member.dto.response.LoginResDto;
-import com.itoxi.petnuri.domain.member.dto.response.KakaoInfo;
 import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-
-    private static final String BEARER_TYPE = "Bearer";
 
     private final MemberRepository memberRepository;
     private final InMemoryClientRegistrationRepository inMemoryRepository;
@@ -32,7 +30,7 @@ public class AuthService {
 
 
     //프론트에서 전달받은 code로 accessToken 발급 받기
-    public OAuth2AccessTokenResponse getAccessToken(String code, ClientRegistration provider) {
+    public KakaoToken getAccessToken(String code, ClientRegistration provider) {
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
@@ -41,29 +39,39 @@ public class AuthService {
         body.add("code", code);
         body.add("client_secret", provider.getClientSecret());
 
-        return WebClient.create()
-                .post()
+        WebClient wc = WebClient.create(provider.getProviderDetails().getTokenUri());
+        String response = wc.post()
                 .uri(provider.getProviderDetails().getTokenUri())
-                .headers(header -> {
-                    header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-                    header.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
-                })
-                .bodyValue(body)
+                .body(BodyInserters.fromFormData(body))
+                .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
                 .retrieve()
-                .bodyToMono(OAuth2AccessTokenResponse.class)
+                .bodyToMono(String.class)
                 .block();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        KakaoToken kakaoToken = null;
+
+        try {
+            kakaoToken = objectMapper.readValue(response, KakaoToken.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return kakaoToken;
 
     }
 
     //발급 받은 accessToken으로 카카오 사용자 정보 가져오기
     //신규 회원 가입 -> email 반환
     //기존 회원 로그인 -> jwt토큰 반환
-    public KakaoInfo getMemberProfile(ClientRegistration provider, OAuth2AccessTokenResponse tokenResponse)  {
+    public KakaoInfo getMemberProfile(ClientRegistration provider, KakaoToken kakaoToken)  {
+
+        System.out.println("카카오 토큰 : " + kakaoToken.getAccessToken());
 
         Map<String, Object> userAttributes = WebClient.create()
                 .get()
                 .uri(provider.getProviderDetails().getUserInfoEndpoint().getUri())
-                .headers(header -> header.setBearerAuth(String.valueOf(tokenResponse.getAccessToken())))
+                .headers(header -> header.setBearerAuth(String.valueOf(kakaoToken.getAccessToken())))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
@@ -81,7 +89,7 @@ public class AuthService {
     public LoginResDto kakaoLogin(String code)  {
 
         ClientRegistration provider = inMemoryRepository.findByRegistrationId("kakao");
-        OAuth2AccessTokenResponse tokenResponse = getAccessToken(code, provider);
+        KakaoToken tokenResponse = getAccessToken(code, provider);
 
         KakaoInfo kakaoInfo = getMemberProfile(provider, tokenResponse);
 
