@@ -47,7 +47,6 @@ public class AmazonS3Service {
                         .build());
             }
 
-
         } catch (Exception e) {
             log.error("[펫톡] 이미지 업로드 중 오류 발생 : " + e.getMessage());
         }

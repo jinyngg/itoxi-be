@@ -1,5 +1,8 @@
 package com.itoxi.petnuri.domain.point.service;
 
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_CHALLENGE_ID;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_MEMBER_ID;
+
 import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import com.itoxi.petnuri.domain.dailychallenge.repository.DailyChallengeRepository;
 import com.itoxi.petnuri.domain.member.entity.Member;
@@ -10,14 +13,11 @@ import com.itoxi.petnuri.domain.point.entity.Point;
 import com.itoxi.petnuri.domain.point.entity.PointHistory;
 import com.itoxi.petnuri.domain.point.repository.PointHistoryRepository;
 import com.itoxi.petnuri.domain.point.repository.PointRepository;
-import com.itoxi.petnuri.global.exception.IdNotfoundException;
-import com.itoxi.petnuri.global.exception.MemberNotFoundException;
+import com.itoxi.petnuri.global.common.exception.Exception400;
+import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.util.function.Function;
 
 /**
  * author         : matrix
@@ -38,12 +38,12 @@ public class PointService {
     public Long getPoint(Long challengeId, Long userId) {
         // 1. 챌린지 id로 챌린지 이름과 인증 완료지 지급 포인트를 가져온다.
         DailyChallenge dailyChallenge = dailyChallengeRepository.findById(challengeId)
-                .orElseThrow(() -> new IdNotfoundException("존재하지 않는 챌린지 ID 입니다."));
+                .orElseThrow(() -> new Exception400(NOT_FOUND_CHALLENGE_ID));
         PointGetDto pointGetDto = PointGetDto.from(dailyChallenge);
 
         // 2. 회원 id로 회원 정보를 가져 온다.
         Member member = memberRepository.findById(userId)
-                .orElseThrow(() -> new IdNotfoundException("존재하지 않는 회원 ID 입니다."));
+                .orElseThrow(() -> new Exception400(NOT_FOUND_MEMBER_ID));
 
         // 3. 회원의 포인트 정보와 이력을 업데이트.
         Point memberPoint = pointRepository.findByMember(member)

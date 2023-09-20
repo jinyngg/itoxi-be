@@ -2,8 +2,8 @@ package com.itoxi.petnuri.global.security.auth;
 
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
-import com.itoxi.petnuri.global.error.ErrorMessage;
-import com.itoxi.petnuri.global.error.exception.Exception404;
+import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
+import com.itoxi.petnuri.global.common.exception.Exception404;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +23,7 @@ public class PrincipalDetailsService implements UserDetailsService {
         log.info("시큐리티 로그인 시도 email: " + email);
 
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new Exception404(ErrorMessage.USER_NOT_FOUND));
+                .orElseThrow(() -> new Exception404(ErrorCode.USER_NOT_FOUND));
 
         return new PrincipalDetails(member);
     }

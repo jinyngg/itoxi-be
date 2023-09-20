@@ -1,11 +1,13 @@
 package com.itoxi.petnuri.global.security;
 
-import com.itoxi.petnuri.global.error.ErrorMessage;
-import com.itoxi.petnuri.global.error.exception.Exception401;
-import com.itoxi.petnuri.global.error.exception.Exception403;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.FORBIDDEN;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.UN_AUTHORIZED;
+
+import com.itoxi.petnuri.global.common.exception.Exception401;
+import com.itoxi.petnuri.global.common.exception.Exception403;
 import com.itoxi.petnuri.global.security.jwt.JwtAuthenticationFilter;
 import com.itoxi.petnuri.global.security.jwt.JwtExceptionFilter;
-import com.itoxi.petnuri.global.util.FilterResponse;
+import com.itoxi.petnuri.global.common.response.FilterResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -46,12 +48,12 @@ public class SecurityConfig {
 
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
             log.warn("인증되지 않은 사용자가 자원에 접근하려 합니다 : " + authException.getMessage());
-            FilterResponse.unAuthorized(response, new Exception401(ErrorMessage.UN_AUTHORIZED));
+            FilterResponse.unAuthorized(response, new Exception401(UN_AUTHORIZED));
         });
 
         http.exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> {
             log.warn("권한이 없는 사용자가 자원에 접근하려 합니다 : " + accessDeniedException.getMessage());
-            FilterResponse.forbidden(response, new Exception403(ErrorMessage.FORBIDDEN));
+            FilterResponse.forbidden(response, new Exception403(FORBIDDEN));
         });
 
         http.authorizeRequests(

@@ -1,6 +1,8 @@
 package com.itoxi.petnuri.global.redis;
 
-import com.itoxi.petnuri.global.error.exception.Exception400;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_OR_EXPIRED_KEY;
+
+import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.util.JsonConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,9 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Service
 public class RedisService {
+
     public static final String REFRESH_TOKEN_PREFIX = "RT ";
+
     public static final String LOGOUT_VALUE_PREFIX = "logout";
 
     private final RedisTemplate<String, String> redisTemplate;
@@ -25,7 +29,7 @@ public class RedisService {
         String jsonString = vop.get(key);
 
         if (jsonString == null || jsonString.isEmpty()) {
-            throw new Exception400("key", "만료 됐거나 유효 하지 않은 키 입니다.");
+            throw new Exception400(INVALID_OR_EXPIRED_KEY);
         }
 
         T object = jsonConverter.jsonToObject(jsonString, clazz);
@@ -47,8 +51,8 @@ public class RedisService {
         setObjectByKey(accessToken, RedisService.LOGOUT_VALUE_PREFIX, expiration, TimeUnit.MILLISECONDS);
     }
 
-    public boolean deleteByKey(String key) {
-        return Boolean.TRUE.equals(redisTemplate.delete(key));
+    public void deleteByKey(String key) {
+        redisTemplate.delete(key);
     }
 
     public boolean hasKey(String key) {
