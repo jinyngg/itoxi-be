@@ -1,4 +1,4 @@
-package com.itoxi.petnuri.domain.oauth.dto;
+package com.itoxi.petnuri.domain.member.dto;
 
 import lombok.Getter;
 

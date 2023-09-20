@@ -1,7 +1,6 @@
-package com.itoxi.petnuri.domain.oauth.controller;
+package com.itoxi.petnuri.domain.member.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.itoxi.petnuri.domain.oauth.service.OauthService;
+import com.itoxi.petnuri.domain.member.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/oauth")
 @RestController
 @RequiredArgsConstructor
-public class OauthController {
+public class AuthController {
 
-    private final OauthService oauthService;
+    private final AuthService authService;
 
     //프론트에서 넘긴 코드 받고 사용자 정보 넘겨주기
     @GetMapping("/kakao/callback")
-    public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws JsonProcessingException {
-        return ResponseEntity.ok(oauthService.kakaoLogin(code));
+    public ResponseEntity<?> kakaoCallback(@RequestParam String code){
+        return ResponseEntity.ok(authService.kakaoLogin(code));
 
     }
 }

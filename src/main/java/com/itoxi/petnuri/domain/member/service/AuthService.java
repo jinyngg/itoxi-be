@@ -1,11 +1,9 @@
-package com.itoxi.petnuri.domain.oauth.service;
+package com.itoxi.petnuri.domain.member.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
-import com.itoxi.petnuri.domain.oauth.dto.LoginResDto;
-import com.itoxi.petnuri.domain.oauth.dto.KakaoInfo;
+import com.itoxi.petnuri.domain.member.dto.LoginResDto;
+import com.itoxi.petnuri.domain.member.dto.KakaoInfo;
 import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,7 +14,6 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenRespon
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.nio.charset.StandardCharsets;
@@ -25,7 +22,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class OauthService {
+public class AuthService {
 
     private static final String BEARER_TYPE = "Bearer";
 
@@ -61,7 +58,7 @@ public class OauthService {
     //발급 받은 accessToken으로 카카오 사용자 정보 가져오기
     //신규 회원 가입 -> email 반환
     //기존 회원 로그인 -> jwt토큰 반환
-    public KakaoInfo getMemberProfile(ClientRegistration provider, OAuth2AccessTokenResponse tokenResponse) throws JsonProcessingException {
+    public KakaoInfo getMemberProfile(ClientRegistration provider, OAuth2AccessTokenResponse tokenResponse)  {
 
         Map<String, Object> userAttributes = WebClient.create()
                 .get()
@@ -81,7 +78,7 @@ public class OauthService {
     //카카오 이메일로 이미 가입되어 있는 회원인지 확인
     //가입되어 있지 않다면 회원가입에 필요한 정보 프론트에 넘겨주기
     //이미 가입되어 있다면 로그인(자동 로그인?)에 필요한 jwtToken 넘겨주기
-    public LoginResDto kakaoLogin(String code) throws JsonProcessingException {
+    public LoginResDto kakaoLogin(String code)  {
 
         ClientRegistration provider = inMemoryRepository.findByRegistrationId("kakao");
         OAuth2AccessTokenResponse tokenResponse = getAccessToken(code, provider);
@@ -101,30 +98,4 @@ public class OauthService {
         return LoginResDto.builder().jwtToken(jwtToken).refreshToken(refreshToken).build();
     }
 
-
-
-    public static ResponseEntity<String> kakao(String url, HttpMethod method, MultiValueMap<String, String> body){
-        RestTemplate rt = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        HttpEntity<?> httpEntity = new HttpEntity<>(body, headers);
-
-        ResponseEntity<String> responseEntity = rt.exchange(url, method, httpEntity, String.class);
-        return responseEntity;
-    }
-
-    public static ResponseEntity<String> kakao(String url, HttpMethod method, String accessToken){
-        RestTemplate rt = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setBearerAuth(accessToken);
-
-        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> responseEntity = rt.exchange(url, method, httpEntity, String.class);
-        return responseEntity;
-    }
 }
