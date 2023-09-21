@@ -39,4 +39,10 @@ public class Point extends BaseTimeEntity {
         this.totalPoint -= point;
     }
 
+    public static Point createPoint(Member member) {
+        return Point.builder()
+                .member(member)
+                .totalPoint(0L)
+                .build();
+    }
 }

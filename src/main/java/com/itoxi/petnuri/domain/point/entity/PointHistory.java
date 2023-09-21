@@ -2,11 +2,8 @@ package com.itoxi.petnuri.domain.point.entity;
 
 import com.itoxi.petnuri.domain.point.PointStatus;
 import lombok.*;
-import nonapi.io.github.classgraph.fastzipfilereader.LogicalZipFile;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * author         : matrix
@@ -45,6 +42,27 @@ public class PointHistory {
     @Column(nullable = false)
     private Long amount;      // 획득/사용 후 잔여 포인트
 
+    public static PointHistory createGetPointHistory(Point point, Long getPoint, String getMethod) {
+        point.addPoint(getPoint);
 
+        return PointHistory.builder()
+                .point(point)
+                .pointStatus(PointStatus.GET)
+                .getPoint(getPoint)
+                .getMethod(getMethod)
+                .amount(point.getTotalPoint())
+                .build();
+    }
 
+    public static PointHistory createUserPointHistory(Point point, Long usePoint, String useMethod) {
+        point.usePoint(usePoint);
+
+        return PointHistory.builder()
+                .point(point)
+                .pointStatus(PointStatus.USE)
+                .usePoint(usePoint)
+                .useMethod(useMethod)
+                .amount(point.getTotalPoint())
+                .build();
+    }
 }

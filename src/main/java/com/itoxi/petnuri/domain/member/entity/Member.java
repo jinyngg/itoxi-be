@@ -45,7 +45,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "referral_code")
     private String referralCode;
 
-    public static Member createMember(String email,String nickname, String referralCode) {
+    public static Member createMember(String email, String nickname, String referralCode) {
         return Member.builder()
                 .email(email)
                 .nickname(nickname)
@@ -53,4 +53,8 @@ public class Member extends BaseTimeEntity {
                 .build();
     }
 
+    public void updateProfile(String nickname, String profileImageUrl) {
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+    }
 }
