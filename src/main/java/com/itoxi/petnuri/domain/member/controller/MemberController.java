@@ -1,5 +1,6 @@
 package com.itoxi.petnuri.domain.member.controller;
 
+import com.itoxi.petnuri.domain.member.dto.request.PetSaveReq;
 import com.itoxi.petnuri.domain.member.dto.request.ProfileUpdateReq;
 import com.itoxi.petnuri.domain.member.dto.response.MyPageResp;
 import com.itoxi.petnuri.domain.member.dto.response.ProfileUpdateResp;
@@ -40,4 +41,12 @@ public class MemberController {
         ProfileUpdateResp response = memberService.updateProfile(member, request, file);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping("/member/pet")
+    public ResponseEntity petSave(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody PetSaveReq petSaveReq){
+        memberService.savePet(principalDetails.getMember(), petSaveReq);
+
+        return new ResponseEntity("펫 정보 등록 완료", HttpStatus.CREATED);
+    }
+
 }

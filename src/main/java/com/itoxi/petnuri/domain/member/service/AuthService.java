@@ -2,7 +2,7 @@ package com.itoxi.petnuri.domain.member.service;
 
 import com.itoxi.petnuri.domain.member.dto.response.KakaoInfo;
 import com.itoxi.petnuri.domain.member.dto.response.KakaoToken;
-import com.itoxi.petnuri.domain.member.dto.response.LoginResDto;
+import com.itoxi.petnuri.domain.member.dto.response.LoginRes;
 import com.itoxi.petnuri.domain.member.dto.request.JoinReq;
 import com.itoxi.petnuri.domain.member.dto.response.*;
 import com.itoxi.petnuri.domain.member.entity.Member;
@@ -96,7 +96,7 @@ public class AuthService {
     //카카오 이메일로 이미 가입되어 있는 회원인지 확인
     //가입되어 있지 않다면 회원가입에 필요한 정보 프론트에 넘겨주기
     //이미 가입되어 있다면 로그인(자동 로그인?)에 필요한 jwtToken 넘겨주기
-    public LoginResDto kakaoLogin(String code)  {
+    public LoginRes kakaoLogin(String code)  {
 
         ClientRegistration provider = inMemoryRepository.findByRegistrationId("kakao");
         KakaoToken tokenResponse = getAccessToken(code, provider);
@@ -107,16 +107,12 @@ public class AuthService {
                 .orElse(null);
 
         if(member == null){
-            return LoginResDto.builder().email(kakaoInfo.getEmail()).build();
+            return LoginRes.builder().email(kakaoInfo.getEmail()).build();
         }
 
         String jwtToken = jwtTokenProvider.createAccessToken(member);
-        String refreshToken = jwtTokenProvider.createRefreshToken(member);
 
-        redisService.setObjectByKey(RedisService.REFRESH_TOKEN_PREFIX + member.getEmail(), refreshToken,
-                JwtTokenProvider.EXP_REFRESH, TimeUnit.MILLISECONDS);
-
-        return LoginResDto.builder().jwtToken(jwtToken).refreshToken(refreshToken).build();
+        return LoginRes.builder().jwtToken(jwtToken).email(kakaoInfo.getEmail()).build();
     }
 
     @Transactional

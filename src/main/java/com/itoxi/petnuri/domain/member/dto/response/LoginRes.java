@@ -7,14 +7,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class LoginResDto {
+public class LoginRes {
 
     private String jwtToken;
-    private String refreshToken;
     private String email;
-    private String nickname;
 
-    public LoginResDto(String email){
+    public LoginRes(String email){
         this.email = email;
     }
 }
