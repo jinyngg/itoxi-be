@@ -9,6 +9,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.itoxi.petnuri.global.common.exception.Exception500;
+import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +31,7 @@ public class AmazonS3Service {
 
     private static final String DATE_FORMAT = "yyyy/MM/dd/";
     private static final String PET_TALK_PHOTO_PREFIX = "pet_talk/";
+    private static final String MEMBER_IMAGE = "profile_image/";
 
     @Transactional
     public List<PetTalkPhoto> uploadPetTalkPhotos(MultipartFile[] files, PetTalk petTalk) {
@@ -53,6 +57,24 @@ public class AmazonS3Service {
 
         log.info("[펫톡] 이미지 업로드 완료");
         return petTalkPhotos;
+    }
+
+    // 프로필 이미지 수정
+    public String uploadProfileImage(MultipartFile file) {
+        String profileImageUrl = uploadImage(MEMBER_IMAGE, file);
+        return getUrlFromBucket(profileImageUrl);
+    }
+
+    // 단일 파일 저장
+    private String uploadImage(String subject, MultipartFile file) {
+        String fileKey = subject + createDatePath() + generateRandomFileName();
+        ObjectMetadata metadata = createObjectMetadataFromFile(file);
+        try {
+            amazonS3.putObject(bucket, fileKey, file.getInputStream(), metadata);
+        } catch (Exception e) {
+            throw new Exception500(ErrorCode.S3UPLOADER_ERROR);
+        }
+        return getUrlFromBucket(fileKey);
     }
 
     private String generateRandomFileName() {
