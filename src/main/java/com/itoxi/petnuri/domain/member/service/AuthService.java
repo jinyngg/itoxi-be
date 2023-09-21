@@ -113,6 +113,9 @@ public class AuthService {
         String jwtToken = jwtTokenProvider.createAccessToken(member);
         String refreshToken = jwtTokenProvider.createRefreshToken(member);
 
+        redisService.setObjectByKey(RedisService.REFRESH_TOKEN_PREFIX + member.getEmail(), refreshToken,
+                JwtTokenProvider.EXP_REFRESH, TimeUnit.MILLISECONDS);
+
         return LoginResDto.builder().jwtToken(jwtToken).refreshToken(refreshToken).build();
     }
 
@@ -146,6 +149,9 @@ public class AuthService {
         // 논의필요
         String jwtToken = jwtTokenProvider.createAccessToken(joinMember);
         String refreshToken = jwtTokenProvider.createRefreshToken(joinMember);
+
+        redisService.setObjectByKey(RedisService.REFRESH_TOKEN_PREFIX + joinMember.getEmail(), refreshToken,
+                JwtTokenProvider.EXP_REFRESH, TimeUnit.MILLISECONDS);
 
         return new JoinResp(joinMember, jwtToken, refreshToken);
     }
