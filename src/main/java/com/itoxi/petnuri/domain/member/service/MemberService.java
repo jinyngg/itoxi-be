@@ -67,4 +67,8 @@ public class MemberService {
 
         redisService.addBlacklist(accessToken, email, expiration);
     }
+
+    public void logout(String accessToken){
+        invalidatedToken(accessToken);
+    }
 }

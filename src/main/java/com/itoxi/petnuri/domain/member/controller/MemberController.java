@@ -44,7 +44,7 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/member/pet")
+    @PostMapping("/pet")
     public ResponseEntity petSave(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody PetSaveReq petSaveReq){
         memberService.savePet(principalDetails.getMember(), petSaveReq);
 
@@ -60,5 +60,13 @@ public class MemberController {
         accessToken = jwtTokenProvider.resolveToken(accessToken);
         memberService.withdraw(member, accessToken);
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity logout(@RequestHeader(JwtTokenProvider.HEADER) String accessToken){
+        memberService.logout(accessToken);
+
+        return new ResponseEntity("서비스 로그아웃 완료", HttpStatus.OK);
+
     }
 }

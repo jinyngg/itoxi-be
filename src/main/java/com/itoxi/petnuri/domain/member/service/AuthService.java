@@ -78,8 +78,6 @@ public class AuthService {
     //기존 회원 로그인 -> jwt토큰 반환
     public KakaoInfo getMemberProfile(ClientRegistration provider, KakaoToken kakaoToken)  {
 
-        System.out.println("카카오 토큰 : " + kakaoToken.getAccessToken());
-
         Map<String, Object> userAttributes = WebClient.create()
                 .get()
                 .uri(provider.getProviderDetails().getUserInfoEndpoint().getUri())
@@ -107,12 +105,16 @@ public class AuthService {
                 .orElse(null);
 
         if(member == null){
-            return LoginRes.builder().email(kakaoInfo.getEmail()).build();
+            return LoginRes.builder().kakaoToken(tokenResponse.getAccessToken()).email(kakaoInfo.getEmail()).build();
         }
 
         String jwtToken = jwtTokenProvider.createAccessToken(member);
+        String jwtRefreshToken = jwtTokenProvider.createRefreshToken(member);
 
-        return LoginRes.builder().jwtToken(jwtToken).email(kakaoInfo.getEmail()).build();
+        redisService.setObjectByKey(RedisService.REFRESH_TOKEN_PREFIX + member.getEmail(), jwtRefreshToken,
+                JwtTokenProvider.EXP_REFRESH, TimeUnit.MILLISECONDS);
+
+        return LoginRes.builder().jwtToken(jwtToken).jwtRefreshToken(jwtRefreshToken).kakaoToken(tokenResponse.getAccessToken()).email(kakaoInfo.getEmail()).build();
     }
 
     @Transactional

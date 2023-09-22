@@ -10,9 +10,8 @@ import lombok.Getter;
 public class LoginRes {
 
     private String jwtToken;
+    private String jwtRefreshToken;
+    private String kakaoToken;
     private String email;
 
-    public LoginRes(String email){
-        this.email = email;
-    }
 }

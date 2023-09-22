@@ -15,10 +15,6 @@ public class KakaoInfo {
         this.attributes = attributes;
     }
 
-    public String getProviderId() {
-        return String.valueOf(attributes.get("id"));
-    }
-
     public String getEmail(){
         return (String) getKakaoAccount().get("email");
     }
