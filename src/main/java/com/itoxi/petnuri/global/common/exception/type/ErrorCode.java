@@ -19,6 +19,12 @@ public enum ErrorCode {
     // JSON
     JSON_PARSE_FAILED("JSON 파싱에 실패했습니다."),
 
+    // PET TALK
+    INVALID_PET_TALK_ID("유효하지 않은 펫톡 고유번호입니다."),
+    INVALID_MAIN_CATEGORY_ID("유효하지 않은 메인 카테고리 고유번호입니다."),
+    INVALID_SUB_CATEGORY_ID("유효하지 않은 서브 카테고리 고유번호입니다."),
+    MISMATCH_PET_TALK_WRITER("해당 펫톡 게시글의 작성자가 아닙니다."),
+
     LOGIN_FAILED("회원 정보가 존재하지 않습니다."),
     UN_AUTHORIZED("인증되지 않았습니다."),
     FORBIDDEN("접근이 거부되었습니다."),
