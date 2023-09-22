@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum RewardChallengeStatus {
-    ACTIVE, FORBIDDEN, DELETED
+    READY, OPENED, CLOSED
 }
