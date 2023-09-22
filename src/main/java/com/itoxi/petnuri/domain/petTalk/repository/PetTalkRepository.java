@@ -1,8 +1,17 @@
 package com.itoxi.petnuri.domain.petTalk.repository;
 
+import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.DELETED;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_MAIN_CATEGORY_ID;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_PET_TALK_ID;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_SUB_CATEGORY_ID;
+
+import com.itoxi.petnuri.domain.member.entity.Member;
+import com.itoxi.petnuri.domain.petTalk.entity.MainCategory;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
+import com.itoxi.petnuri.domain.petTalk.entity.SubCategory;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
+import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +25,13 @@ public class PetTalkRepository {
 
     private final AmazonS3Service amazonS3Service;
     private final PetTalkJpaRepository petTalkJpaRepository;
+    private final PetTalkEmotionRepository petTalkEmotionRepository;
+    private final MainCategoryJpaRepository mainCategoryJpaRepository;
+    private final SubCategoryJpaRepository subCategoryJpaRepository;
 
     public PetTalk getById(Long petTalkId) {
         return petTalkJpaRepository.findById(petTalkId)
-                .orElseThrow(() -> new RuntimeException("펫톡커스텀"));
+                .orElseThrow(() -> new Exception400(INVALID_PET_TALK_ID));
     }
 
     public PetTalk write(PetTalk petTalk) {
@@ -48,6 +60,52 @@ public class PetTalkRepository {
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
         return petTalkJpaRepository.loadBestPetTalkPostsByCategoryAndPetType(
                 page, size, mainCategoryId, subCategoryId, petType);
+    }
+
+    public PetTalk loadPetTalkPostsDetails(Long petTalkId) {
+        return petTalkJpaRepository.loadPetTalkPostsDetails(petTalkId)
+                .orElseThrow(() -> new Exception400(INVALID_PET_TALK_ID));
+    }
+
+    public void isReactedEmojiByMemberAndPetTalks(Page<PetTalk> petTalks, Member member) {
+        for (PetTalk petTalk : petTalks) {
+            boolean reacted =
+                    petTalkEmotionRepository.existsByMemberIdAndPetTalkId(member.getId(), petTalk.getId());
+            petTalk.react(reacted);
+        }
+    }
+
+    public void isReactedEmojiByMemberAndPetTalk(PetTalk petTalk, Member member) {
+        boolean reacted =
+                petTalkEmotionRepository.existsByMemberIdAndPetTalkId(member.getId(), petTalk.getId());
+        petTalk.react(reacted);
+    }
+
+
+    public void addEmojiCount(PetTalk petTalk) {
+        petTalkJpaRepository.save(petTalk.addEmojiCount());
+    }
+
+    public void subtractEmojiCount(PetTalk petTalk) {
+        petTalkJpaRepository.save(petTalk.subtractEmojiCount());
+    }
+
+    public void updateViewCount(Long petTalkId, Long petTalkViewCount) {
+        petTalkJpaRepository.addViewCountFromRedis(petTalkId, petTalkViewCount);
+    }
+
+    public void deletePetTalkPost(PetTalk petTalk) {
+        petTalkJpaRepository.save(petTalk.updateStatus(DELETED));
+    }
+
+    public MainCategory getMainCategoryById(Long mainCategoryId) {
+        return mainCategoryJpaRepository.findById(mainCategoryId)
+                .orElseThrow(() -> new Exception400(INVALID_MAIN_CATEGORY_ID));
+    }
+
+    public SubCategory getSubCategoryById(Long subCategoryId) {
+        return subCategoryJpaRepository.findById(subCategoryId)
+                .orElseThrow(() -> new Exception400(INVALID_SUB_CATEGORY_ID));
     }
 
 }
