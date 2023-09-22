@@ -3,6 +3,8 @@ package com.itoxi.petnuri.domain.point.entity;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.global.common.BaseTimeEntity;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -26,6 +28,7 @@ public class Point extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @Column(name = "total_point", nullable = false)

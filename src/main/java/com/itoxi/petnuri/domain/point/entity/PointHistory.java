@@ -2,6 +2,8 @@ package com.itoxi.petnuri.domain.point.entity;
 
 import com.itoxi.petnuri.domain.point.PointStatus;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -25,6 +27,7 @@ public class PointHistory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "point_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Point point;
 
     @Enumerated(EnumType.STRING)
