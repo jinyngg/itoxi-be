@@ -1,6 +1,9 @@
 DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS main_category;
 DROP TABLE IF EXISTS sub_category;
+DROP TABLE IF EXISTS daily_challenge;
+DROP TABLE IF EXISTS reward_challenge;
+DROP TABLE IF EXISTS reward_challenger;
 
 CREATE TABLE member
 (
@@ -40,4 +43,35 @@ create table daily_challenge
     challenge_status   varchar(255) not null,
     created_at         timestamp    NOT NULL,
     updated_at         timestamp    NOT NULL
+);
+
+create table reward_challenge
+(
+    reward_challenge_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title               VARCHAR(255) NOT NULL,
+    sub_title           VARCHAR(255) NOT NULL,
+    notice              VARCHAR(255) ,
+    thumbnail           VARCHAR(255) NOT NULL,
+    poster              VARCHAR(255) NOT NULL,
+    status              VARCHAR(255) NOT NULL,
+    start_date          TIMESTAMP    NOT NULL,
+    end_date            TIMESTAMP    NOT NULL,
+    kit_start_date      TIMESTAMP    NOT NULL,
+    kit_end_date        TIMESTAMP    NOT NULL,
+    review_start_date   TIMESTAMP    NOT NULL,
+    review_end_date     TIMESTAMP    NOT NULL,
+    created_at          TIMESTAMP    NOT NULL,
+    updated_at          TIMESTAMP    NOT NULL
+);
+
+create table reward_challenger
+(
+    reward_challenger_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id            BIGINT       NOT NULL,
+    reward_challenge_id  BIGINT       NOT NULL,
+    process              VARCHAR(255) NOT NULL,
+    created_at           TIMESTAMP    NOT NULL,
+    updated_at           TIMESTAMP    NOT NULL
+    FOREIGN KEY (member_id) REFERENCES member (member_id)
+    FOREIGN KEY (reward_challenge_id) REFERENCES reward_challenge (reward_challenge_id)
 );
