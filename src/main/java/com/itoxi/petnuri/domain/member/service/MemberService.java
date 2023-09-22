@@ -69,6 +69,7 @@ public class MemberService {
     }
 
     public void logout(String accessToken){
+        accessToken = jwtTokenProvider.resolveToken(accessToken);
         invalidatedToken(accessToken);
     }
 }
