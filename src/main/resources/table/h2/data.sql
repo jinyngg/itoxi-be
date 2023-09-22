@@ -32,3 +32,13 @@ values ('천하제일 집사대회', '펫누리 비대면 검진키트 이용후
 
 insert into reward_challenger (member_id, reward_challenge_id, process, created_at, updated_at)
 values (1, 1, 'APPLY', now(), now());
+
+INSERT INTO product (name, category, brand, price, quantity, image)
+VALUES ('검진키트', 'ETC', '아이톡시', 0, 100, null),
+       ('댕댕이 세트', 'SET', '아이톡시', 0, 50, null),
+       ('냥냥이 세트', 'SET', '아이톡시', 0, 50, null);
+
+INSERT INTO challenge_product (product_id, reward_challenge_id, category)
+VALUES (1, 1, 'KIT'),
+       (2, 1, 'REWARD'),
+       (3, 1, 'REWARD');
