@@ -7,6 +7,7 @@ import com.itoxi.petnuri.domain.member.dto.response.ProfileUpdateResp;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.service.MemberService;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
+import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/mypage")
     public ResponseEntity<MyPageResp> myPage(
@@ -49,4 +51,14 @@ public class MemberController {
         return new ResponseEntity("펫 정보 등록 완료", HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<String> withdraw(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestHeader(JwtTokenProvider.HEADER) String accessToken
+    ) {
+        Member member = principalDetails.getMember();
+        accessToken = jwtTokenProvider.resolveToken(accessToken);
+        memberService.withdraw(member, accessToken);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }
