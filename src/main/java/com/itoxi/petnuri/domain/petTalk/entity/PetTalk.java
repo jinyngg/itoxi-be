@@ -93,8 +93,23 @@ public class PetTalk extends BaseTimeEntity {
     @Transient
     private Long replyCount;
 
-    public void react(int count) {
-        this.emojiCount += count;
+    public PetTalk updateStatus(PetTalkStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    public void react(boolean reacted) {
+        this.reacted = reacted;
+    }
+
+    public PetTalk addEmojiCount() {
+        this.emojiCount += 1;
+        return this;
+    }
+
+    public PetTalk subtractEmojiCount() {
+        this.emojiCount -= 1;
+        return this;
     }
 
     public void uploadThumbnail(String thumbnail) {
