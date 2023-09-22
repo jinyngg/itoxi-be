@@ -1,7 +1,7 @@
 package com.itoxi.petnuri.domain.petTalk.controller;
 
-import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.dto.request.WritePetTalkRequest;
+import com.itoxi.petnuri.domain.petTalk.dto.response.LoadPetTalkPostDetailsResponse;
 import com.itoxi.petnuri.domain.petTalk.dto.response.LoadPetTalkPostsResponse;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.service.PetTalkService;
@@ -12,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,24 +36,43 @@ public class PetTalkPostController {
             @RequestPart MultipartFile[] files,
             @RequestPart WritePetTalkRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Member member = principalDetails.getMember();
         petTalkService.write(principalDetails, files, request);
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/{mainCategory}/{subCategory}")
-    public ResponseEntity<?> loadPetTalkPosts(
-            @PathVariable Long mainCategory,
-            @PathVariable(required = false) Long subCategory,
+    @GetMapping()
+    public ResponseEntity<LoadPetTalkPostsResponse> loadPetTalkPosts(
+            @RequestParam(required = false) Long mainCategory,
+            @RequestParam(required = false) Long subCategory,
             @RequestParam(name = "pet") PetType petType,
             @RequestParam(name = "order") OrderType orderType,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int size) {
+            @RequestParam(defaultValue = "15") int size,
+            Authentication authentication) {
         Page<PetTalk> petTalkPosts = petTalkService.loadPetTalkPosts(
-                mainCategory, subCategory, petType, orderType, page, size);
+                authentication, mainCategory, subCategory, petType, orderType, page, size);
 
-        LoadPetTalkPostsResponse data = LoadPetTalkPostsResponse.fromPage(petTalkPosts);
+        LoadPetTalkPostsResponse data =
+                LoadPetTalkPostsResponse.fromPage(petTalkPosts);
         return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/{petTalkId}")
+    public ResponseEntity<LoadPetTalkPostDetailsResponse> loadPetTalkPostDetails(
+            @PathVariable Long petTalkId,
+            Authentication authentication) {
+        PetTalk petTalk = petTalkService.loadPetTalkPostDetails(authentication, petTalkId);
+        LoadPetTalkPostDetailsResponse data =
+                LoadPetTalkPostDetailsResponse.fromEntity(petTalk);
+        return ResponseEntity.ok(data);
+    }
+
+    @PatchMapping("/{petTalkId}")
+    public ResponseEntity<Object> deletePetTalkPost(
+            @PathVariable Long petTalkId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        petTalkService.deletePetTalkPost(principalDetails, petTalkId);
+        return ResponseEntity.ok(null);
     }
 
 }
