@@ -29,6 +29,7 @@ public class PetTalkEmotionService {
         }
 
         PetTalkEmotion petTalkEmotion = PetTalkEmotion.create(member, petTalk, request.getEmoji());
+        petTalkRepository.addEmojiCount(petTalk);
         petTalkEmotionRepository.save(petTalkEmotion);
     }
 
@@ -40,7 +41,8 @@ public class PetTalkEmotionService {
         PetTalkEmotion petTalkEmotion = petTalkEmotionRepository.findByMemberAndPetTalkAndEmoji(member,
                         petTalk, emoji)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 데이터입니다."));
-        
+
+        petTalkRepository.subtractEmojiCount(petTalk);
         petTalkEmotionRepository.delete(petTalkEmotion);
     }
 }
