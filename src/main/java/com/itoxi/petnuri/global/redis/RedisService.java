@@ -2,15 +2,16 @@ package com.itoxi.petnuri.global.redis;
 
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_OR_EXPIRED_KEY;
 
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.util.JsonConverter;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +21,8 @@ public class RedisService {
     public static final String REFRESH_TOKEN_PREFIX = "RT ";
 
     public static final String LOGOUT_VALUE_PREFIX = "logout";
+
+    private static final int TIME_TO_UPDATE_VIEW_COUNT = 3;
 
     private final RedisTemplate<String, String> redisTemplate;
     private final JsonConverter jsonConverter;
@@ -57,5 +60,18 @@ public class RedisService {
 
     public boolean hasKey(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    public void increasePetTalkViewCountToRedis(PetTalk petTalk) {
+            String key = "PetTalkViewCount::" + petTalk.getId();
+            ValueOperations<String, String> vop = redisTemplate.opsForValue();
+            if (vop.get(key) == null) {
+            vop.set(
+                    key,
+                    String.valueOf(petTalk.getViewCount() + 1),
+                    Duration.ofMinutes(TIME_TO_UPDATE_VIEW_COUNT));
+        } else {
+            vop.increment(key);
+        }
     }
 }
