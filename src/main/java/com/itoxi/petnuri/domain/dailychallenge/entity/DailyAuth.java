@@ -37,18 +37,17 @@ public class DailyAuth extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @OneToMany(mappedBy = "dailyAuth")
-//    private List<DailyParticipate> dailyParticipates = new ArrayList<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    // 기획안에 인증샷은 최대 1개로 되어 있어 인증샷 테이블 -> 인증글로 통합
-    @Column(nullable = false)
-    private String imgName; // 인증샹 파일명
+    @ManyToOne
+    @JoinColumn(name = "daily_challenge_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private DailyChallenge dailyChallenge;
 
     @Column(nullable = false)
-    private String imgUrl;  // 인증샷 S3 url
+    private String imageUrl;  // 인증샷 S3 url
+
 }

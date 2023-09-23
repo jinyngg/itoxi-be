@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 import com.itoxi.petnuri.global.common.exception.Exception500;
 import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
@@ -32,6 +33,8 @@ public class AmazonS3Service {
     private static final String DATE_FORMAT = "yyyy/MM/dd/";
     private static final String PET_TALK_PHOTO_PREFIX = "pet_talk/";
     private static final String MEMBER_IMAGE = "profile_image/";
+
+    private static final String DAILY_CHALLENGE_IMAGE_PREFIX = "daily_challenge/";
 
     @Transactional
     public List<PetTalkPhoto> uploadPetTalkPhotos(MultipartFile[] files, PetTalk petTalk) {
@@ -96,6 +99,32 @@ public class AmazonS3Service {
 
     private String getUrlFromBucket(String fileKey) {
         return amazonS3.getUrl(bucket, fileKey).toString();
+    }
+
+    private final Function<String, String> getPrefix =
+            prefix -> DAILY_CHALLENGE_IMAGE_PREFIX + createDatePath() + generateRandomFileName();
+
+    // S3 deleteObject()의 filename 생성용
+    private final Function<String, String> getFileNameFromUrl = url -> {
+        // 1. amazonaws.com 이 위치한 문자열 index를 가져온다.
+        int startIndex = url.indexOf(".com");
+
+        // 2. startIndex에서부터 처음 나오는 "/"의 위치 다움 문자 인덱스를 가져 온다.
+        int fromIndex = url.indexOf("/", startIndex) + 1;
+
+        // 3. fromIndex부터 끝까지 문자열을 잘라서 filename을 만들어서 반환.
+        return url.substring(fromIndex, url.length());
+    };
+
+    public String uploadDailyChallengeImage(MultipartFile file) {
+        String fileKey = getPrefix.apply(DAILY_CHALLENGE_IMAGE_PREFIX);
+        ObjectMetadata metadata = createObjectMetadataFromFile(file);
+        try {
+            amazonS3.putObject(bucket, fileKey, file.getInputStream(), metadata);
+        } catch (Exception e) {
+            throw new Exception500(ErrorCode.FILE_TRANSFER_ERROR);
+        }
+        return getUrlFromBucket(fileKey);
     }
 
 }

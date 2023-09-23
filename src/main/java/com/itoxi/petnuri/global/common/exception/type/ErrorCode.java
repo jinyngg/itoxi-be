@@ -7,10 +7,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    INTERNAL_SERVER_ERROR("내부 서버 오류가 발생하였습니다."),
+    // COMMON
+    INTERNAL_SERVER_ERROR("내부 서버 오류가 발생하였습니다."), // 500
+    FILE_TRANSFER_ERROR("파일 전송 중 오류가 발생했습니다."), // 500
+    DUPE_POST_MEMBER("이미 인증글을 등록한 회원입니다."), // 400
 
     VALIDATION_ERROR("유효성 검사 중 예외가 발생했습니다."),
     S3UPLOADER_ERROR("s3 업로드 중 오류가 발생했습니다."),
+    INVALID_FILE_REQUEST("유효하지 않은 파일이 전송되었습니다."), // 400
+
 
     // REDIS
     INVALID_OR_EXPIRED_KEY("만료되었거나 유효하지 않은 키입니다."),
@@ -38,7 +43,10 @@ public enum ErrorCode {
     NOT_FOUND_MEMBER_ID("존재하지 않는 회원 ID 입니다."),
 
     // 챌린지
-    NOT_FOUND_CHALLENGE_ID("존재하지 않는 챌린지 ID 입니다."),
+    NOT_FOUND_CHALLENGE_ID("유효하지 않은 챌린지 ID 입니다."),
+
+    // 포인트
+    OUT_OF_POINT("보유 포인트가 부족합니다."),
     ;
 
     private final String message;

@@ -30,11 +30,26 @@ public class DailyChallenge extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String name;         // 챌린지명
+    private String name;       // 챌린지명
+
+    @Column(name = "auth_method", nullable = false)
+    private String authMethod; // 챌린지 인증 방법
+
     @Column(nullable = false)
-    private String authMethod;   // 챌린지 인증 방법
+    private Long payment;      // 챌린지 인증 완료시 지급 포인트
+
+    @Column(name = "payment_method", nullable = false)
+    private String paymentMethod; // 챌린지 인증 완료시 지급 포인트
+
     @Column(nullable = false)
-    private Long payment;        // 챌린지 인증 완료시 지급 포인트
+    private String thumbnail;   // S3 url
+
+    @Column(nullable = false)
+    private String banner;      // S3 url
+
+    @Builder.Default
+    @Enumerated(value = EnumType.STRING)
+    private ChallengeStatus challengeStatus = ChallengeStatus.READY;
 
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
@@ -44,7 +59,6 @@ public class DailyChallenge extends BaseTimeEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime endDate;      // 챌린지 종료 일자 : 9999-12-31 23:59:59
 
-    @Enumerated(value = EnumType.STRING)
-    private ChallengeStatus challengeStatus;
+
 
 }
