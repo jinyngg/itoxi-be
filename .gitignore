@@ -40,3 +40,6 @@ out/
 /src/main/resources/application.yml
 /src/main/resources/application-api.yml
 /src/main/resources/env.yml
+
+### QueryDsl ###
+/src/main/generated/
