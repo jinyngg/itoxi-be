@@ -19,5 +19,5 @@ VALUES ('질병/질환', 1),
 -- VALUES ('제목1', '내용1', 1, 1, 'DOG', 'ACTIVE', 0, 1);
 
 -- 데일리 챌린지 데이터 생성
-insert into daily_challenge (name, auth_method, payment, start_date, end_date, challenge_status, created_at, updated_at)
-values ('데일리 간식주기', '반려동물에게 간식주는 사진을 인증해요!', 100, '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
+insert into daily_challenge (name, auth_method, payment, payment_method, thumbnail, banner, start_date, end_date, challenge_status, created_at, updated_at)
+values ('데일리 간식주기', '반려동물에게 간식주는 사진을 인증해요!', 100, '참여 완료 즉시 지급', 'https://test.url/thumbnail.jpg', 'https://test.url/banner.jpg', '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
