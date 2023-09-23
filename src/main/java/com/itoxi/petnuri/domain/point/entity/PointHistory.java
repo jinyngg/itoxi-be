@@ -53,11 +53,11 @@ public class PointHistory {
                 .pointStatus(PointStatus.GET)
                 .getPoint(getPoint)
                 .getMethod(getMethod)
-                .amount(point.getTotalPoint())
+                .amount(point.getHavePoint())
                 .build();
     }
 
-    public static PointHistory createUserPointHistory(Point point, Long usePoint, String useMethod) {
+    public static PointHistory createUsePointHistory(Point point, Long usePoint, String useMethod) {
         point.usePoint(usePoint);
 
         return PointHistory.builder()
@@ -65,7 +65,7 @@ public class PointHistory {
                 .pointStatus(PointStatus.USE)
                 .usePoint(usePoint)
                 .useMethod(useMethod)
-                .amount(point.getTotalPoint())
+                .amount(point.getHavePoint())
                 .build();
     }
 }
