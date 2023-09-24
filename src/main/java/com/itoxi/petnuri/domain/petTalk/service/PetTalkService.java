@@ -66,7 +66,7 @@ public class PetTalkService {
                 if (isNonMember) {
                     return bestPetTalks;
                 }
-                petTalkRepository.isReactedEmojiByMemberAndPetTalks(bestPetTalks, member);
+                petTalkRepository.updateReactedStatusByMemberAndPetTalks(bestPetTalks, member);
                 return bestPetTalks;
 
             case LATEST:
@@ -77,7 +77,7 @@ public class PetTalkService {
                 if (isNonMember) {
                     return latestPetTalks;
                 }
-                petTalkRepository.isReactedEmojiByMemberAndPetTalks(latestPetTalks, member);
+                petTalkRepository.updateReactedStatusByMemberAndPetTalks(latestPetTalks, member);
                 return latestPetTalks;
         }
     }
@@ -96,7 +96,7 @@ public class PetTalkService {
 
         // 3. 로그인된 사용자 이모지 여부 확인
         if (member != null) {
-            petTalkRepository.isReactedEmojiByMemberAndPetTalk(petTalk, member);
+            petTalkRepository.updateReactedStatusByMemberAndPetTalk(petTalk, member);
         }
         
         // 4. 조회수 증가

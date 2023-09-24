@@ -1,5 +1,10 @@
 package com.itoxi.petnuri.domain.petTalk.repository;
 
+import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.DELETED;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_MAIN_CATEGORY_ID;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_PET_TALK_ID;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_SUB_CATEGORY_ID;
+
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.entity.MainCategory;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
@@ -8,15 +13,11 @@ import com.itoxi.petnuri.domain.petTalk.entity.SubCategory;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-
-import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.DELETED;
-import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -66,7 +67,7 @@ public class PetTalkRepository {
                 .orElseThrow(() -> new Exception400(INVALID_PET_TALK_ID));
     }
 
-    public void isReactedEmojiByMemberAndPetTalks(Page<PetTalk> petTalks, Member member) {
+    public void updateReactedStatusByMemberAndPetTalks(Page<PetTalk> petTalks, Member member) {
         for (PetTalk petTalk : petTalks) {
             boolean reacted =
                     petTalkEmotionRepository.existsByMemberIdAndPetTalkId(member.getId(), petTalk.getId());
@@ -74,7 +75,7 @@ public class PetTalkRepository {
         }
     }
 
-    public void isReactedEmojiByMemberAndPetTalk(PetTalk petTalk, Member member) {
+    public void updateReactedStatusByMemberAndPetTalk(PetTalk petTalk, Member member) {
         boolean reacted =
                 petTalkEmotionRepository.existsByMemberIdAndPetTalkId(member.getId(), petTalk.getId());
         petTalk.react(reacted);
@@ -98,7 +99,8 @@ public class PetTalkRepository {
     }
 
     public void deletePetTalkPost(PetTalk petTalk) {
-        petTalkJpaRepository.save(petTalk.updateStatus(DELETED));
+        petTalk.updateStatus(DELETED);
+        petTalkJpaRepository.save(petTalk);
     }
 
     public MainCategory getMainCategoryById(Long mainCategoryId) {
