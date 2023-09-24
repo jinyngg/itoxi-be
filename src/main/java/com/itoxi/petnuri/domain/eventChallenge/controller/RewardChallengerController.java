@@ -22,7 +22,7 @@ public class RewardChallengerController {
     private final RewardChallengerService rewardChallengerService;
 
     @GetMapping("/{challengeId}/join/my")
-    public ResponseEntity<Object> getMyJoin(
+    public ResponseEntity<GetMyRewardChallengeJoinResp> getMyJoin(
             @PathVariable @ValidId Long challengeId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
