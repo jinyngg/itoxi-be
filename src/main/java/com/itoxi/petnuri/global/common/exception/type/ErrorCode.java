@@ -44,6 +44,7 @@ public enum ErrorCode {
 
     // 챌린지
     NOT_FOUND_CHALLENGE_ID("유효하지 않은 챌린지 ID 입니다."),
+    NOT_FOUND_CHALLENGE_JOIN("챌린지 참여 내역이 존재하지 않습니다."),
 
     // 포인트
     OUT_OF_POINT("보유 포인트가 부족합니다."),

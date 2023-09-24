@@ -1,6 +1,6 @@
 package com.itoxi.petnuri.domain.eventChallenge.entity;
 
-import com.itoxi.petnuri.domain.eventChallenge.type.RewardChallengeProcess;
+import com.itoxi.petnuri.domain.eventChallenge.type.RewardChallengerProcess;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.global.common.BaseTimeEntity;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
-import static com.itoxi.petnuri.domain.eventChallenge.type.RewardChallengeProcess.APPLY;
+import static com.itoxi.petnuri.domain.eventChallenge.type.RewardChallengerProcess.APPLY;
 
 @Getter
 @Builder
@@ -39,5 +39,5 @@ public class RewardChallenger extends BaseTimeEntity {
     @Builder.Default
     @Column(name = "process", nullable = false)
     @Enumerated(EnumType.STRING)
-    private RewardChallengeProcess process = APPLY;
+    private RewardChallengerProcess process = APPLY;
 }

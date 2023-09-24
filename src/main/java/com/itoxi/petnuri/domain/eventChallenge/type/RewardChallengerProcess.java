@@ -1,6 +1,6 @@
 package com.itoxi.petnuri.domain.eventChallenge.type;
 
-public enum RewardChallengeProcess {
+public enum RewardChallengerProcess {
     APPLY,
     KIT_SHIPMENT_PREPARING, // 배송 준비 중
     KIT_SHIPMENT_START,     // 배송 시작
