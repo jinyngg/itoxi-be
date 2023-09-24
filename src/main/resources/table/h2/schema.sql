@@ -75,8 +75,8 @@ create table reward_challenger
     reward_challenge_id  BIGINT       NOT NULL,
     process              VARCHAR(255) NOT NULL,
     created_at           TIMESTAMP    NOT NULL,
-    updated_at           TIMESTAMP    NOT NULL
-    FOREIGN KEY (member_id) REFERENCES member (member_id)
+    updated_at           TIMESTAMP    NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES member (member_id),
     FOREIGN KEY (reward_challenge_id) REFERENCES reward_challenge (reward_challenge_id)
 );
 
@@ -88,7 +88,7 @@ CREATE TABLE product
     brand       VARCHAR(255) NOT NULL,
     price       BIGINT       NOT NULL,
     quantity    BIGINT       NOT NULL,
-    image       VARCHAR(255) ,
+    image       VARCHAR(255)
 );
 
 CREATE TABLE challenge_product
@@ -111,7 +111,7 @@ CREATE TABLE delivery_address
     address              VARCHAR(255) NOT NULL,
     zipcode              VARCHAR(255) NOT NULL,
     is_based             INT          NOT NULL,  -- JPA Boolean은 tinyint(1)로 매핑 됨(false는 0, true는 1)
-    FOREIGN KEY (member_id) REFERENCES member (member_id),
+    FOREIGN KEY (member_id) REFERENCES member (member_id)
 );
 
 CREATE TABLE challenge_delivery
