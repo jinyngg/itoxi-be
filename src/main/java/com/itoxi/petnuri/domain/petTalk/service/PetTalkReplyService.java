@@ -9,6 +9,7 @@ import com.itoxi.petnuri.domain.petTalk.repository.PetTalkReplyRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +20,8 @@ public class PetTalkReplyService {
     private final PetTalkRepository petTalkRepository;
     private final PetTalkReplyRepository petTalkReplyRepository;
 
+    @Transactional
     public void write(Member writer, Long petTalkId, WritePetTalkReplyReq request) {
-//        PetTalkPost petTalkPost = petTalkRepository.findById(petTalkId)
-//                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
         PetTalk petTalk = petTalkRepository.getById(petTalkId);
         PetTalkReply petTalkReply = PetTalkReply.create(writer, petTalk, request.getContent());
 
@@ -39,8 +39,10 @@ public class PetTalkReplyService {
         }
 
         petTalkReplyRepository.save(petTalkReply);
+        petTalkRepository.addReplyCount(petTalk);
     }
 
+    @Transactional(readOnly = true)
     public GetAllPetTalkReplyResp getAll(Long petTalkId) {
         List<PetTalkReply> replyList = petTalkReplyRepository.findAllByPetTalkId(petTalkId);
 

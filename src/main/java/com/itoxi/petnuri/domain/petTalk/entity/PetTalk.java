@@ -1,35 +1,21 @@
 package com.itoxi.petnuri.domain.petTalk.entity;
 
-import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.ACTIVE;
-
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.common.BaseTimeEntity;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.ACTIVE;
 
 @Getter
 @Builder
@@ -58,7 +44,7 @@ public class PetTalk extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
-    
+
     @Column(name = "pet_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private PetType petType;
@@ -109,6 +95,11 @@ public class PetTalk extends BaseTimeEntity {
 
     public PetTalk subtractEmojiCount() {
         this.emojiCount -= 1;
+        return this;
+    }
+
+    public PetTalk addReplyCount() {
+        this.replyCount += 1;
         return this;
     }
 

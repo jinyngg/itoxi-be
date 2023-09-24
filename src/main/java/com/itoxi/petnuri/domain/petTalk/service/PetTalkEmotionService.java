@@ -9,6 +9,7 @@ import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import com.itoxi.petnuri.domain.petTalk.type.EmojiType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,9 +17,8 @@ public class PetTalkEmotionService {
     private final PetTalkRepository petTalkRepository;
     private final PetTalkEmotionRepository petTalkEmotionRepository;
 
+    @Transactional
     public void create(Member member, Long petTalkId, CreatePetTalkEmotionReq request) {
-//        PetTalk petTalkPost = petTalkRepository.findById(petTalkId)
-//                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
         PetTalk petTalk = petTalkRepository.getById(petTalkId);
 
         // 중복 레코드 검사
@@ -33,9 +33,8 @@ public class PetTalkEmotionService {
         petTalkEmotionRepository.save(petTalkEmotion);
     }
 
+    @Transactional
     public void delete(Member member, Long petTalkId, EmojiType emoji) {
-//        PetTalkPost petTalkPost = petTalkRepository.findById(petTalkId)
-//                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다"));
         PetTalk petTalk = petTalkRepository.getById(petTalkId);
 
         PetTalkEmotion petTalkEmotion = petTalkEmotionRepository.findByMemberAndPetTalkAndEmoji(member,
