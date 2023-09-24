@@ -13,6 +13,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 import static com.itoxi.petnuri.domain.eventChallenge.type.RewardChallengerProcess.APPLY;
+import static com.itoxi.petnuri.domain.eventChallenge.type.RewardChallengerProcess.KIT_REVIEW_COMPLETE;
 
 @Getter
 @Builder
@@ -40,4 +41,8 @@ public class RewardChallenger extends BaseTimeEntity {
     @Column(name = "process", nullable = false)
     @Enumerated(EnumType.STRING)
     private RewardChallengerProcess process = APPLY;
+
+    public void reviewComplete() {
+        this.process = KIT_REVIEW_COMPLETE;
+    }
 }

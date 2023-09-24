@@ -4,13 +4,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
-
 import com.itoxi.petnuri.global.common.exception.Exception500;
 import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +12,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -35,6 +35,7 @@ public class AmazonS3Service {
     private static final String MEMBER_IMAGE = "profile_image/";
 
     private static final String DAILY_CHALLENGE_IMAGE_PREFIX = "daily_challenge/";
+    private static final String REWARD_CHALLENGE_REVIEW_IMAGE_PREFIX = "reward_challenge/review/";
 
     private static final String PET_IMAGE_PREFIX = "pet_image/";
 
@@ -45,13 +46,11 @@ public class AmazonS3Service {
         try {
             log.info("[펫톡] 이미지 업로드 진행");
             for (MultipartFile file : files) {
-                String fileKey = PET_TALK_PHOTO_PREFIX + createDatePath() + generateRandomFileName();
-                ObjectMetadata metadata = createObjectMetadataFromFile(file);
-                amazonS3.putObject(bucket, fileKey, file.getInputStream(), metadata);
+                String url = uploadImage(PET_TALK_PHOTO_PREFIX, file);
 
                 petTalkPhotos.add(PetTalkPhoto.builder()
                         .name(file.getOriginalFilename())
-                        .url(getUrlFromBucket(fileKey))
+                        .url(url)
                         .petTalk(petTalk)
                         .build());
             }
@@ -66,23 +65,28 @@ public class AmazonS3Service {
 
     // 프로필 이미지 수정
     public String uploadProfileImage(MultipartFile file) {
-        String profileImageUrl = uploadImage(MEMBER_IMAGE, file);
-        return profileImageUrl;
+        return uploadImage(MEMBER_IMAGE, file);
     }
 
     //펫 프로필 이미지 저장
     public String uploadPetProfileImage(MultipartFile image){
-        String petProfileImageUrl = uploadImage(PET_IMAGE_PREFIX, image);
-        return petProfileImageUrl;
+        return uploadImage(PET_IMAGE_PREFIX, image);
+    }
+
+    // 리워드 챌린지 리뷰 이미지
+    @Transactional
+    public String uploadRewardChallengeReviewImage(MultipartFile file) {
+        return uploadImage(REWARD_CHALLENGE_REVIEW_IMAGE_PREFIX, file);
     }
 
     // 단일 파일 저장
-    private String uploadImage(String subject, MultipartFile file) {
-        String fileKey = subject + createDatePath() + generateRandomFileName();
+    private String uploadImage(String directoryPrefix, MultipartFile file) {
+        String fileKey = directoryPrefix + createDatePath() + generateRandomFileName();
         ObjectMetadata metadata = createObjectMetadataFromFile(file);
         try {
             amazonS3.putObject(bucket, fileKey, file.getInputStream(), metadata);
         } catch (Exception e) {
+            log.error(directoryPrefix + "경로에 이미지 업로드 중 오류 발생 : " + e.getMessage());
             throw new Exception500(ErrorCode.S3UPLOADER_ERROR);
         }
         return getUrlFromBucket(fileKey);
@@ -134,4 +138,5 @@ public class AmazonS3Service {
         }
         return getUrlFromBucket(fileKey);
     }
+
 }
