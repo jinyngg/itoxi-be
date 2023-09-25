@@ -1,5 +1,6 @@
 package com.itoxi.petnuri.domain.delivery.entity;
 
+import com.itoxi.petnuri.domain.delivery.dto.ChallengeDeliveryDTO;
 import com.itoxi.petnuri.domain.delivery.type.DeliveryProcess;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.product.entity.ChallengeProduct;
@@ -11,6 +12,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+
+import static com.itoxi.petnuri.domain.delivery.type.DeliveryProcess.PREPARING;
 
 @Getter
 @Builder
@@ -52,7 +55,21 @@ public class ChallengeDelivery {
     @Column(name = "message")
     private String message;
 
+    @Builder.Default
     @Column(name = "process", nullable = false)
     @Enumerated(EnumType.STRING)
-    private DeliveryProcess process;
+    private DeliveryProcess process = PREPARING;
+
+    public static ChallengeDelivery create(Member member, ChallengeProduct product, ChallengeDeliveryDTO delivery) {
+        return ChallengeDelivery.builder()
+                .member(member)
+                .product(product)
+                .name(delivery.getName())
+                .phone(delivery.getPhone())
+                .roadAddress(delivery.getRoadAddress())
+                .address(delivery.getAddress())
+                .zipcode(delivery.getZipcode())
+                .message(delivery.getMessage())
+                .build();
+    }
 }

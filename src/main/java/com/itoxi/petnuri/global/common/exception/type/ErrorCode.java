@@ -45,10 +45,14 @@ public enum ErrorCode {
     // 챌린지
     NOT_FOUND_CHALLENGE_ID("유효하지 않은 챌린지 ID 입니다."),
     NOT_FOUND_CHALLENGE_JOIN("챌린지 참여 내역이 존재하지 않습니다."),
+    NOT_FOUND_CHALLENGE_KIT("챌린지에 등록된 검진 키트가 없습니다!"), //500 err
+    DUPE_CHALLENGE_JOIN("이미 챌린지 참여 내역이 존재합니다."),
 
     // 포인트
     OUT_OF_POINT("보유 포인트가 부족합니다."),
-    ;
+
+    // 상품
+    NOT_FOUND_CHALLENGE_PRODUCT_ID("유효하지 않은 챌린지 상품 ID 입니다.");
 
     private final String message;
 

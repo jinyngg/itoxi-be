@@ -42,6 +42,17 @@ public class RewardChallenger extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RewardChallengerProcess process = APPLY;
 
+    @Column(name = "is_consented_personal_info", nullable = false)
+    private Boolean isConsentedPersonalInfo;
+
+    public static RewardChallenger create(Member challenger, RewardChallenge rewardChallenge, Boolean isConsentedPersonalInfo) {
+        return RewardChallenger.builder()
+                .challenger(challenger)
+                .rewardChallenge(rewardChallenge)
+                .isConsentedPersonalInfo(isConsentedPersonalInfo)
+                .build();
+    }
+
     public void reviewComplete() {
         this.process = KIT_REVIEW_COMPLETE;
     }

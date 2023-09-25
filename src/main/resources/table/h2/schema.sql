@@ -70,12 +70,13 @@ create table reward_challenge
 
 create table reward_challenger
 (
-    reward_challenger_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    member_id            BIGINT       NOT NULL,
-    reward_challenge_id  BIGINT       NOT NULL,
-    process              VARCHAR(255) NOT NULL,
-    created_at           TIMESTAMP    NOT NULL,
-    updated_at           TIMESTAMP    NOT NULL,
+    reward_challenger_id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id                   BIGINT       NOT NULL,
+    reward_challenge_id         BIGINT       NOT NULL,
+    process                     VARCHAR(255) NOT NULL,
+    is_consented_personal_info  INT          NOT NULL,
+    created_at                  TIMESTAMP    NOT NULL,
+    updated_at                  TIMESTAMP    NOT NULL,
     FOREIGN KEY (member_id) REFERENCES member (member_id),
     FOREIGN KEY (reward_challenge_id) REFERENCES reward_challenge (reward_challenge_id)
 );
