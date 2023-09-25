@@ -1,6 +1,7 @@
 package com.itoxi.petnuri.domain.eventChallenge.controller;
 
 import com.itoxi.petnuri.domain.eventChallenge.dto.response.GetRewardChallengeDetailResp;
+import com.itoxi.petnuri.domain.eventChallenge.dto.response.GetRewardChallengeProductResp;
 import com.itoxi.petnuri.domain.eventChallenge.service.RewardChallengeService;
 import com.itoxi.petnuri.global.common.customValid.valid.ValidId;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,12 @@ public class RewardChallengeController {
     @GetMapping("/{challengeId}")
     public ResponseEntity<GetRewardChallengeDetailResp> getDetail(@PathVariable @ValidId Long challengeId) {
         GetRewardChallengeDetailResp response = challengeService.getDetail(challengeId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{challengeId}/product")
+    public ResponseEntity<GetRewardChallengeProductResp> getChallengeProduct(@PathVariable @ValidId Long challengeId) {
+        GetRewardChallengeProductResp response = challengeService.getChallengeProduct(challengeId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
