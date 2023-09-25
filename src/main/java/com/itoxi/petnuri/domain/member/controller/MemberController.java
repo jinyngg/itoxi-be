@@ -1,5 +1,6 @@
 package com.itoxi.petnuri.domain.member.controller;
 
+import com.itoxi.petnuri.domain.member.dto.request.PetProfileReq;
 import com.itoxi.petnuri.domain.member.dto.request.PetSaveReq;
 import com.itoxi.petnuri.domain.member.dto.request.ProfileUpdateReq;
 import com.itoxi.petnuri.domain.member.dto.response.MyPageResp;
@@ -10,6 +11,7 @@ import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +47,7 @@ public class MemberController {
     }
 
     @PostMapping("/pet")
-    public ResponseEntity petSave(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody PetSaveReq petSaveReq){
+    public ResponseEntity savePet(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody PetSaveReq petSaveReq){
         memberService.savePet(principalDetails.getMember(), petSaveReq);
 
         return new ResponseEntity("펫 정보 등록 완료", HttpStatus.CREATED);
@@ -68,5 +70,23 @@ public class MemberController {
 
         return new ResponseEntity("서비스 로그아웃 완료", HttpStatus.OK);
 
+    }
+
+    @PostMapping(value = "/pet/add", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity addPet(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                 @RequestPart PetProfileReq petProfileReq, @RequestPart MultipartFile image){
+
+        memberService.savePet(principalDetails.getMember(), petProfileReq, image);
+
+        return new ResponseEntity("펫 프로필 추가 성공", HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/pet/add", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity updatePet(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                    @RequestPart PetProfileReq petProfileReq, @RequestPart MultipartFile image){
+
+        memberService.savePet(principalDetails.getMember(), petProfileReq, image);
+
+        return new ResponseEntity("펫 프로필 수정 성공", HttpStatus.OK);
     }
 }

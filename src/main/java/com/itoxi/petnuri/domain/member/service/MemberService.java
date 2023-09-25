@@ -1,5 +1,6 @@
 package com.itoxi.petnuri.domain.member.service;
 
+import com.itoxi.petnuri.domain.member.dto.request.PetProfileReq;
 import com.itoxi.petnuri.domain.member.dto.request.PetSaveReq;
 import com.itoxi.petnuri.domain.member.dto.request.ProfileUpdateReq;
 import com.itoxi.petnuri.domain.member.dto.response.MyPageResp;
@@ -53,6 +54,21 @@ public class MemberService {
                 .breed(petSaveReq.getBreed())
                 .petGender(petSaveReq.getPetGender())
                 .petAge(petSaveReq.getPetAge()).build());
+    }
+
+    public void savePet(Member member, PetProfileReq petProfileReq, MultipartFile image){
+        String originUrl = null;
+
+        if(!image.isEmpty()){
+            originUrl = amazonS3Service.uploadPetProfileImage(image);
+        }
+
+        petRepository.save(Pet.builder()
+                .member(member)
+                .petName(petProfileReq.getPetName())
+                .petAge(petProfileReq.getPetAge())
+                .isSelected(petProfileReq.getIsSelected())
+                .image(originUrl).build());
     }
 
     @Transactional
