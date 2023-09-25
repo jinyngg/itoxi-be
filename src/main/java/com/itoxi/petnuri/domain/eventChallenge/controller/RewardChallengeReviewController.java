@@ -10,8 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/challenge/reward")
@@ -26,8 +29,9 @@ public class RewardChallengeReviewController {
     public ResponseEntity<Object> writeReview(
             @PathVariable @ValidId Long challengeId,
             @RequestPart MultipartFile file,
-            @RequestPart WriteReviewReq request,
-            @AuthenticationPrincipal PrincipalDetails principalDetails
+            @RequestPart @Valid WriteReviewReq request,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            Errors errors
     ) {
         Member member = principalDetails.getMember();
         reviewService.writeReview(member, challengeId, file, request);
