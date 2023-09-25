@@ -67,13 +67,13 @@ public class AmazonS3Service {
     // 프로필 이미지 수정
     public String uploadProfileImage(MultipartFile file) {
         String profileImageUrl = uploadImage(MEMBER_IMAGE, file);
-        return getUrlFromBucket(profileImageUrl);
+        return profileImageUrl;
     }
 
     //펫 프로필 이미지 저장
     public String uploadPetProfileImage(MultipartFile image){
         String petProfileImageUrl = uploadImage(PET_IMAGE_PREFIX, image);
-        return getUrlFromBucket(petProfileImageUrl);
+        return petProfileImageUrl;
     }
 
     // 단일 파일 저장
