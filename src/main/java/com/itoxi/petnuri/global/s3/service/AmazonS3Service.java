@@ -36,6 +36,8 @@ public class AmazonS3Service {
 
     private static final String DAILY_CHALLENGE_IMAGE_PREFIX = "daily_challenge/";
 
+    private static final String PET_IMAGE_PREFIX = "pet_image/";
+
     @Transactional
     public List<PetTalkPhoto> uploadPetTalkPhotos(MultipartFile[] files, PetTalk petTalk) {
         List<PetTalkPhoto> petTalkPhotos = new ArrayList<>();
@@ -66,6 +68,12 @@ public class AmazonS3Service {
     public String uploadProfileImage(MultipartFile file) {
         String profileImageUrl = uploadImage(MEMBER_IMAGE, file);
         return getUrlFromBucket(profileImageUrl);
+    }
+
+    //펫 프로필 이미지 저장
+    public String uploadPetProfileImage(MultipartFile image){
+        String petProfileImageUrl = uploadImage(PET_IMAGE_PREFIX, image);
+        return getUrlFromBucket(petProfileImageUrl);
     }
 
     // 단일 파일 저장
@@ -126,5 +134,4 @@ public class AmazonS3Service {
         }
         return getUrlFromBucket(fileKey);
     }
-
 }
