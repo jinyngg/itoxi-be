@@ -1,8 +1,10 @@
 package com.itoxi.petnuri.domain.eventChallenge.service;
 
 import com.itoxi.petnuri.domain.eventChallenge.dto.request.WriteReviewReq;
+import com.itoxi.petnuri.domain.eventChallenge.entity.RewardChallenge;
 import com.itoxi.petnuri.domain.eventChallenge.entity.RewardChallengeReview;
 import com.itoxi.petnuri.domain.eventChallenge.entity.RewardChallenger;
+import com.itoxi.petnuri.domain.eventChallenge.repository.RewardChallengeRepository;
 import com.itoxi.petnuri.domain.eventChallenge.repository.RewardChallengeReviewRepository;
 import com.itoxi.petnuri.domain.eventChallenge.repository.RewardChallengerRepository;
 import com.itoxi.petnuri.domain.member.entity.Member;
@@ -14,20 +16,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.DUPE_POST_MEMBER;
-import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_CHALLENGE_JOIN;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
 public class RewardChallengeReviewService {
+    private final RewardChallengeRepository challengeRepository;
     private final RewardChallengerRepository challengerRepository;
     private final RewardChallengeReviewRepository reviewRepository;
     private final AmazonS3Service amazonS3Service;
 
     @Transactional
     public void writeReview(Member member, Long challengeId, MultipartFile file, WriteReviewReq request) {
+        // 챌린지
+        RewardChallenge rewardChallenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_ID));
+
         // 챌린지 신청 여부 검사
-        RewardChallenger rewardChallenger = challengerRepository.findByChallengerAndRewardChallengeId(member, challengeId)
+        RewardChallenger rewardChallenger = challengerRepository.findByChallengerAndRewardChallenge(member, rewardChallenge)
                 .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_JOIN));
 
         // 리뷰 등록 여부 검사

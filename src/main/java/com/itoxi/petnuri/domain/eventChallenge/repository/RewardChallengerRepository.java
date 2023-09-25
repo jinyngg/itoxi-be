@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface RewardChallengerRepository extends JpaRepository<RewardChallenger, Long> {
-    Optional<RewardChallenger> findByChallengerAndRewardChallengeId(Member challenger, Long rewardChallengeId);
+    Optional<RewardChallenger> findByChallengerAndRewardChallenge(Member challenger, RewardChallenge rewardChallenge);
 
     boolean existsByChallengerAndRewardChallenge(Member challenger, RewardChallenge rewardChallenge);
 }

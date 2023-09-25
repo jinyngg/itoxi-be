@@ -31,7 +31,12 @@ public class RewardChallengerService {
 
     @Transactional(readOnly = true)
     public GetMyRewardChallengeJoinResp getMyJoin(Member member, Long challengeId) {
-        RewardChallenger rewardChallenger = challengerRepository.findByChallengerAndRewardChallengeId(member, challengeId)
+        // 챌린지
+        RewardChallenge rewardChallenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_ID));
+
+        // 챌린지 참여
+        RewardChallenger rewardChallenger = challengerRepository.findByChallengerAndRewardChallenge(member, rewardChallenge)
                 .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_JOIN));
 
         return new GetMyRewardChallengeJoinResp(rewardChallenger.getProcess());
