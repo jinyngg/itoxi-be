@@ -29,7 +29,6 @@ public class Pet {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PetType species;
 
@@ -38,7 +37,6 @@ public class Pet {
 
     private String image;
 
-    @Column(nullable = false)
     private String breed;
 
     @Column(nullable = false)
@@ -48,5 +46,6 @@ public class Pet {
     @Column(nullable = false)
     private Integer petAge;
 
+    private Boolean isSelected;
 
 }
