@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.itoxi.petnuri.domain.eventChallenge.type.RewardChallengeStatus.OPENED;
 
@@ -71,11 +69,4 @@ public class RewardChallenge extends BaseTimeEntity {
     @Column(name = "review_end_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime reviewEndDate;
-
-    @OneToMany(mappedBy = "rewardChallenge", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RewardChallenger> rewardChallengers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "rewardChallenge")
-    private List<RewardChallengeReview> rewardChallengeReviews = new ArrayList<>();
-
 }
