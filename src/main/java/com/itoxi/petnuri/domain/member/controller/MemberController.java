@@ -35,7 +35,7 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/profile/update")
+    @PutMapping("/mypage/profile")
     public ResponseEntity<ProfileUpdateResp> profileUpdate(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestPart(value = "nickname") @Valid ProfileUpdateReq request,
@@ -53,7 +53,7 @@ public class MemberController {
         return new ResponseEntity("펫 정보 등록 완료", HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/withdraw")
+    @DeleteMapping("/mypage/withdraw")
     public ResponseEntity<String> withdraw(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestHeader(JwtTokenProvider.HEADER) String accessToken
