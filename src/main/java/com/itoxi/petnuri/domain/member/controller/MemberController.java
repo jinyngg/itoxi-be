@@ -30,6 +30,7 @@ public class MemberController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/mypage")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<MyPageResp> myPage(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
@@ -39,6 +40,7 @@ public class MemberController {
     }
 
     @PutMapping("/mypage/profile")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ProfileUpdateResp> profileUpdate(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestPart(value = "nickname") @Valid ProfileUpdateReq request,
@@ -58,6 +60,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/mypage/withdraw")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> withdraw(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestHeader(JwtTokenProvider.HEADER) String accessToken
