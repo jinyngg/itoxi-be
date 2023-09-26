@@ -1,6 +1,5 @@
 package com.itoxi.petnuri.domain.delivery.service;
 
-import com.itoxi.petnuri.domain.delivery.dto.response.DeliveryListRes;
 import com.itoxi.petnuri.domain.delivery.repository.DeliveryAddressRepository;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.delivery.dto.request.SaveAddressReq;
@@ -20,9 +19,9 @@ public class DeliveryService {
 
     private final DeliveryAddressRepository deliveryAddressRepository;
 
-    public List<DeliveryListRes> getDeliveryAddressList(Member member){
-        List<DeliveryListRes> deliveryListResList = deliveryAddressRepository.findAllByMember(member);
-        return deliveryListResList;
+    public List<DeliveryAddress> getDeliveryAddressList(Member member){
+        List<DeliveryAddress> deliveryAddressList = deliveryAddressRepository.findAllByMember(member);
+        return deliveryAddressList;
     }
 
     @Transactional
