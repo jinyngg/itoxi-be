@@ -72,7 +72,7 @@ public class MemberController {
 
     }
 
-    @PostMapping(value = "/pet/add", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/main/pet/add", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity addPet(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                  @RequestPart(value = "petProfileReq") PetProfileReq petProfileReq, @RequestPart(value = "file") MultipartFile image){
 
@@ -81,7 +81,7 @@ public class MemberController {
         return new ResponseEntity("펫 프로필 추가 성공", HttpStatus.OK);
     }
 
-    @PutMapping(value = "/pet/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/main/pet/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity updatePet(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                     @RequestPart(value = "petProfileReq") PetProfileReq petProfileReq, @RequestPart(value = "file") MultipartFile image){
 
