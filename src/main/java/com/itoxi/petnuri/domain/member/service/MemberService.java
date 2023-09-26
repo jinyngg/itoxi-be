@@ -77,7 +77,8 @@ public class MemberService {
                 .petName(petSaveReq.getPetName())
                 .breed(petSaveReq.getBreed())
                 .petGender(petSaveReq.getPetGender())
-                .petAge(petSaveReq.getPetAge()).build());
+                .petAge(petSaveReq.getPetAge())
+                .isSelected(true).build());
     }
 
     public void savePet(Member member, PetProfileReq petProfileReq, MultipartFile image) {
