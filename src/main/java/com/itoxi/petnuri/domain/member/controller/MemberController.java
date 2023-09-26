@@ -85,7 +85,7 @@ public class MemberController {
     public ResponseEntity updatePet(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                     @RequestPart PetProfileReq petProfileReq, @RequestPart MultipartFile image){
 
-        memberService.savePet(principalDetails.getMember(), petProfileReq, image);
+        memberService.updatePet(principalDetails.getMember(), petProfileReq, image);
 
         return new ResponseEntity("펫 프로필 수정 성공", HttpStatus.OK);
     }

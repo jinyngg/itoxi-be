@@ -51,6 +51,9 @@ public enum ErrorCode {
     // 포인트
     OUT_OF_POINT("보유 포인트가 부족합니다."),
 
+    //펫
+    PET_NOT_FOUND("존재하지 않는 펫입니다."),
+
     // 상품
     NOT_FOUND_CHALLENGE_PRODUCT_ID("유효하지 않은 챌린지 상품 ID 입니다.");
 

@@ -1,5 +1,6 @@
 package com.itoxi.petnuri.domain.member.entity;
 
+import com.itoxi.petnuri.domain.member.dto.request.PetProfileReq;
 import com.itoxi.petnuri.domain.petTalk.type.PetGender;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import lombok.AllArgsConstructor;
@@ -47,5 +48,18 @@ public class Pet {
     private Integer petAge;
 
     private Boolean isSelected;
+
+    public void updateIsSelected(Boolean isSelected){
+        this.isSelected = isSelected;
+    }
+
+    public void updatePet(Member member, PetProfileReq petProfileReq, String originUrl){
+        this.member = member;
+        this.petAge = petProfileReq.getPetAge();
+        this.petGender = petProfileReq.getPetGender();
+        this.petName = petProfileReq.getPetName();
+        this.isSelected = petProfileReq.getIsSelected();
+        this.image = originUrl;
+    }
 
 }

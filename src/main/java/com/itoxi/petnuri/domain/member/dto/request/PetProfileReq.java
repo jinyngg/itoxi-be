@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class PetProfileReq {
+    private Long petId;
     private String petName;
     private PetGender petGender;
     private int petAge;
