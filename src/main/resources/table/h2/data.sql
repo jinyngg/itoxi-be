@@ -29,7 +29,7 @@ insert into reward_challenge (title, sub_title, notice, thumbnail, poster, statu
 values ('천하제일 집사대회', '펫누리 비대면 검진키트 이용후기 올리고 선물세트 받기', '유의사항',
         'https://petnuri-image-bucket.s3.ap-northeast-2.amazonaws.com/test/%ED%98%84%EB%AC%BC%EC%B1%8C%EB%A6%B0%EC%A7%80_%EC%8D%B8%EB%84%A4%EC%9D%BC.png',
         'https://petnuri-image-bucket.s3.ap-northeast-2.amazonaws.com/test/%ED%98%84%EB%AC%BC%EC%B1%8C%EB%A6%B0%EC%A7%80.png',
-        'ACTIVE', '2023-10-09 00:00:00', '2023-10-15 23:59:59', '2023-10-17 00:00:00', '2023-10-21 23:59:59',
+        'OPENED', '2023-10-09 00:00:00', '2023-10-15 23:59:59', '2023-10-17 00:00:00', '2023-10-21 23:59:59',
         '2023-10-23 00:00:00', '2023-10-31 23:59:59', now(), now());
 
 insert into reward_challenger (member_id, reward_challenge_id, process, is_consented_personal_info,
