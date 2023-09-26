@@ -77,6 +77,7 @@ public class MemberService {
             petRepository.save(Pet.builder()
                     .member(member)
                     .petName(petProfileReq.getPetName())
+                    .petGender(petProfileReq.getPetGender())
                     .petAge(petProfileReq.getPetAge())
                     .isSelected(true)
                     .image(originUrl).build());
@@ -150,6 +151,7 @@ public class MemberService {
         return Pet.builder()
                 .member(member)
                 .petName(petProfileReq.getPetName())
+                .petGender(petProfileReq.getPetGender())
                 .petAge(petProfileReq.getPetAge())
                 .isSelected(petProfileReq.getIsSelected())
                 .image(originUrl).build();
