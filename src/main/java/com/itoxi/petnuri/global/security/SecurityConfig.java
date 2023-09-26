@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,6 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
@@ -57,8 +59,7 @@ public class SecurityConfig {
         });
 
         http.authorizeRequests(
-                authorize -> authorize.antMatchers("/auth/**", "/h2-console/**", "/member/main").permitAll()
-                        .antMatchers("/api/**").hasAnyAuthority("USER")
+                authorize -> authorize.antMatchers("/**").permitAll()
                         .anyRequest().authenticated()
         );
 
@@ -72,7 +73,6 @@ public class SecurityConfig {
         config.addAllowedOriginPattern("*");
         config.setAllowCredentials(true);
         config.addExposedHeader("Authorization");
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
