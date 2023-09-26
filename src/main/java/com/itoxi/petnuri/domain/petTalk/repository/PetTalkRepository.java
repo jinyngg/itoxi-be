@@ -13,9 +13,12 @@ import com.itoxi.petnuri.domain.petTalk.entity.SubCategory;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -113,4 +116,7 @@ public class PetTalkRepository {
                 .orElseThrow(() -> new Exception400(INVALID_SUB_CATEGORY_ID));
     }
 
+    public List<PetTalk> findTopPetTalksOrderByRanking(LocalDateTime oneWeekAgo, Pageable pageable) {
+        return petTalkJpaRepository.findTopPetTalksOrderByRanking(oneWeekAgo, pageable);
+    }
 }

@@ -1,26 +1,39 @@
 package com.itoxi.petnuri.domain.member.service;
 
+import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
+import com.itoxi.petnuri.domain.dailychallenge.repository.DailyChallengeRepository;
+import com.itoxi.petnuri.domain.eventChallenge.entity.RewardChallenge;
+import com.itoxi.petnuri.domain.eventChallenge.repository.RewardChallengeRepository;
 import com.itoxi.petnuri.domain.member.dto.request.PetProfileReq;
 import com.itoxi.petnuri.domain.member.dto.request.PetSaveReq;
 import com.itoxi.petnuri.domain.member.dto.request.ProfileUpdateReq;
+import com.itoxi.petnuri.domain.member.dto.response.MainResp;
 import com.itoxi.petnuri.domain.member.dto.response.MyPageResp;
 import com.itoxi.petnuri.domain.member.dto.response.ProfileUpdateResp;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.entity.Pet;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import com.itoxi.petnuri.domain.member.repository.PetRepository;
-import com.itoxi.petnuri.global.common.exception.CustomException;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
+import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import com.itoxi.petnuri.global.common.exception.Exception404;
 import com.itoxi.petnuri.global.redis.RedisService;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
+import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.PET_NOT_FOUND;
 
@@ -30,6 +43,9 @@ public class MemberService {
     private final AmazonS3Service amazonS3Service;
     private final PetRepository petRepository;
     private final MemberRepository memberRepository;
+    private final PetTalkRepository petTalkRepository;
+    private final RewardChallengeRepository rewardChallengeRepository;
+    private final DailyChallengeRepository dailyChallengeRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
 
@@ -47,6 +63,7 @@ public class MemberService {
         }
         String changeNickname = request.getNickName();
         member.updateProfile(changeNickname, originImageUrl);
+        memberRepository.save(member);
 
         return new ProfileUpdateResp(changeNickname, originImageUrl);
     }
@@ -157,4 +174,72 @@ public class MemberService {
                 .image(originUrl).build();
     }
 
+    @Transactional(readOnly = true)
+    public MainResp getMain(Authentication authentication) {
+        Member member = getAuthenticatedMember(authentication);
+        List<MainResp.PetDTO> petDTOList = mapPetsToDTO(member);
+
+        List<MainResp.RewardChallengeDTO> rewardChallengeDTOList = mapRewardChallengesToDTO();
+        MainResp.DailyChallengeDTO dailyChallengeDTO = getRandomDailyChallenge();
+        MainResp.ChallengeDTO challengeDTO = new MainResp.ChallengeDTO(rewardChallengeDTOList, dailyChallengeDTO);
+
+        List<MainResp.PetTalkDTO> petTalkDTOList = getRandomPetTalks();
+        MainResp.MainContentDTO mainContentDTO = new MainResp.MainContentDTO(petDTOList, challengeDTO, petTalkDTOList);
+
+        return new MainResp(mainContentDTO);
+    }
+
+    private Member getAuthenticatedMember(Authentication authentication) {
+        if (authentication != null) {
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            return principalDetails.getMember();
+        }
+
+        return null;
+    }
+
+    private List<MainResp.PetDTO> mapPetsToDTO(Member member) {
+        List<MainResp.PetDTO> petDTOList = new ArrayList<>();
+        if (member != null) {
+            List<Pet> petList = petRepository.findAllByMember(member);
+            petDTOList = petList.stream()
+                    .map(MainResp.PetDTO::new)
+                    .collect(Collectors.toList());
+        }
+
+        return petDTOList;
+    }
+
+    private List<MainResp.RewardChallengeDTO> mapRewardChallengesToDTO() {
+        List<RewardChallenge> rewardChallenges = rewardChallengeRepository.findTop2ByOrderByRewardChallengersDesc(PageRequest.of(0, 2));
+        return rewardChallenges.stream()
+                .map(MainResp.RewardChallengeDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    private MainResp.DailyChallengeDTO getRandomDailyChallenge() {
+        long totalNum = dailyChallengeRepository.count();
+        int randomNum = (int) (Math.random() * totalNum);
+        Page<DailyChallenge> dailyChallengePage = dailyChallengeRepository.findAll(PageRequest.of(randomNum, 1));
+
+        if (dailyChallengePage.hasContent()) {
+            DailyChallenge dailyChallenge = dailyChallengePage.getContent().get(0);
+            return new MainResp.DailyChallengeDTO(dailyChallenge);
+        }
+
+        return null;
+    }
+
+    private List<MainResp.PetTalkDTO> getRandomPetTalks() {
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
+        List<PetTalk> petTalkList = petTalkRepository.findTopPetTalksOrderByRanking(oneWeekAgo, PageRequest.of(0, 15));
+
+        Collections.shuffle(petTalkList);
+        int numToSelect = Math.min(4, petTalkList.size());
+        List<PetTalk> randomPetTalk = petTalkList.subList(0, numToSelect);
+
+        return randomPetTalk.stream()
+                .map(MainResp.PetTalkDTO::new)
+                .collect(Collectors.toList());
+    }
 }

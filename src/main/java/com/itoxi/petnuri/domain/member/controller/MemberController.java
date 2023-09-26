@@ -3,6 +3,7 @@ package com.itoxi.petnuri.domain.member.controller;
 import com.itoxi.petnuri.domain.member.dto.request.PetProfileReq;
 import com.itoxi.petnuri.domain.member.dto.request.PetSaveReq;
 import com.itoxi.petnuri.domain.member.dto.request.ProfileUpdateReq;
+import com.itoxi.petnuri.domain.member.dto.response.MainResp;
 import com.itoxi.petnuri.domain.member.dto.response.MyPageResp;
 import com.itoxi.petnuri.domain.member.dto.response.ProfileUpdateResp;
 import com.itoxi.petnuri.domain.member.entity.Member;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,5 +90,13 @@ public class MemberController {
         memberService.updatePet(principalDetails.getMember(), petProfileReq, image);
 
         return new ResponseEntity("펫 프로필 수정 성공", HttpStatus.OK);
+    }
+
+    @GetMapping("/main")
+    public ResponseEntity<MainResp> mainHome(
+            Authentication authentication
+    ) {
+        MainResp response = memberService.getMain(authentication);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

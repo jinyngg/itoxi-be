@@ -57,7 +57,7 @@ public class SecurityConfig {
         });
 
         http.authorizeRequests(
-                authorize -> authorize.antMatchers("/auth/**",  "/h2-console/**").permitAll()
+                authorize -> authorize.antMatchers("/auth/**", "/h2-console/**", "/member/main").permitAll()
                         .antMatchers("/api/**").hasAnyAuthority("USER")
                         .anyRequest().authenticated()
         );
