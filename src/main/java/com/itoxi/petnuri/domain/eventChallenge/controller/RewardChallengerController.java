@@ -2,6 +2,7 @@ package com.itoxi.petnuri.domain.eventChallenge.controller;
 
 import com.itoxi.petnuri.domain.eventChallenge.dto.request.CreateChallengerReq;
 import com.itoxi.petnuri.domain.eventChallenge.dto.response.GetMyRewardChallengeJoinResp;
+import com.itoxi.petnuri.domain.eventChallenge.dto.response.GetOtherRewardChallengeJoinResp;
 import com.itoxi.petnuri.domain.eventChallenge.service.RewardChallengerService;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.global.common.customValid.valid.ValidId;
@@ -28,6 +29,16 @@ public class RewardChallengerController {
     ) {
         Member member = principalDetails.getMember();
         GetMyRewardChallengeJoinResp response = rewardChallengerService.getMyJoin(member, challengeId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{challengeId}/join/other")
+    public ResponseEntity<GetOtherRewardChallengeJoinResp> getOtherJoin(
+            @PathVariable @ValidId Long challengeId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        Member member = principalDetails.getMember();
+        GetOtherRewardChallengeJoinResp response = rewardChallengerService.getOtherJoin(member, challengeId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

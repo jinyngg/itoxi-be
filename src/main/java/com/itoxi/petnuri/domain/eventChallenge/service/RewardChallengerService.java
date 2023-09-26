@@ -4,9 +4,12 @@ import com.itoxi.petnuri.domain.delivery.entity.ChallengeDelivery;
 import com.itoxi.petnuri.domain.delivery.repository.ChallengeDeliveryRepository;
 import com.itoxi.petnuri.domain.eventChallenge.dto.request.CreateChallengerReq;
 import com.itoxi.petnuri.domain.eventChallenge.dto.response.GetMyRewardChallengeJoinResp;
+import com.itoxi.petnuri.domain.eventChallenge.dto.response.GetOtherRewardChallengeJoinResp;
 import com.itoxi.petnuri.domain.eventChallenge.entity.RewardChallenge;
+import com.itoxi.petnuri.domain.eventChallenge.entity.RewardChallengeReview;
 import com.itoxi.petnuri.domain.eventChallenge.entity.RewardChallenger;
 import com.itoxi.petnuri.domain.eventChallenge.repository.RewardChallengeRepository;
+import com.itoxi.petnuri.domain.eventChallenge.repository.RewardChallengeReviewRepository;
 import com.itoxi.petnuri.domain.eventChallenge.repository.RewardChallengerRepository;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.product.entity.ChallengeProduct;
@@ -18,6 +21,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.itoxi.petnuri.domain.product.type.ChallengeProductCategory.KIT;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.*;
 
@@ -26,6 +33,7 @@ import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.*;
 public class RewardChallengerService {
     private final RewardChallengeRepository challengeRepository;
     private final RewardChallengerRepository challengerRepository;
+    private final RewardChallengeReviewRepository reviewRepository;
     private final ChallengeProductRepository challengeProductRepository;
     private final ChallengeDeliveryRepository challengeDeliveryRepository;
 
@@ -40,6 +48,34 @@ public class RewardChallengerService {
                 .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_JOIN));
 
         return new GetMyRewardChallengeJoinResp(rewardChallenger.getProcess());
+    }
+
+    @Transactional(readOnly = true)
+    public GetOtherRewardChallengeJoinResp getOtherJoin(Member member, Long challengeId) {
+        // 챌린지
+        RewardChallenge rewardChallenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_ID));
+
+        List<GetOtherRewardChallengeJoinResp.JoinMemberDTO> JoinMembers = getJoinMembers(rewardChallenge, member);
+        return new GetOtherRewardChallengeJoinResp(JoinMembers);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetOtherRewardChallengeJoinResp.JoinMemberDTO> getJoinMembers(RewardChallenge rewardChallenge, Member member) {
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(rewardChallenge.getReviewStartDate())) {
+            // 신청 ~ 키트 수령기간
+            List<RewardChallenger> challengers = challengerRepository.findAllByRewardChallengeAndChallengerNot(rewardChallenge, member);
+            return challengers.stream()
+                    .map(GetOtherRewardChallengeJoinResp.JoinMemberDTO::new)
+                    .collect(Collectors.toList());
+        } else {
+            // 리뷰 작성 기간
+            List<RewardChallengeReview> reviews = reviewRepository.findAllByRewardChallengeAndChallengerNot(rewardChallenge, member);
+            return reviews.stream()
+                    .map(GetOtherRewardChallengeJoinResp.JoinMemberDTO::new)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Transactional
