@@ -1,5 +1,6 @@
 package com.itoxi.petnuri.domain.delivery.service;
 
+import com.itoxi.petnuri.domain.delivery.dto.response.DeliveryListRes;
 import com.itoxi.petnuri.domain.delivery.repository.DeliveryAddressRepository;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.delivery.dto.request.SaveAddressReq;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,9 +21,21 @@ public class DeliveryService {
 
     private final DeliveryAddressRepository deliveryAddressRepository;
 
-    public List<DeliveryAddress> getDeliveryAddressList(Member member){
+    public List<DeliveryListRes> getDeliveryAddressList(Member member){
         List<DeliveryAddress> deliveryAddressList = deliveryAddressRepository.findAllByMember(member);
-        return deliveryAddressList;
+        List<DeliveryListRes> deliveryListResList = new ArrayList<>();
+
+        for(DeliveryAddress deliveryAddress : deliveryAddressList){
+            deliveryListResList.add(DeliveryListRes.builder()
+                    .id(deliveryAddress.getId())
+                    .name(deliveryAddress.getName())
+                    .phone(deliveryAddress.getPhone())
+                    .roadAddress(deliveryAddress.getRoadAddress())
+                    .address(deliveryAddress.getAddress())
+                    .zipcode(deliveryAddress.getZipcode())
+                    .isBased(deliveryAddress.getIsBased()).build());
+        }
+        return deliveryListResList;
     }
 
     @Transactional

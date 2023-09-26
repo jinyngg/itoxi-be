@@ -19,13 +19,13 @@ public class DeliveryController {
 
     private final DeliveryService deliveryService;
 
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @GetMapping("/address")
     public ResponseEntity getDeliveryAddressList(@AuthenticationPrincipal PrincipalDetails principalDetails){
         return new ResponseEntity(deliveryService.getDeliveryAddressList(principalDetails.getMember()), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/address")
     public ResponseEntity deleteDeliveryAddress(@RequestParam Long deliveryAddressId) {
         deliveryService.deleteDeliveryAddress(deliveryAddressId);
@@ -33,7 +33,7 @@ public class DeliveryController {
     }
 
     @PostMapping("/address")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> saveAddress(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody SaveAddressReq request
