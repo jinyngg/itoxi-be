@@ -3,7 +3,7 @@ package com.itoxi.petnuri.domain.petTalk.service;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.MISMATCH_PET_TALK_WRITER;
 
 import com.itoxi.petnuri.domain.member.entity.Member;
-import com.itoxi.petnuri.domain.member.type.MemberRole;
+import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import com.itoxi.petnuri.domain.petTalk.dto.request.WritePetTalkRequest;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
@@ -13,7 +13,6 @@ import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.redis.RedisService;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import java.util.Objects;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -28,18 +27,15 @@ public class PetTalkService {
     private final PetTalkRepository petTalkRepository;
     private final RedisService redisService;
 
+    // TODO
+    private final MemberRepository memberRepository;
+
     @Transactional
     public void write(
             PrincipalDetails principalDetails, MultipartFile[] files, WritePetTalkRequest request) {
         // TODO 1. 로그인된 회원 정보 확인
 //        Member member = principalDetails.getMember();
-        Member member = Member.builder()
-                .email(UUID.randomUUID().toString().substring(0, 5) + "naver.com")
-                .nickname(UUID.randomUUID().toString().substring(0, 5))
-                .role(MemberRole.USER)
-                .profileImageUrl("")
-                .referralCode("")
-                .build();
+        Member member = memberRepository.findById(1L).orElseThrow();
 
         // 2. 게시글 생성
         PetTalk petTalk = PetTalk.builder()

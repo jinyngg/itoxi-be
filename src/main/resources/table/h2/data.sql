@@ -45,3 +45,6 @@ INSERT INTO challenge_product (product_id, reward_challenge_id, category)
 VALUES (1, 1, 'KIT'),
        (2, 1, 'REWARD'),
        (3, 1, 'REWARD');
+
+INSERT INTO member (email, nickname, profile_image_url, role, referral_code)
+VALUES ('test@example.com', 'testuser', 'https://example.com/profile.jpg', 'USER', '123456');

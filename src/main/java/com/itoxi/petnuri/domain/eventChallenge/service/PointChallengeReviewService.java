@@ -5,11 +5,10 @@ import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallenge;
 import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallengeReview;
 import com.itoxi.petnuri.domain.eventChallenge.repository.PointChallengeRepository;
 import com.itoxi.petnuri.domain.member.entity.Member;
-import com.itoxi.petnuri.domain.member.type.MemberRole;
+import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,9 @@ public class PointChallengeReviewService {
 
     private final PointChallengeRepository pointChallengeRepository;
 
+    // TODO
+    private final MemberRepository memberRepository;
+
     @Transactional
     public void write(
             Long pointChallengeId,
@@ -30,13 +32,7 @@ public class PointChallengeReviewService {
             PrincipalDetails principalDetails) {
         // TODO 1. 로그인된 회원 정보 확인
 //        Member reviewer = principalDetails.getMember();
-        Member reviewer = Member.builder()
-                .email(UUID.randomUUID().toString().substring(0, 5) + "naver.com")
-                .nickname(UUID.randomUUID().toString().substring(0, 5))
-                .role(MemberRole.USER)
-                .profileImageUrl("")
-                .referralCode("")
-                .build();
+        Member reviewer = memberRepository.findById(1L).orElseThrow();
 
         // 2. 챌린지 조회
         PointChallenge pointChallenge =
