@@ -108,7 +108,7 @@ CREATE TABLE delivery_address
     member_id            BIGINT       NOT NULL,
     name                 VARCHAR(255) NOT NULL,
     phone                VARCHAR(255) NOT NULL,
-    roadAddress          VARCHAR(255) NOT NULL,
+    road_address         VARCHAR(255) NOT NULL,
     address              VARCHAR(255) NOT NULL,
     zipcode              VARCHAR(255) NOT NULL,
     is_based             INT          NOT NULL,  -- JPA Boolean은 tinyint(1)로 매핑 됨(false는 0, true는 1)
@@ -122,7 +122,7 @@ CREATE TABLE challenge_delivery
     challenge_product_id   BIGINT       NOT NULL,
     name                   VARCHAR(255) NOT NULL,
     phone                  VARCHAR(255) NOT NULL,
-    roadAddress            VARCHAR(255) NOT NULL,
+    road_address           VARCHAR(255) NOT NULL,
     address                VARCHAR(255) NOT NULL,
     zipcode                VARCHAR(255) NOT NULL,
     message                VARCHAR(255) NOT NULL,
