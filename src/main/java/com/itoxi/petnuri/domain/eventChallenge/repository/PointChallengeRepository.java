@@ -1,7 +1,7 @@
 package com.itoxi.petnuri.domain.eventChallenge.repository;
 
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_EVENT_CHALLENGE_ID;
-import static com.itoxi.petnuri.global.s3.type.EventChallengeType.POINT;
+import static com.itoxi.petnuri.domain.eventChallenge.type.EventChallengeType.POINT;
 
 import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallenge;
 import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallengeReview;
