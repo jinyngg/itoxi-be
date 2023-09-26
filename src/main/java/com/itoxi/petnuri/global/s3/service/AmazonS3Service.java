@@ -1,24 +1,26 @@
 package com.itoxi.petnuri.global.s3.service;
 
+import static com.itoxi.petnuri.domain.eventChallenge.type.EventChallengeType.POINT;
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
 import com.itoxi.petnuri.global.common.exception.Exception500;
 import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.itoxi.petnuri.domain.eventChallenge.type.EventChallengeType;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -31,13 +33,26 @@ public class AmazonS3Service {
     private final AmazonS3 amazonS3;
 
     private static final String DATE_FORMAT = "yyyy/MM/dd/";
+
     private static final String PET_TALK_PHOTO_PREFIX = "pet_talk/";
-    private static final String MEMBER_IMAGE = "profile_image/";
-
+    private static final String MEMBER_IMAGE_PREFIX = "profile_image/";
     private static final String DAILY_CHALLENGE_IMAGE_PREFIX = "daily_challenge/";
-    private static final String REWARD_CHALLENGE_REVIEW_IMAGE_PREFIX = "reward_challenge/review/";
-
     private static final String PET_IMAGE_PREFIX = "pet_image/";
+
+    private static final String EVENT_CHALLENGE_POINT_THUMBNAIL_PREFIX =
+            "event_challenge/point/thumbnail/";
+    private static final String EVENT_CHALLENGE_REWARD_THUMBNAIL_PREFIX =
+            "event_challenge/reward/thumbnail/";
+
+    private static final String EVENT_CHALLENGE_POINT_POSTER_PREFIX =
+            "event_challenge/point/poster/";
+    private static final String EVENT_CHALLENGE_REWARD_POSTER_PREFIX =
+            "event_challenge/reward/poster/";
+
+    private static final String EVENT_CHALLENGE_POINT_REVIEW_PREFIX =
+            "event_challenge/point/review/";
+    private static final String EVENT_CHALLENGE_REWARD_REVIEW_PREFIX =
+            "event_challenge/reward/review/";
 
     @Transactional
     public List<PetTalkPhoto> uploadPetTalkPhotos(MultipartFile[] files, PetTalk petTalk) {
@@ -46,11 +61,9 @@ public class AmazonS3Service {
         try {
             log.info("[펫톡] 이미지 업로드 진행");
             for (MultipartFile file : files) {
-                String url = uploadImage(PET_TALK_PHOTO_PREFIX, file);
-
                 petTalkPhotos.add(PetTalkPhoto.builder()
                         .name(file.getOriginalFilename())
-                        .url(url)
+                        .url(uploadImage(PET_TALK_PHOTO_PREFIX, file))
                         .petTalk(petTalk)
                         .build());
             }
@@ -63,9 +76,32 @@ public class AmazonS3Service {
         return petTalkPhotos;
     }
 
+    @Transactional
+    public String uploadRewardChallengeReviewImage(MultipartFile file) {
+        return uploadImage(EVENT_CHALLENGE_REWARD_REVIEW_PREFIX, file);
+    }
+
+    public String uploadPointChallengeReviewPhoto(MultipartFile file) {
+        return uploadImage(EVENT_CHALLENGE_POINT_REVIEW_PREFIX, file);
+    }
+
+    public String uploadEventChallengeThumbnail(EventChallengeType type, MultipartFile thumbnail) {
+        String path = (type == POINT) ?
+                EVENT_CHALLENGE_POINT_THUMBNAIL_PREFIX : EVENT_CHALLENGE_REWARD_THUMBNAIL_PREFIX;
+
+        return uploadImage(path, thumbnail);
+    }
+
+    public String uploadEventChallengePoster(EventChallengeType type, MultipartFile poster) {
+        String path = (type == POINT) ?
+                EVENT_CHALLENGE_POINT_POSTER_PREFIX : EVENT_CHALLENGE_REWARD_POSTER_PREFIX;
+
+        return uploadImage(path, poster);
+    }
+
     // 프로필 이미지 수정
     public String uploadProfileImage(MultipartFile file) {
-        return uploadImage(MEMBER_IMAGE, file);
+        return uploadImage(MEMBER_IMAGE_PREFIX, file);
     }
 
     //펫 프로필 이미지 저장
@@ -73,20 +109,13 @@ public class AmazonS3Service {
         return uploadImage(PET_IMAGE_PREFIX, image);
     }
 
-    // 리워드 챌린지 리뷰 이미지
-    @Transactional
-    public String uploadRewardChallengeReviewImage(MultipartFile file) {
-        return uploadImage(REWARD_CHALLENGE_REVIEW_IMAGE_PREFIX, file);
-    }
-
     // 단일 파일 저장
-    private String uploadImage(String directoryPrefix, MultipartFile file) {
-        String fileKey = directoryPrefix + createDatePath() + generateRandomFileName();
+    private String uploadImage(String subject, MultipartFile file) {
+        String fileKey = subject + createDatePath() + generateRandomFileName();
         ObjectMetadata metadata = createObjectMetadataFromFile(file);
         try {
             amazonS3.putObject(bucket, fileKey, file.getInputStream(), metadata);
         } catch (Exception e) {
-            log.error(directoryPrefix + "경로에 이미지 업로드 중 오류 발생 : " + e.getMessage());
             throw new Exception500(ErrorCode.S3UPLOADER_ERROR);
         }
         return getUrlFromBucket(fileKey);
@@ -138,5 +167,4 @@ public class AmazonS3Service {
         }
         return getUrlFromBucket(fileKey);
     }
-
 }
