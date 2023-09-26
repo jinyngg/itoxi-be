@@ -47,6 +47,7 @@ public enum ErrorCode {
     NOT_FOUND_CHALLENGE_JOIN("챌린지 참여 내역이 존재하지 않습니다."),
     DUPE_CHALLENGE_JOIN("이미 챌린지 참여 내역이 존재합니다."),
     NOT_FOUND_CHALLENGE_KIT("챌린지에 등록된 검진 키트가 없습니다!"), //500 err
+    NOT_FOUND_EVENT_CHALLENGE_ID("유효하지 않은 이벤트 챌린지 ID 입니다."),
 
     // 포인트
     OUT_OF_POINT("보유 포인트가 부족합니다."),
