@@ -13,7 +13,7 @@ public interface PetTalkJpaRepository extends JpaRepository<PetTalk, Long>, PetT
     @Query("SELECT pt, COUNT(pe) AS emojiCount " +
             "FROM PetTalk pt " +
             "LEFT JOIN PetTalkEmotion pe ON pt.id = pe.petTalk.id " +
-            "WHERE pt.createdAt >= :oneWeekAgo " +
+            "WHERE pt.createdAt >= :oneWeekAgo AND pt.status = 'ACTIVE'" +
             "GROUP BY pt.id " +
             "ORDER BY emojiCount DESC, pt.createdAt DESC")
     List<PetTalk> findTopPetTalksOrderByRanking(@Param("oneWeekAgo") LocalDateTime oneWeekAgo, Pageable pageable);

@@ -9,9 +9,11 @@ import java.util.List;
 
 public interface RewardChallengeRepository extends JpaRepository<RewardChallenge, Long> {
 
-    @Query("SELECT rc FROM RewardChallenge rc " +
-            "LEFT JOIN rc.rewardChallengers rch " +
+    @Query("SELECT rc, COUNT(rch) AS challenger " +
+            "FROM RewardChallenge rc " +
+            "LEFT JOIN RewardChallenger rch ON rc.id = rch.rewardChallenge.id " +
+            "WHERE rc.status = 'OPENED'" +
             "GROUP BY rc.id " +
-            "ORDER BY COUNT(rch) DESC")
+            "ORDER BY challenger DESC")
     List<RewardChallenge> findTop2ByOrderByRewardChallengersDesc(Pageable pageable);
 }
