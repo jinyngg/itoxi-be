@@ -97,7 +97,8 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
         return Optional.ofNullable(
                 queryFactory
                         .selectFrom(qPetTalk)
-                        .where(eqActive())
+                        .where(eqActive()
+                                .and(eqPetTalkId(petTalkId)))
                         .fetchOne());
     }
 

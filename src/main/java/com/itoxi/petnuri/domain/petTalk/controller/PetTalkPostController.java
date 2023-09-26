@@ -10,6 +10,7 @@ import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -37,7 +38,7 @@ public class PetTalkPostController {
             @RequestPart WritePetTalkRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         petTalkService.write(principalDetails, files, request);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
     @GetMapping()

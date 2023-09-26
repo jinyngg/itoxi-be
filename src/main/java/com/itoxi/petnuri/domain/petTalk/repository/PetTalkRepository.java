@@ -37,8 +37,8 @@ public class PetTalkRepository {
                 .orElseThrow(() -> new Exception400(INVALID_PET_TALK_ID));
     }
 
-    public PetTalk write(PetTalk petTalk) {
-        return petTalkJpaRepository.save(petTalk);
+    public void write(PetTalk petTalk) {
+        petTalkJpaRepository.save(petTalk);
     }
 
     public void uploadPetTalkPhotos(MultipartFile[] files, PetTalk petTalk) {
@@ -50,7 +50,6 @@ public class PetTalkRepository {
         }
 
         petTalk.uploadPetTalkPhotos(photos);
-        petTalkJpaRepository.save(petTalk);
     }
 
     public Page<PetTalk> loadLatestPetTalkPostsByCategoryAndPetType(
@@ -83,7 +82,6 @@ public class PetTalkRepository {
                 petTalkEmotionRepository.existsByMemberIdAndPetTalkId(member.getId(), petTalk.getId());
         petTalk.react(reacted);
     }
-
 
     public void addEmojiCount(PetTalk petTalk) {
         petTalkJpaRepository.save(petTalk.addEmojiCount());

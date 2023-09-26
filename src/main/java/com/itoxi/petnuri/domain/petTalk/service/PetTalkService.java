@@ -32,18 +32,22 @@ public class PetTalkService {
         // 1. 로그인된 회원 정보 확인
         Member member = principalDetails.getMember();
 
-        // 2. 게시글 저장
-        PetTalk petTalk = petTalkRepository.write(PetTalk.builder()
+        // 2. 게시글 생성
+        PetTalk petTalk = PetTalk.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .mainCategory(petTalkRepository.getMainCategoryById(request.getMainCategoryId()))
-                .subCategory(petTalkRepository.getSubCategoryById(request.getSubCategoryId()))
+                .subCategory(request.getSubCategoryId() != null ?
+                        petTalkRepository.getSubCategoryById(request.getSubCategoryId()) : null)
                 .petType(request.getPetType())
                 .writer(member)
-                .build());
+                .build();
 
         // 3. 게시글 이미지 업로드
         petTalkRepository.uploadPetTalkPhotos(files, petTalk);
+
+        // 4. 게시글 저장
+        petTalkRepository.write(petTalk);
     }
 
     @Transactional(readOnly = true)
