@@ -1,6 +1,9 @@
 package com.itoxi.petnuri.domain.delivery.controller;
 
+import com.itoxi.petnuri.domain.delivery.dto.request.SaveAddressReq;
+import com.itoxi.petnuri.domain.delivery.dto.request.UpdateAddressReq;
 import com.itoxi.petnuri.domain.delivery.service.DeliveryService;
+import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,8 +27,30 @@ public class DeliveryController {
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/address")
-    public ResponseEntity deleteDeliveryAddress(@RequestParam Long deliveryAddressId){
+    public ResponseEntity deleteDeliveryAddress(@RequestParam Long deliveryAddressId) {
         deliveryService.deleteDeliveryAddress(deliveryAddressId);
         return new ResponseEntity("삭제 완료", HttpStatus.OK);
+    }
+
+    @PostMapping("/address")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> saveAddress(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestBody SaveAddressReq request
+    ) {
+        Member member = principalDetails.getMember();
+        deliveryService.save(member, request);
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/address")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> updateAddress(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestBody UpdateAddressReq request
+    ) {
+        Member member = principalDetails.getMember();
+        deliveryService.update(member, request);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

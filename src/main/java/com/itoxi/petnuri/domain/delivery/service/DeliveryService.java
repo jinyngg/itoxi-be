@@ -3,6 +3,11 @@ package com.itoxi.petnuri.domain.delivery.service;
 import com.itoxi.petnuri.domain.delivery.dto.response.DeliveryListRes;
 import com.itoxi.petnuri.domain.delivery.repository.DeliveryAddressRepository;
 import com.itoxi.petnuri.domain.member.entity.Member;
+import com.itoxi.petnuri.domain.delivery.dto.request.SaveAddressReq;
+import com.itoxi.petnuri.domain.delivery.dto.request.UpdateAddressReq;
+import com.itoxi.petnuri.domain.delivery.entity.DeliveryAddress;
+import com.itoxi.petnuri.global.common.exception.Exception400;
+import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +26,58 @@ public class DeliveryService {
     }
 
     @Transactional
-    public void deleteDeliveryAddress(Long deliveryAddressId){
+    public void deleteDeliveryAddress(Long deliveryAddressId) {
         deliveryAddressRepository.deleteById(deliveryAddressId);
+    }
+
+    @Transactional
+    public void save(Member member, SaveAddressReq request) {
+        if (deliveryAddressRepository.count() >= 2) {
+            throw new Exception400(ErrorCode.FULL_ADDRESS);
+        }
+        DeliveryAddress deliveryAddress = deliveryAddressRepository.findByMember(member)
+                .orElse(null);
+
+        if (deliveryAddress == null) {
+            deliveryAddressRepository.save(
+                    DeliveryAddress.create(
+                            member, request.getName(), request.getPhone(),
+                            request.getRoadAddress(), request.getAddress(), request.getZipcode(), Boolean.TRUE
+                    )
+            );
+
+            return;
+        }
+
+        if (request.getIsBased()) {
+            deliveryAddress.updateIsBased(false);
+            deliveryAddressRepository.save(deliveryAddress);
+        }
+
+        deliveryAddressRepository.save(
+                DeliveryAddress.create(
+                        member, request.getName(), request.getPhone(),
+                        request.getRoadAddress(), request.getAddress(), request.getZipcode(), request.getIsBased()
+                )
+        );
+    }
+
+    @Transactional
+    public void update(Member member, UpdateAddressReq request) {
+        List<DeliveryAddress> deliveryAddressList = deliveryAddressRepository.findAllByMember(member);
+        for (DeliveryAddress deliveryAddress : deliveryAddressList) {
+            if (request.getIsBased()) {
+                deliveryAddress.updateIsBased(false);
+            }
+
+            if (deliveryAddress.getId().equals(request.getId())) {
+                deliveryAddress.updateAddress(
+                        request.getName(), request.getPhone(), request.getRoadAddress(),
+                        request.getAddress(), request.getZipcode(), request.getIsBased()
+                );
+            }
+        }
+
+        deliveryAddressRepository.saveAll(deliveryAddressList);
     }
 }

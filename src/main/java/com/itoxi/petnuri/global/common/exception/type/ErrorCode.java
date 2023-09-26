@@ -55,7 +55,10 @@ public enum ErrorCode {
     PET_NOT_FOUND("존재하지 않는 펫입니다."),
 
     // 상품
-    NOT_FOUND_CHALLENGE_PRODUCT_ID("유효하지 않은 챌린지 상품 ID 입니다.");
+    NOT_FOUND_CHALLENGE_PRODUCT_ID("유효하지 않은 챌린지 상품 ID 입니다."),
+
+    // 배송
+    FULL_ADDRESS("배송지를 더 이상 추가할 수 없습니다.");
 
     private final String message;
 

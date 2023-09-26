@@ -6,8 +6,10 @@ import com.itoxi.petnuri.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DeliveryAddressRepository extends JpaRepository<DeliveryAddress, Long> {
+    Optional<DeliveryAddress> findByMember(Member member);
 
-    List<DeliveryListRes> findAllByMember(Member member);
+    List<DeliveryAddress> findAllByMember(Member member);
 }
