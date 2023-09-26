@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,7 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/pet")
     public ResponseEntity savePet(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody PetSaveReq petSaveReq){
         memberService.savePet(principalDetails.getMember(), petSaveReq);
@@ -66,6 +68,7 @@ public class MemberController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/logout")
     public ResponseEntity logout(@RequestHeader(JwtTokenProvider.HEADER) String accessToken){
         memberService.logout(accessToken);
@@ -74,6 +77,7 @@ public class MemberController {
 
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping(value = "/main/pet/add", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity addPet(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                  @RequestPart(value = "petProfileReq") PetProfileReq petProfileReq, @RequestPart(value = "file") MultipartFile image){
@@ -83,6 +87,7 @@ public class MemberController {
         return new ResponseEntity("펫 프로필 추가 성공", HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PutMapping(value = "/main/pet/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity updatePet(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                     @RequestPart(value = "petProfileReq") PetProfileReq petProfileReq, @RequestPart(value = "file") MultipartFile image){
