@@ -1,13 +1,13 @@
-package com.itoxi.petnuri.global.security;
+package com.itoxi.petnuri.global.config;
 
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.FORBIDDEN;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.UN_AUTHORIZED;
 
 import com.itoxi.petnuri.global.common.exception.Exception401;
 import com.itoxi.petnuri.global.common.exception.Exception403;
+import com.itoxi.petnuri.global.common.response.FilterResponse;
 import com.itoxi.petnuri.global.security.jwt.JwtAuthenticationFilter;
 import com.itoxi.petnuri.global.security.jwt.JwtExceptionFilter;
-import com.itoxi.petnuri.global.common.response.FilterResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +24,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Slf4j
-@RequiredArgsConstructor
 @Configuration
+@RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -58,10 +58,17 @@ public class SecurityConfig {
             FilterResponse.forbidden(response, new Exception403(FORBIDDEN));
         });
 
-        http.authorizeRequests(
-                authorize -> authorize.antMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
-        );
+//        http.authorizeRequests(
+//                authorize -> authorize.antMatchers("/auth/**",  "/h2-console/**").permitAll()
+//                        .antMatchers("/api/**").hasAnyAuthority("USER")
+//                        .anyRequest().authenticated()
+//        );
+
+        http.authorizeRequests()
+                .antMatchers("/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
 
         return http.build();
     }
