@@ -27,7 +27,7 @@ public class PointChallengeReviewService {
             WritePointChallengeReviewRequest request,
             PrincipalDetails principalDetails) {
         // 1. 로그인된 회원 정보 확인
-        Member reviewer = principalDetails.getMember();
+//        Member reviewer = principalDetails.getMember();
 
         // 2. 챌린지 조회
         PointChallenge pointChallenge =
@@ -35,7 +35,7 @@ public class PointChallengeReviewService {
 
         // 3. 리뷰 생성
         PointChallengeReview pointChallengeReview = PointChallengeReview.builder()
-                .reviewer(reviewer)
+//                .reviewer(reviewer)
                 .pointChallenge(pointChallenge)
                 .photoName(file.getName())
                 .content(request.getContent())

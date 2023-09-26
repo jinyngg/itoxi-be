@@ -30,7 +30,7 @@ public class PetTalkService {
     public void write(
             PrincipalDetails principalDetails, MultipartFile[] files, WritePetTalkRequest request) {
         // 1. 로그인된 회원 정보 확인
-        Member member = principalDetails.getMember();
+//        Member member = principalDetails.getMember();
 
         // 2. 게시글 생성
         PetTalk petTalk = PetTalk.builder()
@@ -40,7 +40,7 @@ public class PetTalkService {
                 .subCategory(request.getSubCategoryId() != null ?
                         petTalkRepository.getSubCategoryById(request.getSubCategoryId()) : null)
                 .petType(request.getPetType())
-                .writer(member)
+//                .writer(member)
                 .build();
 
         // 3. 게시글 이미지 업로드
