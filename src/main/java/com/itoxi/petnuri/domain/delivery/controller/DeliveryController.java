@@ -19,21 +19,21 @@ public class DeliveryController {
 
     private final DeliveryService deliveryService;
 
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/address")
     public ResponseEntity getDeliveryAddressList(@AuthenticationPrincipal PrincipalDetails principalDetails){
         return new ResponseEntity(deliveryService.getDeliveryAddressList(principalDetails.getMember()), HttpStatus.OK);
     }
 
-//    @PreAuthorize("hasRole('USER')")
-    @DeleteMapping("/address")
-    public ResponseEntity deleteDeliveryAddress(@RequestParam Long deliveryAddressId) {
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping("/address/{deliveryAddressId}")
+    public ResponseEntity deleteDeliveryAddress(@PathVariable Long deliveryAddressId) {
         deliveryService.deleteDeliveryAddress(deliveryAddressId);
         return new ResponseEntity("삭제 완료", HttpStatus.OK);
     }
 
     @PostMapping("/address")
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> saveAddress(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody SaveAddressReq request
