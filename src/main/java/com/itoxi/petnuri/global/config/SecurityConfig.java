@@ -58,12 +58,14 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
+        // TODO
         http.exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) -> {
             log.warn("인증되지 않은 사용자가 자원에 접근하려 합니다 : " + authException.getMessage());
             FilterResponse.unAuthorized(response, new Exception401(UN_AUTHORIZED));
         });
 
+        // TODO
         http.exceptionHandling()
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
             log.warn("권한이 없는 사용자가 자원에 접근하려 합니다 : " + accessDeniedException.getMessage());

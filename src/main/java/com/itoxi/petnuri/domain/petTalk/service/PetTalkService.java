@@ -29,7 +29,7 @@ public class PetTalkService {
     @Transactional
     public void write(
             PrincipalDetails principalDetails, MultipartFile[] files, WritePetTalkRequest request) {
-        // 1. 로그인된 회원 정보 확인
+        // TODO 1. 로그인된 회원 정보 확인
 //        Member member = principalDetails.getMember();
 
         // 2. 게시글 생성
@@ -40,6 +40,7 @@ public class PetTalkService {
                 .subCategory(request.getSubCategoryId() != null ?
                         petTalkRepository.getSubCategoryById(request.getSubCategoryId()) : null)
                 .petType(request.getPetType())
+                // TODO
 //                .writer(member)
                 .build();
 

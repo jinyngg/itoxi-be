@@ -26,7 +26,7 @@ public class PointChallengeReviewService {
             MultipartFile file,
             WritePointChallengeReviewRequest request,
             PrincipalDetails principalDetails) {
-        // 1. 로그인된 회원 정보 확인
+        // TODO 1. 로그인된 회원 정보 확인
 //        Member reviewer = principalDetails.getMember();
 
         // 2. 챌린지 조회
@@ -35,6 +35,7 @@ public class PointChallengeReviewService {
 
         // 3. 리뷰 생성
         PointChallengeReview pointChallengeReview = PointChallengeReview.builder()
+                // TODO
 //                .reviewer(reviewer)
                 .pointChallenge(pointChallenge)
                 .photoName(file.getName())
