@@ -4,7 +4,6 @@ import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import com.itoxi.petnuri.domain.eventChallenge.entity.RewardChallenge;
 import com.itoxi.petnuri.domain.member.entity.Pet;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
-import com.itoxi.petnuri.domain.petTalk.type.PetGender;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -36,7 +35,7 @@ public class MainResp {
         private final Long id;
         private final String petName;
         private final String image;
-        private final PetGender petGender;
+        private final String petGender;
         private final Integer petAge;
         private final Boolean isSelected;
 
@@ -44,7 +43,7 @@ public class MainResp {
             this.id = pet.getId();
             this.petName = pet.getPetName();
             this.image = pet.getImage();
-            this.petGender = pet.getPetGender();
+            this.petGender = pet.getPetGender().getLabel();
             this.petAge = pet.getPetAge();
             this.isSelected = pet.getIsSelected();
         }
