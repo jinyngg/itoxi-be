@@ -54,6 +54,7 @@ public enum ErrorCode {
 
     //펫
     PET_NOT_FOUND("존재하지 않는 펫입니다."),
+    PET_GENDER_NOT_FOUND("잘못된 펫 성별입니다."),
 
     // 상품
     NOT_FOUND_CHALLENGE_PRODUCT_ID("유효하지 않은 챌린지 상품 ID 입니다."),

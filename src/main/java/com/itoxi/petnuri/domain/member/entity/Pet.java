@@ -56,7 +56,7 @@ public class Pet {
     public void updatePet(Member member, PetProfileReq petProfileReq, String originUrl){
         this.member = member;
         this.petAge = petProfileReq.getPetAge();
-        this.petGender = petProfileReq.getPetGender();
+        this.petGender = PetGender.stringToPetGender(petProfileReq.getPetGender());
         this.petName = petProfileReq.getPetName();
         this.isSelected = petProfileReq.getIsSelected();
         this.image = originUrl;

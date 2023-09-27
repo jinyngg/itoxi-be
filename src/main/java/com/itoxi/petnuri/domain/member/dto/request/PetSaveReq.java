@@ -15,8 +15,7 @@ public class PetSaveReq {
 
     private String breed;
 
-    @ValidEnum(enumClass = PetGender.class)
-    private PetGender petGender;
+    private String petGender;
 
     private int petAge;
 

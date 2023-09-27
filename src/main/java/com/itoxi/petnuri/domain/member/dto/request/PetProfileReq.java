@@ -7,7 +7,7 @@ import lombok.Getter;
 public class PetProfileReq {
     private Long petId;
     private String petName;
-    private PetGender petGender;
+    private String petGender;
     private int petAge;
     private Boolean isSelected;
 }

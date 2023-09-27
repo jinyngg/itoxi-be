@@ -16,6 +16,7 @@ import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import com.itoxi.petnuri.domain.member.repository.PetRepository;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
+import com.itoxi.petnuri.domain.petTalk.type.PetGender;
 import com.itoxi.petnuri.global.common.exception.Exception404;
 import com.itoxi.petnuri.global.redis.RedisService;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
@@ -35,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.PET_GENDER_NOT_FOUND;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.PET_NOT_FOUND;
 
 @Service
@@ -71,14 +73,19 @@ public class MemberService {
 
     public void savePet(Member member, PetSaveReq petSaveReq) {
 
-        petRepository.save(Pet.builder()
-                .member(member)
-                .species(petSaveReq.getSpecies())
-                .petName(petSaveReq.getPetName())
-                .breed(petSaveReq.getBreed())
-                .petGender(petSaveReq.getPetGender())
-                .petAge(petSaveReq.getPetAge())
-                .isSelected(true).build());
+        try{
+            petRepository.save(Pet.builder()
+                    .member(member)
+                    .species(petSaveReq.getSpecies())
+                    .petName(petSaveReq.getPetName())
+                    .breed(petSaveReq.getBreed())
+                    .petGender(PetGender.stringToPetGender(petSaveReq.getPetGender()))
+                    .petAge(petSaveReq.getPetAge())
+                    .isSelected(true).build());
+        }catch (Exception e){
+            throw new Exception404(PET_GENDER_NOT_FOUND);
+        }
+
     }
 
     public void savePet(Member member, PetProfileReq petProfileReq, MultipartFile image) {
@@ -95,7 +102,7 @@ public class MemberService {
             petRepository.save(Pet.builder()
                     .member(member)
                     .petName(petProfileReq.getPetName())
-                    .petGender(petProfileReq.getPetGender())
+                    .petGender(PetGender.stringToPetGender(petProfileReq.getPetGender()))
                     .petAge(petProfileReq.getPetAge())
                     .isSelected(true)
                     .image(originUrl).build());
@@ -166,10 +173,12 @@ public class MemberService {
     }
 
     public Pet createPetProfile(Member member, PetProfileReq petProfileReq, String originUrl){
+
+
         return Pet.builder()
                 .member(member)
                 .petName(petProfileReq.getPetName())
-                .petGender(petProfileReq.getPetGender())
+                .petGender(PetGender.stringToPetGender(petProfileReq.getPetGender()))
                 .petAge(petProfileReq.getPetAge())
                 .isSelected(petProfileReq.getIsSelected())
                 .image(originUrl).build();
