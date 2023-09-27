@@ -30,7 +30,7 @@ public class MemberController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/mypage")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MyPageResp> myPage(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
@@ -40,7 +40,7 @@ public class MemberController {
     }
 
     @PutMapping("/mypage/profile")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProfileUpdateResp> profileUpdate(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestPart(value = "nickname") @Valid ProfileUpdateReq request,
@@ -51,7 +51,7 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/pet")
     public ResponseEntity savePet(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody PetSaveReq petSaveReq){
         memberService.savePet(principalDetails.getMember(), petSaveReq);
@@ -60,7 +60,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/mypage/withdraw")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> withdraw(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestHeader(JwtTokenProvider.HEADER) String accessToken
@@ -71,7 +71,7 @@ public class MemberController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/logout")
     public ResponseEntity logout(@RequestHeader(JwtTokenProvider.HEADER) String accessToken){
         memberService.logout(accessToken);
@@ -80,7 +80,7 @@ public class MemberController {
 
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping(value = "/main/pet/add", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity addPet(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                  @RequestPart(value = "petProfileReq") PetProfileReq petProfileReq, @RequestPart(value = "file") MultipartFile image){
@@ -90,7 +90,7 @@ public class MemberController {
         return new ResponseEntity("펫 프로필 추가 성공", HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping(value = "/main/pet/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity updatePet(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                     @RequestPart(value = "petProfileReq") PetProfileReq petProfileReq, @RequestPart(value = "file") MultipartFile image){
