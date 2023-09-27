@@ -11,7 +11,6 @@ import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.entity.MainCategory;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
-import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.common.exception.Exception404;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
@@ -55,7 +54,7 @@ public class RewardChallengeReviewService {
         // 펫톡 저장
         MainCategory mainCategory = petTalkRepository.getMainCategoryById(2L);
         PetTalk petTalk = PetTalk.createByChallengeReview(member, rewardChallenge.getTitle(), review.getContent()
-                , mainCategory, PetType.DOG); // @REVIEW PetType 기획 미정! 추후 수정 필요
+                , mainCategory, request.getPetType());
 
         petTalkRepository.write(petTalk);
         petTalkRepository.uploadPetTalkPhotos(new MultipartFile[]{file}, petTalk);
