@@ -12,6 +12,6 @@ import lombok.Getter;
 @Builder
 public class DailyAuthDto {
     private Long payment;
-    private String challengeName;
+    private String challengeTitle;
     private String authImageUrl;
 }

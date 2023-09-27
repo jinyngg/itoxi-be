@@ -30,7 +30,11 @@ public class DailyChallenge extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String name;       // 챌린지명
+    private String title;       // 챌린지명
+
+    @Column(nullable = false)
+    private String subTitle;    // 챌린지 소제목
+
 
     @Column(name = "auth_method", nullable = false)
     private String authMethod; // 챌린지 인증 방법

@@ -85,7 +85,7 @@ public class MainResp {
 
         public DailyChallengeDTO(DailyChallenge dailyChallenge) {
             this.id = dailyChallenge.getId();
-            this.title = dailyChallenge.getName();
+            this.title = dailyChallenge.getTitle();
 //            this.subTitle = dailyChallenge;
             this.thumbnail = dailyChallenge.getThumbnail();
         }

@@ -1,7 +1,6 @@
 package com.itoxi.petnuri.domain.point;
 
 import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
-import com.itoxi.petnuri.domain.point.entity.Point;
 import lombok.*;
 
 /**
@@ -18,7 +17,7 @@ public class PointGetDto {
 
     public static PointGetDto from(DailyChallenge dailyChallenge) {
         return PointGetDto.builder()
-                .challengeName(dailyChallenge.getName())
+                .challengeName(dailyChallenge.getTitle())
                 .point(dailyChallenge.getPayment())
                 .build();
     }

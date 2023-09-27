@@ -11,12 +11,12 @@ DROP TABLE IF EXISTS challenge_delivery;
 
 CREATE TABLE member
 (
-    member_id     SERIAL PRIMARY KEY,
-    email         VARCHAR(255) UNIQUE NOT NULL,
-    nickname      VARCHAR(255) UNIQUE NOT NULL,
+    member_id         SERIAL PRIMARY KEY,
+    email             VARCHAR(255) UNIQUE NOT NULL,
+    nickname          VARCHAR(255) UNIQUE NOT NULL,
     profile_image_url VARCHAR(255),
-    role          VARCHAR(20)         NOT NULL,
-    referral_code VARCHAR(255)
+    role              VARCHAR(20)         NOT NULL,
+    referral_code     VARCHAR(255)
 );
 
 CREATE TABLE main_category
@@ -36,7 +36,8 @@ CREATE TABLE sub_category
 create table daily_challenge
 (
     daily_challenge_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name               varchar(255) not null,
+    title              varchar(255) not null,
+    sub_title          varchar(255) not null,
     auth_method        varchar(255) not null,
     payment            bigint       not null,
     payment_method     varchar(255) not null,
@@ -54,7 +55,7 @@ create table reward_challenge
     reward_challenge_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title               VARCHAR(255) NOT NULL,
     sub_title           VARCHAR(255) NOT NULL,
-    notice              VARCHAR(255) ,
+    notice              VARCHAR(255),
     thumbnail           VARCHAR(255) NOT NULL,
     poster              VARCHAR(255) NOT NULL,
     status              VARCHAR(255) NOT NULL,
@@ -83,20 +84,20 @@ create table reward_challenger
 
 CREATE TABLE product
 (
-    product_id  BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(255) NOT NULL,
-    category    VARCHAR(255) NOT NULL,
-    brand       VARCHAR(255) NOT NULL,
-    price       BIGINT       NOT NULL,
-    quantity    BIGINT       NOT NULL,
-    image       VARCHAR(255)
+    product_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL,
+    category   VARCHAR(255) NOT NULL,
+    brand      VARCHAR(255) NOT NULL,
+    price      BIGINT       NOT NULL,
+    quantity   BIGINT       NOT NULL,
+    image      VARCHAR(255)
 );
 
 CREATE TABLE challenge_product
 (
     challenge_product_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    product_id           BIGINT NOT NULL,
-    reward_challenge_id  BIGINT NOT NULL,
+    product_id           BIGINT       NOT NULL,
+    reward_challenge_id  BIGINT       NOT NULL,
     category             VARCHAR(255) NOT NULL,
     FOREIGN KEY (product_id) REFERENCES product (product_id),
     FOREIGN KEY (reward_challenge_id) REFERENCES reward_challenge (reward_challenge_id)

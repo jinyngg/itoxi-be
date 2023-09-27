@@ -40,7 +40,7 @@ public class PointService {
                 .orElseGet(() -> createPoint(member)); // 회원의 포인트 정보가 null이면 신규 생성.
 
         PointHistory pointHistory = PointHistory.createGetPointHistory(
-                point, dailyAuthDto.getPayment(), dailyAuthDto.getChallengeName());
+                point, dailyAuthDto.getPayment(), dailyAuthDto.getChallengeTitle());
         pointHistoryRepository.save(pointHistory);
 
         return point.getHavePoint();

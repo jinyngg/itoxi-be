@@ -18,11 +18,23 @@ VALUES ('질병/질환', 1),
 -- INSERT INTO pet_talk (title, content, main_category_id, sub_category_id, pet_type, status, view_count, member_id)
 -- VALUES ('제목1', '내용1', 1, 1, 'DOG', 'ACTIVE', 0, 1);
 
--- 데일리 챌린지 데이터 생성
-insert into daily_challenge (name, auth_method, payment, payment_method, thumbnail, banner, start_date, end_date,
-                             challenge_status, created_at, updated_at)
-values ('데일리 간식주기', '반려동물에게 간식주는 사진을 인증해요!', 100, '참여 완료 즉시 지급', 'https://test.url/thumbnail.jpg',
-        'https://test.url/banner.jpg', '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
+-- 데일리 챌린지 더미 데이터 생성
+insert into daily_challenge (title, sub_title, auth_method, payment, payment_method, thumbnail, banner,
+                             start_date, end_date, challenge_status, created_at, updated_at)
+values ('간식주기 챌린지', '반려동물에게 간식주는 사진을 인증해요!', '인증 사진 업로드!', 100, '참여완료 즉시 지급',
+        'https://www.test.url/thumbnail.jpg', 'https://test.url/banner.jpg',
+        '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
+insert into daily_challenge (title, sub_title, auth_method, payment, payment_method, thumbnail, banner,
+                             start_date, end_date, challenge_status, created_at, updated_at)
+values ('놀아주기 챌린지', '반려동물과 즐거운 시간을 보내는 사진을 인증해요!', '인증 사진 업로드!', 100, '참여완료 즉시 지급',
+        'https://www.test.url/thumbnail.jpg', 'https://test.url/banner.jpg',
+        '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
+insert into daily_challenge (title, sub_title, auth_method, payment, payment_method, thumbnail, banner,
+                             start_date, end_date, challenge_status, created_at, updated_at)
+values ('위생관리 챌린지', '반려동물의 위생/청결관리 사진을 인증해요!', '인증 사진 업로드!', 100, '참여완료 즉시 지급',
+        'https://www.test.url/thumbnail.jpg', 'https://test.url/banner.jpg',
+        '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
+
 
 insert into reward_challenge (title, sub_title, notice, thumbnail, poster, status, start_date, end_date,
                               kit_start_date, kit_end_date, review_start_date, review_end_date, created_at, updated_at)

@@ -109,6 +109,11 @@ public class AmazonS3Service {
         return uploadImage(PET_IMAGE_PREFIX, image);
     }
 
+    // 데일리 챌린지 인증 사진 저장
+    public String uploadDailyChallengeAuthImage(MultipartFile file) {
+        return uploadImage(DAILY_CHALLENGE_IMAGE_PREFIX, file);
+    }
+
     // 단일 파일 저장
     private String uploadImage(String subject, MultipartFile file) {
         String fileKey = subject + createDatePath() + generateRandomFileName();
@@ -142,11 +147,8 @@ public class AmazonS3Service {
         return amazonS3.getUrl(bucket, fileKey).toString();
     }
 
-    private final Function<String, String> getPrefix =
-            prefix -> DAILY_CHALLENGE_IMAGE_PREFIX + createDatePath() + generateRandomFileName();
-
     // S3 deleteObject()의 filename 생성용
-    private final Function<String, String> getFileNameFromUrl = url -> {
+    private String getFileNameFromUrl(String url) {
         // 1. amazonaws.com 이 위치한 문자열 index를 가져온다.
         int startIndex = url.indexOf(".com");
 
@@ -155,16 +157,5 @@ public class AmazonS3Service {
 
         // 3. fromIndex부터 끝까지 문자열을 잘라서 filename을 만들어서 반환.
         return url.substring(fromIndex, url.length());
-    };
-
-    public String uploadDailyChallengeImage(MultipartFile file) {
-        String fileKey = getPrefix.apply(DAILY_CHALLENGE_IMAGE_PREFIX);
-        ObjectMetadata metadata = createObjectMetadataFromFile(file);
-        try {
-            amazonS3.putObject(bucket, fileKey, file.getInputStream(), metadata);
-        } catch (Exception e) {
-            throw new Exception500(ErrorCode.FILE_TRANSFER_ERROR);
-        }
-        return getUrlFromBucket(fileKey);
     }
 }

@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * date           : 2023-09-16
  * description    :
  */
-public interface DailyChallengeRepository extends JpaRepository<DailyChallenge, Long> {
+public interface DailyChallengeRepository extends JpaRepository<DailyChallenge, Long>, DailyChallengeRepositoryCustom {
 
 }
