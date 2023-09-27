@@ -80,13 +80,13 @@ public class MainResp {
     public static class DailyChallengeDTO {
         private final Long id;
         private final String title;
-//        private final String subTitle;
+        private final String subTitle;
         private final String thumbnail;
 
         public DailyChallengeDTO(DailyChallenge dailyChallenge) {
             this.id = dailyChallenge.getId();
             this.title = dailyChallenge.getTitle();
-//            this.subTitle = dailyChallenge;
+            this.subTitle = dailyChallenge.getSubTitle();
             this.thumbnail = dailyChallenge.getThumbnail();
         }
     }
