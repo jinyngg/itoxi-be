@@ -17,7 +17,7 @@ public class PrincipalDetails implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(String.valueOf(member.getRole()));
+		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(String.valueOf(member.getRole().getRole()));
 		return Collections.singleton(grantedAuthority);
 	}
 
