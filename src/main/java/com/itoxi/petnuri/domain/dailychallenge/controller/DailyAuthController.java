@@ -39,7 +39,7 @@ public class DailyAuthController {
             @PathVariable @ValidId Long challengeId,
             @RequestPart MultipartFile file) {
         
-        isNotEmptyFile.accept(file); // 업로드한 파일의 유효성 검사
+        isNotEmptyFile(file); // 업로드한 파일의 유효성 검사
         Member member = principalDetails.getMember();
 
         // 1. 인증 글 등록 후 포인트 적립을 위한 데이터 받아 오기
@@ -52,9 +52,9 @@ public class DailyAuthController {
         return new ResponseEntity<>(dailyAuthResponse, HttpStatus.CREATED); // 201 OK
     }
 
-    private final Consumer<MultipartFile> isNotEmptyFile = file -> {
-        if (file.isEmpty()) {
+    private void isNotEmptyFile(MultipartFile file) {
+        if (file.isEmpty() || file == null) {
             throw new Exception400(INVALID_FILE_REQUEST);
         }
-    };
+    }
 }

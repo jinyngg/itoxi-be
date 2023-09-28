@@ -16,11 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_CHALLENGE_ID;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_DAILY_CHALLENGE_ID;
 
 /**
  * author         : matrix
@@ -42,7 +38,7 @@ public class DailyAuthService {
 
         // 1. 챌린지 id 검증
         DailyChallenge dailyChallenge = dailyChallengeRepository.findById(challengeId)
-                .orElseThrow(() -> new Exception400(NOT_FOUND_CHALLENGE_ID));
+                .orElseThrow(() -> new Exception400(NOT_FOUND_DAILY_CHALLENGE_ID));
 
         // 2. 이미 인증글을 작성했다면 예외 던지기
         isDupeAuthMember(loginMember, dailyChallenge);
@@ -61,6 +57,7 @@ public class DailyAuthService {
 
         // 4. 회원의 포인트 적립을 위한 정보를 담아서 리턴
         return DailyAuthDto.builder()
+                .challengeId(dailyAuth.getId())
                 .payment(dailyChallenge.getPayment())
                 .authImageUrl(awsUrl)
                 .challengeTitle(dailyChallenge.getTitle())
