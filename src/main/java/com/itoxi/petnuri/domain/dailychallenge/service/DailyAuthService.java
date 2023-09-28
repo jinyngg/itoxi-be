@@ -10,8 +10,6 @@ import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,39 +41,23 @@ public class DailyAuthService {
         // 2. 이미 인증글을 작성했다면 예외 던지기
         isDupeAuthMember(loginMember, dailyChallenge);
 
-        // 2. 인증사진을 AWS S3에 저장
+        // 3. 인증사진을 AWS S3에 저장
         String awsUrl = amazonS3Service.uploadDailyChallengeAuthImage(file);
 
-        // 3. 인증글 저장
+        // 4. 인증글 저장
         // 필요 데이터 : 1) 인증 사진 url, 2) 데일리 챌린지 엔티티 , 3) 유저 엔티티
-        DailyAuth dailyAuth = DailyAuth.builder()
-                .dailyChallenge(dailyChallenge)
-                .member(loginMember)
-                .imageUrl(awsUrl)
-                .build();
+        DailyAuth dailyAuth = DailyAuth.createDailyAuth(loginMember, dailyChallenge, awsUrl);
         dailyAuthRepository.save(dailyAuth);
 
-        // 4. 회원의 포인트 적립을 위한 정보를 담아서 리턴
-        return DailyAuthDto.builder()
-                .challengeId(dailyAuth.getId())
-                .payment(dailyChallenge.getPayment())
-                .authImageUrl(awsUrl)
-                .challengeTitle(dailyChallenge.getTitle())
-                .build();
-    }
-
-    // 인증글 개별 목록 보기
-    @Transactional(readOnly = true)
-    public Page<DailyAuth> getAuthList(Pageable pageable) {
-        return dailyAuthRepository.findAll(pageable);
+        // 5. 회원의 포인트 적립을 위한 정보를 담아서 리턴
+        return DailyAuthDto.of(dailyAuth, dailyChallenge);
     }
 
     private void isDupeAuthMember(Member loginMember, DailyChallenge dailyChallenge) {
-        // Todo: 날짜 체크를 우선 쿼리에서 비교하도록 구현.
+        // 날짜 체크를 우선 query에서 비교하도록 구현하였음.
         if (dailyAuthRepository.dupePostCheck(loginMember, dailyChallenge)) {
             throw new Exception400(ErrorCode.DUPE_POST_MEMBER);
         }
-
     }
 
 }

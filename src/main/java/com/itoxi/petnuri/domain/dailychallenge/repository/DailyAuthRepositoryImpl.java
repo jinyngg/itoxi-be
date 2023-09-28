@@ -4,9 +4,13 @@ import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import com.itoxi.petnuri.domain.dailychallenge.entity.QDailyAuth;
 import com.itoxi.petnuri.domain.dailychallenge.util.QuerydslDateTimeFormatter;
 import com.itoxi.petnuri.domain.member.entity.Member;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
 
 /**
  * author         : Jisang Lee
@@ -23,17 +27,21 @@ public class DailyAuthRepositoryImpl implements DailyAuthRepositoryCustom {
 
     @Override
     public boolean dupePostCheck(Member loginMember, DailyChallenge dailyChallenge) {
-        StringExpression authDate = querydslFormatter.formatter(dailyAuth.updatedAt);
-        String todayStr = querydslFormatter.nowDateTimeToStr();
 
         Member result = queryFactory
                 .select(dailyAuth.member)
                 .from(dailyAuth)
                 .where(dailyAuth.id.eq(dailyChallenge.getId())
                         .and(dailyAuth.member.id.eq(loginMember.getId()))
-                        .and(authDate.eq(todayStr)))
+                        .and(todayEq(dailyAuth.updatedAt)))
                 .fetchOne();
         return (result != null) ? true : false; // true : 중복 인증
+    }
+
+    private BooleanExpression todayEq(DateTimePath<LocalDateTime> dailyAuth) {
+        String todayStr = querydslFormatter.nowDateTimeToStr();
+        StringExpression authDate = querydslFormatter.formatter(dailyAuth);
+        return authDate.eq(todayStr);
     }
 
 }

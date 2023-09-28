@@ -15,6 +15,7 @@ public enum ErrorCode {
     VALIDATION_ERROR("유효성 검사 중 예외가 발생했습니다."),
     S3UPLOADER_ERROR("s3 업로드 중 오류가 발생했습니다."),
     INVALID_FILE_REQUEST("유효하지 않은 파일이 전송되었습니다."), // 400
+    REQUIRED_LOGIN_ERROR("로그인을 해야 사용 가능한 메뉴입니다."),
 
 
     // REDIS

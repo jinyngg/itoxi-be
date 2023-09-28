@@ -1,5 +1,7 @@
 package com.itoxi.petnuri.domain.dailychallenge.dto;
 
+import com.itoxi.petnuri.domain.dailychallenge.entity.DailyAuth;
+import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,4 +17,14 @@ public class DailyAuthDto {
     private Long payment;
     private String challengeTitle;
     private String authImageUrl;
+
+    public static DailyAuthDto of(DailyAuth dailyAuth, DailyChallenge dailyChallenge) {
+        return DailyAuthDto.builder()
+                .challengeId(dailyChallenge.getId())
+                .payment(dailyChallenge.getPayment())
+                .challengeTitle(dailyChallenge.getTitle())
+                .authImageUrl(dailyAuth.getImageUrl())
+                .build();
+    }
+    
 }
