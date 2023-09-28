@@ -43,7 +43,7 @@ public class DailyChallenge extends BaseTimeEntity {
     private Long payment;      // 챌린지 인증 완료시 지급 포인트
 
     @Column(name = "payment_method", nullable = false)
-    private String paymentMethod; // 챌린지 인증 완료시 지급 포인트
+    private String paymentMethod; // 포인트 지급 방법
 
     @Column(nullable = false)
     private String thumbnail;   // S3 url
@@ -62,7 +62,5 @@ public class DailyChallenge extends BaseTimeEntity {
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime endDate;      // 챌린지 종료 일자 : 9999-12-31 23:59:59
-
-
 
 }
