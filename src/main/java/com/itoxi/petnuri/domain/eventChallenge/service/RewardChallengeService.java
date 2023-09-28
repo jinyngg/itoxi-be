@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.itoxi.petnuri.domain.product.type.ChallengeProductCategory.REWARD;
-import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_CHALLENGE_ID;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_DAILY_CHALLENGE_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class RewardChallengeService {
     @Transactional(readOnly = true)
     public GetRewardChallengeDetailResp getDetail(Long challengeId) {
         RewardChallenge rewardChallenge = challengeRepository.findById(challengeId)
-                .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_ID));
+                .orElseThrow(() -> new Exception404(NOT_FOUND_DAILY_CHALLENGE_ID));
 
         return new GetRewardChallengeDetailResp(rewardChallenge);
     }
@@ -36,7 +36,7 @@ public class RewardChallengeService {
     @Transactional(readOnly = true)
     public GetRewardChallengeProductResp getChallengeProduct(Long challengeId) {
         RewardChallenge rewardChallenge = challengeRepository.findById(challengeId)
-                .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_ID));
+                .orElseThrow(() -> new Exception404(NOT_FOUND_DAILY_CHALLENGE_ID));
 
         List<ChallengeProduct> challengeProducts = challengeProductRepository
                 .findAllByRewardChallengeAndCategory(rewardChallenge, REWARD);

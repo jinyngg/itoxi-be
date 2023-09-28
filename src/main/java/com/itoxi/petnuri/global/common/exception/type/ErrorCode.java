@@ -44,6 +44,7 @@ public enum ErrorCode {
 
     // 챌린지
     NOT_FOUND_CHALLENGE_ID("유효하지 않은 챌린지 ID 입니다."),
+    NOT_FOUND_DAILY_CHALLENGE_ID("유효하지 않은 데일리 챌린지 ID 입니다."),
     NOT_FOUND_CHALLENGE_JOIN("챌린지 참여 내역이 존재하지 않습니다."),
     DUPE_CHALLENGE_JOIN("이미 챌린지 참여 내역이 존재합니다."),
     NOT_FOUND_CHALLENGE_KIT("챌린지에 등록된 검진 키트가 없습니다!"), //500 err
