@@ -44,13 +44,13 @@ public class DailyAuth extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "daily_challenge_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private DailyChallenge dailyChallenge;
 
     @Column(nullable = false)
     private String imageUrl;  // 인증샷 S3 url
 
-    public static DailyAuth createDailyAuth(
+    public static DailyAuth toEntity(
             Member member, DailyChallenge dailyChallenge, String imageUrl
     ) {
         return DailyAuth.builder()
@@ -59,4 +59,5 @@ public class DailyAuth extends BaseTimeEntity {
                 .imageUrl(imageUrl)
                 .build();
     }
+
 }

@@ -16,8 +16,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.function.Consumer;
-
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_FILE_REQUEST;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.REQUIRED_LOGIN_ERROR;
 
@@ -39,8 +37,10 @@ public class DailyAuthController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable @ValidId Long challengeId,
             @RequestPart MultipartFile file) {
-        
+
         isNotEmptyFile(file); // 업로드한 파일의 유효성 검사
+
+        // Todo: 차후 시큐리티 로직이 완성되면 로직 제거 -> 로그인 유도로 대체
         Member loginMember = isLoginMember(principalDetails); // NPE 방지
 
         // 1. 인증 글 등록 후 포인트 적립을 위한 데이터 받아 오기
@@ -50,7 +50,7 @@ public class DailyAuthController {
         Long point = pointService.getPoint(dailyAuthDto, loginMember.getId());
 
         DailyAuthResponse response = DailyAuthResponse.of(dailyAuthDto, loginMember, point);
-        return new ResponseEntity<>(response, HttpStatus.CREATED); // 201 OK
+        return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201 OK
     }
 
     private void isNotEmptyFile(MultipartFile file) {
@@ -65,4 +65,5 @@ public class DailyAuthController {
         }
         return principalDetails.getMember();
     }
+
 }

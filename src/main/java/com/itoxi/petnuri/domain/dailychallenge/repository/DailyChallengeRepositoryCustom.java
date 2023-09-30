@@ -20,9 +20,9 @@ public interface DailyChallengeRepositoryCustom {
     List<DailyChallengeListResponse> findAllWithAuthStatus(Member loginMember);
 
     Page<DailyAuthImageResponse> findAllAuthList(
-            DailyChallenge dailyChallenge, Pageable pageable);
+            Long dailyChallengeId, Pageable pageable);
 
     DailyChallengeDetailResponse findDetailChallenge(
-            DailyChallenge dailyChallenge, Member loginMember);
+            Long dailyChallengeId, Member loginMember);
 
 }
