@@ -5,6 +5,7 @@ import com.itoxi.petnuri.domain.dailychallenge.dto.response.DailyChallengeDetail
 import com.itoxi.petnuri.domain.dailychallenge.dto.response.DailyChallengeListResponse;
 import com.itoxi.petnuri.domain.dailychallenge.entity.DailyAuth;
 import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
+import com.itoxi.petnuri.domain.dailychallenge.type.ChallengeStatus;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -51,12 +53,36 @@ class DailyChallengeRepositoryImplTest {
         memberRepository.save(member2);
 
         DailyChallenge challenge1 = dailyChallengeRepository.findById(1L).orElseThrow(NoSuchElementException::new);
-        DailyChallenge challenge2 = dailyChallengeRepository.findById(2L).orElseThrow(NoSuchElementException::new);
-        DailyChallenge challenge3 = dailyChallengeRepository.findById(3L).orElseThrow(NoSuchElementException::new);
+        DailyChallenge challenge2 = DailyChallenge.builder()
+                .title("놀아주기 챌린지")
+                .subTitle("반려동물에게 간식주는 사진을 인증해요!")
+                .authMethod("인증 사진 업로드!")
+                .payment(100L)
+                .paymentMethod("참여완료 즉시 지급")
+                .thumbnail("https://www.test.url/thumbnail.jpng")
+                .banner("https://www.test.url/banner.jpng")
+                .challengeStatus(ChallengeStatus.OPENED)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.of(9999, 12, 31))
+                .build();
+        DailyChallenge challenge3 = DailyChallenge.builder()
+                .title("위생관리 챌린지")
+                .subTitle("반려동물의 위생/청결관리 사진을 인증해요!")
+                .authMethod("인증 사진 업로드!")
+                .payment(100L)
+                .paymentMethod("참여완료 즉시 지급")
+                .thumbnail("https://www.test.url/thumbnail.jpng")
+                .banner("https://www.test.url/banner.jpng")
+                .challengeStatus(ChallengeStatus.OPENED)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.of(9999, 12, 31))
+                .build();
+        dailyChallengeRepository.save(challenge2);
+        dailyChallengeRepository.save(challenge3);
 
-        DailyAuth auth1 = DailyAuth.createDailyAuth(member1, challenge1, "https://test.url/test.jpng");
-        DailyAuth auth2 = DailyAuth.createDailyAuth(member1, challenge2, "https://test.url/test.jpng");
-        DailyAuth auth3 = DailyAuth.createDailyAuth(member1, challenge3, "https://test.url/test.jpng");
+        DailyAuth auth1 = DailyAuth.toEntity(member1, challenge1, "https://test.url/test.jpng");
+        DailyAuth auth2 = DailyAuth.toEntity(member1, challenge2, "https://test.url/test.jpng");
+        DailyAuth auth3 = DailyAuth.toEntity(member1, challenge3, "https://test.url/test.jpng");
         dailyAuthRepository.save(auth1);
         dailyAuthRepository.save(auth2);
         dailyAuthRepository.save(auth3);
@@ -95,14 +121,15 @@ class DailyChallengeRepositoryImplTest {
         memberRepository.save(member1);
         memberRepository.save(member2);
 
-        DailyChallenge challenge1 = dailyChallengeRepository.findById(1L).orElseThrow(NoSuchElementException::new);
+        Long challengeId1 = 1L;
+        DailyChallenge challenge1 = dailyChallengeRepository.findById(challengeId1).orElseThrow(NoSuchElementException::new);
 
-        DailyAuth auth1 = DailyAuth.createDailyAuth(member1, challenge1, "https://test.url/test.jpng");
+        DailyAuth auth1 = DailyAuth.toEntity(member1, challenge1, "https://test.url/test.jpng");
         dailyAuthRepository.save(auth1);
 
         // when
-        DailyChallengeDetailResponse response1 = dailyChallengeRepository.findDetailChallenge(challenge1, member1);
-        DailyChallengeDetailResponse response2 = dailyChallengeRepository.findDetailChallenge(challenge1, member2);
+        DailyChallengeDetailResponse response1 = dailyChallengeRepository.findDetailChallenge(challengeId1, member1);
+        DailyChallengeDetailResponse response2 = dailyChallengeRepository.findDetailChallenge(challengeId1, member2);
 
         // then
         assertThat(response1.getStatus()).isTrue();
@@ -123,16 +150,16 @@ class DailyChallengeRepositoryImplTest {
         Long challengeId1 = 1L;
         DailyChallenge challenge1 = dailyChallengeRepository.findById(challengeId1).orElseThrow(NoSuchElementException::new);
 
-        DailyAuth auth1 = DailyAuth.createDailyAuth(member1, challenge1, "https://test.url/test.jpng");
-        DailyAuth auth2 = DailyAuth.createDailyAuth(member2, challenge1, "https://test.url/test.jpng");
-        DailyAuth auth3 = DailyAuth.createDailyAuth(member3, challenge1, "https://test.url/test.jpng");
+        DailyAuth auth1 = DailyAuth.toEntity(member1, challenge1, "https://test.url/test.jpng");
+        DailyAuth auth2 = DailyAuth.toEntity(member2, challenge1, "https://test.url/test.jpng");
+        DailyAuth auth3 = DailyAuth.toEntity(member3, challenge1, "https://test.url/test.jpng");
         dailyAuthRepository.save(auth1);
         dailyAuthRepository.save(auth2);
         dailyAuthRepository.save(auth3);
 
         // when
         Pageable pageable = PageRequest.of(0, 5);
-        Page<DailyAuthImageResponse> responses = dailyChallengeRepository.findAllAuthList(challenge1, pageable);
+        Page<DailyAuthImageResponse> responses = dailyChallengeRepository.findAllAuthList(challengeId1, pageable);
 
         for (DailyAuthImageResponse respons : responses) {
             System.out.println("테스트 : challengeId =  " + respons.getChallengeId());
