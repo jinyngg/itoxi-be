@@ -1,15 +1,15 @@
 package com.itoxi.petnuri.domain.dailychallenge.repository;
 
-import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import com.itoxi.petnuri.domain.dailychallenge.entity.QDailyAuth;
 import com.itoxi.petnuri.domain.dailychallenge.util.QuerydslDateTimeFormatter;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.DateTemplate;
 import com.querydsl.core.types.dsl.DateTimePath;
-import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -26,22 +26,33 @@ public class DailyAuthRepositoryImpl implements DailyAuthRepositoryCustom {
     QDailyAuth dailyAuth = QDailyAuth.dailyAuth;
 
     @Override
-    public boolean dupePostCheck(Member loginMember, DailyChallenge dailyChallenge) {
-
+    public boolean dupeAuthCheck(Long loginMemberId, Long dailyChallengeId) {
         Member result = queryFactory
                 .select(dailyAuth.member)
                 .from(dailyAuth)
-                .where(dailyAuth.id.eq(dailyChallenge.getId())
-                        .and(dailyAuth.member.id.eq(loginMember.getId()))
-                        .and(todayEq(dailyAuth.updatedAt)))
+                .where(dailyAuth.dailyChallenge.id.eq(dailyChallengeId)
+                        .and(dailyAuth.member.id.eq(loginMemberId))
+                        .and(eqToday(dailyAuth.updatedAt)))
                 .fetchOne();
         return (result != null) ? true : false; // true : 중복 인증
     }
 
-    private BooleanExpression todayEq(DateTimePath<LocalDateTime> dailyAuth) {
-        String todayStr = querydslFormatter.nowDateTimeToStr();
-        StringExpression authDate = querydslFormatter.formatter(dailyAuth);
-        return authDate.eq(todayStr);
+    @Override
+    public Long deleteAuthDataByDate() {
+        return queryFactory
+                .delete(dailyAuth)
+                .where(ltToday(dailyAuth.updatedAt))
+                .execute();
+    }
+
+    private BooleanExpression eqToday(DateTimePath<LocalDateTime> dailyAuth) {
+        DateTemplate<LocalDate> authDate = querydslFormatter.formatter(dailyAuth);
+        return authDate.eq(LocalDate.now());
+    }
+
+    private BooleanExpression ltToday(DateTimePath<LocalDateTime> dailyAuth) {
+        DateTemplate<LocalDate> authDate = querydslFormatter.formatter(dailyAuth);
+        return authDate.lt(LocalDate.now());
     }
 
 }

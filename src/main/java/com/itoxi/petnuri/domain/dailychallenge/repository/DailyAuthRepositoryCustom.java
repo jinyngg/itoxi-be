@@ -10,5 +10,8 @@ import com.itoxi.petnuri.domain.member.entity.Member;
  */
 public interface DailyAuthRepositoryCustom {
 
-    boolean dupePostCheck(Member member, DailyChallenge dailyChallenge);
+    boolean dupeAuthCheck(Long memberId, Long dailyChallengeId);
+
+    Long deleteAuthDataByDate();
+
 }
