@@ -23,18 +23,11 @@ insert into daily_challenge (title, sub_title, auth_method, payment, payment_met
                              start_date, end_date, challenge_status, created_at, updated_at)
 values ('간식주기 챌린지', '반려동물에게 간식주는 사진을 인증해요!', '인증 사진 업로드!', 100, '참여완료 즉시 지급',
         'https://www.test.url/thumbnail.jpg', 'https://test.url/banner.jpg',
-        '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
-insert into daily_challenge (title, sub_title, auth_method, payment, payment_method, thumbnail, banner,
-                             start_date, end_date, challenge_status, created_at, updated_at)
-values ('놀아주기 챌린지', '반려동물과 즐거운 시간을 보내는 사진을 인증해요!', '인증 사진 업로드!', 100, '참여완료 즉시 지급',
-        'https://www.test.url/thumbnail.jpg', 'https://test.url/banner.jpg',
-        '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
-insert into daily_challenge (title, sub_title, auth_method, payment, payment_method, thumbnail, banner,
-                             start_date, end_date, challenge_status, created_at, updated_at)
-values ('위생관리 챌린지', '반려동물의 위생/청결관리 사진을 인증해요!', '인증 사진 업로드!', 100, '참여완료 즉시 지급',
-        'https://www.test.url/thumbnail.jpg', 'https://test.url/banner.jpg',
-        '2023-09-16 00:00:00', '9999-12-31 23:59:59', 'OPENED', now(), now());
+        '2023-09-16', '9999-12-31', 'OPENED', now(), now());
 
+-- 데일리 챌린지 인증글 더미 데이터 생성(스케줄러 삭제 테스트용)
+insert into daily_auth(member_id, daily_challenge_id, image_url, created_at, updated_at)
+values (1, 1, 'https://www.test.url/auth.jpg', '2023-09-16', '2023-09-16');
 
 insert into reward_challenge (title, sub_title, notice, thumbnail, poster, status, start_date, end_date,
                               kit_start_date, kit_end_date, review_start_date, review_end_date, created_at, updated_at)

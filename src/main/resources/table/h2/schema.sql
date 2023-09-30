@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS main_category;
 DROP TABLE IF EXISTS sub_category;
 DROP TABLE IF EXISTS daily_challenge;
+DROP TABLE IF EXISTS daily_auth;
 DROP TABLE IF EXISTS reward_challenge;
 DROP TABLE IF EXISTS reward_challenger;
 DROP TABLE IF EXISTS product;
@@ -48,6 +49,18 @@ create table daily_challenge
     challenge_status   varchar(255) not null,
     created_at         timestamp    NOT NULL,
     updated_at         timestamp    NOT NULL
+);
+
+create table daily_auth
+(
+    daily_auth_id      BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id          BIGINT       NOT NULL,
+    daily_challenge_id BIGINT       NOT NULL,
+    image_url          VARCHAR(255) NOT NULL,
+    created_at         TIMESTAMP    NOT NULL,
+    updated_at         TIMESTAMP    NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES member (member_id),
+    FOREIGN KEY (daily_challenge_id) REFERENCES daily_challenge (daily_challenge_id)
 );
 
 create table reward_challenge
