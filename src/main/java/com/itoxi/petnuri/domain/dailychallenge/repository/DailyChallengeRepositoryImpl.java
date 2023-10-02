@@ -3,15 +3,16 @@ package com.itoxi.petnuri.domain.dailychallenge.repository;
 import com.itoxi.petnuri.domain.dailychallenge.dto.response.DailyAuthImageResponse;
 import com.itoxi.petnuri.domain.dailychallenge.dto.response.DailyChallengeDetailResponse;
 import com.itoxi.petnuri.domain.dailychallenge.dto.response.DailyChallengeListResponse;
-import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import com.itoxi.petnuri.domain.dailychallenge.entity.QDailyAuth;
 import com.itoxi.petnuri.domain.dailychallenge.entity.QDailyChallenge;
 import com.itoxi.petnuri.domain.dailychallenge.type.ChallengeStatus;
-import com.itoxi.petnuri.domain.dailychallenge.util.QuerydslDateTimeFormatter;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.entity.QMember;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.*;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.DateTimePath;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 /**
  * author         : Jisang Lee
@@ -36,11 +38,10 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
     QMember member = QMember.member;
 
     private final JPAQueryFactory queryFactory;
-    private final QuerydslDateTimeFormatter querydslFormatter;
 
-    // 챌린지 메인 화면 데일리 챌린지 화면 파트 응답용
+    // 챌린지 메인 화면 : 데일리 챌린지 list view 응답
     @Override
-    public List<DailyChallengeListResponse> findAllWithAuthStatus(Member loginMember) {
+    public List<DailyChallengeListResponse> findAllAuthStatus(Member loginMember) {
 
         return queryFactory
                 .select(Projections.constructor(DailyChallengeListResponse.class,
@@ -50,7 +51,7 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
                 .leftJoin(dailyAuth)
                 .on(dailyChallenge.id.eq(dailyAuth.dailyChallenge.id)
                         .and(memberEq(dailyAuth.member, loginMember))
-                        .and(todayEq(dailyAuth.updatedAt)))
+                        .and(goeToday(dailyAuth.updatedAt)))
                 .where(dailyChallenge.challengeStatus.eq(ChallengeStatus.OPENED))
                 .fetch();
     }
@@ -68,7 +69,7 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
                 .leftJoin(dailyAuth)
                 .on(dailyChallenge.id.eq(dailyAuth.dailyChallenge.id)
                         .and(memberEq(dailyAuth.member, loginMember))
-                        .and(todayEq(dailyAuth.updatedAt)))
+                        .and(goeToday(dailyAuth.updatedAt)))
                 .where(dailyChallenge.id.eq(dailyChallengeId)
                         .and(dailyChallenge.challengeStatus.eq(ChallengeStatus.OPENED)))
                 .fetchOne();
@@ -86,7 +87,7 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
                 .join(member) // cross join 방지
                 .on(dailyAuth.member.id.eq(member.id))
                 .where(dailyAuth.dailyChallenge.id.eq(dailyChallengeId)
-                        .and(todayEq(dailyAuth.updatedAt)))
+                        .and(goeToday(dailyAuth.updatedAt)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -95,21 +96,22 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
                 .select(dailyAuth.count())
                 .from(dailyAuth)
                 .where(dailyAuth.dailyChallenge.id.eq(dailyChallengeId)
-                        .and(todayEq(dailyAuth.updatedAt)));
+                        .and(goeToday(dailyAuth.updatedAt)));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
 
-    // 회원이 로그인 하지 않았을 때 on 절의 회원 비교를 하지 않는다. null 반환 = 비교 안함.
+    // 회원이 로그인 하지 않았다면 인증글 작성 여부를 false가 되도록 리턴.
     private BooleanExpression memberEq(QMember qMember, Member loginMember) {
-        return loginMember != null ? qMember.id.eq(loginMember.getId()) : null;
+        if (loginMember == null) {
+            return qMember.isNull();
+        }
+        return qMember.id.eq(loginMember.getId());
     }
 
-    // LocalDateTime 에서 시간 부분을 제외하고 날짜만 비교
-    private BooleanExpression todayEq(DateTimePath<LocalDateTime> dailyAuth) {
-        DateTemplate<LocalDate> authDate = querydslFormatter.formatter(dailyAuth);
-        return authDate.eq(LocalDate.now());
+    private BooleanExpression goeToday(DateTimePath<LocalDateTime> compareDate) {
+        return compareDate.goe(LocalDate.now().atStartOfDay());
     }
 
 }

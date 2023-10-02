@@ -3,7 +3,6 @@ package com.itoxi.petnuri.domain.dailychallenge.repository;
 import com.itoxi.petnuri.domain.dailychallenge.dto.response.DailyAuthImageResponse;
 import com.itoxi.petnuri.domain.dailychallenge.dto.response.DailyChallengeDetailResponse;
 import com.itoxi.petnuri.domain.dailychallenge.dto.response.DailyChallengeListResponse;
-import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +16,7 @@ import java.util.List;
  */
 public interface DailyChallengeRepositoryCustom {
 
-    List<DailyChallengeListResponse> findAllWithAuthStatus(Member loginMember);
+    List<DailyChallengeListResponse> findAllAuthStatus(Member loginMember);
 
     Page<DailyAuthImageResponse> findAllAuthList(
             Long dailyChallengeId, Pageable pageable);
