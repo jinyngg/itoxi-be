@@ -41,7 +41,7 @@ public class RewardChallengerService {
     public GetMyRewardChallengeJoinResp getMyJoin(Member member, Long challengeId) {
         // 챌린지
         RewardChallenge rewardChallenge = challengeRepository.findById(challengeId)
-                .orElseThrow(() -> new Exception404(NOT_FOUND_DAILY_CHALLENGE_ID));
+                .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_ID));
 
         // 챌린지 참여
         RewardChallenger rewardChallenger = challengerRepository.findByChallengerAndRewardChallenge(member, rewardChallenge)
@@ -54,7 +54,7 @@ public class RewardChallengerService {
     public GetOtherRewardChallengeJoinResp getOtherJoin(Member member, Long challengeId) {
         // 챌린지
         RewardChallenge rewardChallenge = challengeRepository.findById(challengeId)
-                .orElseThrow(() -> new Exception404(NOT_FOUND_DAILY_CHALLENGE_ID));
+                .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_ID));
 
         List<GetOtherRewardChallengeJoinResp.JoinMemberDTO> JoinMembers = getJoinMembers(rewardChallenge, member);
         return new GetOtherRewardChallengeJoinResp(JoinMembers);
@@ -82,7 +82,7 @@ public class RewardChallengerService {
     public void create(Member member, Long challengeId, CreateChallengerReq request) {
         // 챌린지
         RewardChallenge rewardChallenge = challengeRepository.findById(challengeId)
-                .orElseThrow(() -> new Exception404(NOT_FOUND_DAILY_CHALLENGE_ID));
+                .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_ID));
 
         // 챌린지 신청 여부 검사. 이미 있으면 에러
         if (challengerRepository.existsByChallengerAndRewardChallenge(member, rewardChallenge)) {

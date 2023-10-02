@@ -1,11 +1,16 @@
 package com.itoxi.petnuri.domain.eventChallenge.service;
 
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.ALREADY_WRITTEN_REVIEW;
+
 import com.itoxi.petnuri.domain.eventChallenge.dto.request.WritePointChallengeReviewRequest;
 import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallenge;
 import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallengeReview;
 import com.itoxi.petnuri.domain.eventChallenge.repository.PointChallengeRepository;
 import com.itoxi.petnuri.domain.member.entity.Member;
-import com.itoxi.petnuri.domain.member.repository.MemberRepository;
+import com.itoxi.petnuri.domain.petTalk.entity.MainCategory;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
+import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
+import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,38 +25,55 @@ import org.springframework.web.multipart.MultipartFile;
 public class PointChallengeReviewService {
 
     private final PointChallengeRepository pointChallengeRepository;
+    private final PetTalkRepository petTalkRepository;
 
-    // TODO
-    private final MemberRepository memberRepository;
-
-    @Transactional
     public void write(
             Long pointChallengeId,
             MultipartFile file,
             WritePointChallengeReviewRequest request,
             PrincipalDetails principalDetails) {
-        // TODO 1. 로그인된 회원 정보 확인
-//        Member reviewer = principalDetails.getMember();
-        Member reviewer = memberRepository.findById(1L).orElseThrow();
+        // 1. 로그인된 회원 조회
+        Member reviewer = principalDetails.getMember();
 
         // 2. 챌린지 조회
         PointChallenge pointChallenge =
                 pointChallengeRepository.getPointChallengeById(pointChallengeId);
 
-        // 3. 리뷰 생성
+        // 3. 당일에 작성된 리뷰가 존재하는지 확인
+        if (pointChallengeRepository.isWritePointChallengeReviewToday(pointChallenge, reviewer)) {
+            throw new Exception400(ALREADY_WRITTEN_REVIEW);
+        }
+
+        // 4. 리뷰 생성
         PointChallengeReview pointChallengeReview = PointChallengeReview.builder()
-                // TODO
                 .reviewer(reviewer)
                 .pointChallenge(pointChallenge)
                 .photoName(file.getName())
                 .content(request.getContent())
                 .build();
-        
-        // 4. 리뷰 사진 업로드
+
+        // 5. 리뷰 사진 업로드
         pointChallengeRepository.uploadPointChallengeReviewPhoto(file, pointChallengeReview);
         
-        // 5. 리뷰 저장
+        // 6. 리뷰 저장
         pointChallengeRepository.writePointChallengeReview(pointChallengeReview);
+
+        // 7. 펫톡 업데이트
+        // 7-1. 자유수다 카테고리 조회
+        MainCategory mainCategory = petTalkRepository.getMainCategoryById(2L);
+
+        // 7-2. 펫톡 게시글 작성
+        PetTalk petTalk =
+                PetTalk.createByChallengeReview(
+                        reviewer,
+                        pointChallenge.getTitle(),
+                        pointChallengeReview.getContent(),
+                        mainCategory,
+                        request.getPetType());
+
+        // 7-3. 펫톡 게시글 저장
+        petTalkRepository.write(petTalk);
+        petTalkRepository.uploadPetTalkPhotos(new MultipartFile[]{file}, petTalk);
     }
 
     @Transactional(readOnly = true)
