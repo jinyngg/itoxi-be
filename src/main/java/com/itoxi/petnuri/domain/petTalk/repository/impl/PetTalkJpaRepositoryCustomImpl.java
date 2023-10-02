@@ -4,6 +4,7 @@ import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.ACTIVE;
 
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.QPetTalk;
+import com.itoxi.petnuri.domain.petTalk.entity.QPetTalkEmotion;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkJpaRepositoryCustom;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -29,6 +30,7 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
     private final JPAQueryFactory queryFactory;
 
     QPetTalk qPetTalk = QPetTalk.petTalk;
+    QPetTalkEmotion qPetTalkEmotion = QPetTalkEmotion.petTalkEmotion;
 
     @Override
     public Page<PetTalk> loadLatestPetTalkPostsByCategoryAndPetType(
@@ -55,6 +57,21 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
     public Page<PetTalk> loadBestPetTalkPostsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
         Pageable pageable = PageRequest.of(page, size);
+
+//        Expression<Long> emojiCountSubquery = JPAExpressions.select(qPetTalkEmotion.petTalk.count())
+//                .from(qPetTalkEmotion)
+//                .where(qPetTalkEmotion.petTalk.eq(qPetTalk));
+//
+//        List<PetTalk> petTalks = queryFactory
+//                .selectFrom(qPetTalk)
+//                .leftJoin(qPetTalkEmotion).on(qPetTalk.id.eq(qPetTalkEmotion.petTalk.id))
+//                .where(eqActive()
+//                        .and(qPetTalk.createdAt.after(LocalDateTime.now().minusDays(3)))
+//                        .and(qPetTalk.petType.eq(petType)))
+//                .orderBy(new OrderSpecifier<>(Order.DESC, emojiCountSubquery)) // Order by the calculated score
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
 
         List<PetTalk> petTalks = queryFactory
                 .selectFrom(qPetTalk)
