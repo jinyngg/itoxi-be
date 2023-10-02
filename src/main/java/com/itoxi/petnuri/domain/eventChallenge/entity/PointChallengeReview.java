@@ -8,7 +8,6 @@ import com.itoxi.petnuri.domain.member.entity.Member;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -24,8 +23,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Builder
@@ -33,7 +30,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @Entity
 @Table(name = "point_challenge_review")
-@EntityListeners(AuditingEntityListener.class)
 public class PointChallengeReview {
 
     @Id
@@ -64,10 +60,10 @@ public class PointChallengeReview {
     @Enumerated(EnumType.STRING)
     private PointChallengeReviewStatus status = ACTIVE;
 
+    @Builder.Default
     @Column(name = "created_at")
-    @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public void uploadPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
