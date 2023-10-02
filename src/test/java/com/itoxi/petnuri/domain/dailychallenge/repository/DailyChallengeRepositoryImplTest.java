@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -43,12 +44,16 @@ class DailyChallengeRepositoryImplTest {
     @Autowired
     private DailyChallengeRepository dailyChallengeRepository;
 
+    @Autowired
+    private EntityManager em;
+
     @DisplayName("챌린지 메인 화면 - 챌린지 목록 응답 테스트")
     @Test
     public void findAllChallenge_test() throws Exception {
         // given
         Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1");
         Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2");
+        Member member3 = null;
         memberRepository.save(member1);
         memberRepository.save(member2);
 
@@ -59,8 +64,8 @@ class DailyChallengeRepositoryImplTest {
                 .authMethod("인증 사진 업로드!")
                 .payment(100L)
                 .paymentMethod("참여완료 즉시 지급")
-                .thumbnail("https://www.test.url/thumbnail.jpng")
-                .banner("https://www.test.url/banner.jpng")
+                .thumbnail("https://www.test.url/thumbnail.jpg")
+                .banner("https://www.test.url/banner.jpg")
                 .challengeStatus(ChallengeStatus.OPENED)
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.of(9999, 12, 31))
@@ -71,8 +76,8 @@ class DailyChallengeRepositoryImplTest {
                 .authMethod("인증 사진 업로드!")
                 .payment(100L)
                 .paymentMethod("참여완료 즉시 지급")
-                .thumbnail("https://www.test.url/thumbnail.jpng")
-                .banner("https://www.test.url/banner.jpng")
+                .thumbnail("https://www.test.url/thumbnail.jpg")
+                .banner("https://www.test.url/banner.jpg")
                 .challengeStatus(ChallengeStatus.OPENED)
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.of(9999, 12, 31))
@@ -80,16 +85,17 @@ class DailyChallengeRepositoryImplTest {
         dailyChallengeRepository.save(challenge2);
         dailyChallengeRepository.save(challenge3);
 
-        DailyAuth auth1 = DailyAuth.toEntity(member1, challenge1, "https://test.url/test.jpng");
-        DailyAuth auth2 = DailyAuth.toEntity(member1, challenge2, "https://test.url/test.jpng");
-        DailyAuth auth3 = DailyAuth.toEntity(member1, challenge3, "https://test.url/test.jpng");
+        DailyAuth auth1 = DailyAuth.toEntity(member1, challenge1, "https://test.url/test.jpg");
+        DailyAuth auth2 = DailyAuth.toEntity(member1, challenge2, "https://test.url/test.jpg");
+        DailyAuth auth3 = DailyAuth.toEntity(member1, challenge3, "https://test.url/test.jpg");
         dailyAuthRepository.save(auth1);
         dailyAuthRepository.save(auth2);
         dailyAuthRepository.save(auth3);
 
         // when
-        List<DailyChallengeListResponse> result1 = dailyChallengeRepository.findAllWithAuthStatus(member1);
-        List<DailyChallengeListResponse> result2 = dailyChallengeRepository.findAllWithAuthStatus(member2);
+        List<DailyChallengeListResponse> result1 = dailyChallengeRepository.findAllAuthStatus(member1);
+        List<DailyChallengeListResponse> result2 = dailyChallengeRepository.findAllAuthStatus(member2);
+        List<DailyChallengeListResponse> result3 = dailyChallengeRepository.findAllAuthStatus(member3);
 
         for (DailyChallengeListResponse response : result1) {
             System.out.println("테스트 : challengeId = " + response.getChallengeId());
@@ -110,6 +116,7 @@ class DailyChallengeRepositoryImplTest {
         // then
         assertThat(result1.get(0).getStatus()).isTrue();
         assertThat(result2.get(0).getStatus()).isFalse();
+        assertThat(result3.get(0).getStatus()).isFalse();
     }
 
     @DisplayName("데일리 챌린지 Detail view 응답 데이터 테스트")
@@ -118,22 +125,26 @@ class DailyChallengeRepositoryImplTest {
         // given
         Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1");
         Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2");
+        Member member3 = null;
         memberRepository.save(member1);
         memberRepository.save(member2);
 
         Long challengeId1 = 1L;
         DailyChallenge challenge1 = dailyChallengeRepository.findById(challengeId1).orElseThrow(NoSuchElementException::new);
 
-        DailyAuth auth1 = DailyAuth.toEntity(member1, challenge1, "https://test.url/test.jpng");
+        DailyAuth auth1 = DailyAuth.toEntity(member1, challenge1, "https://test.url/test.jpg");
         dailyAuthRepository.save(auth1);
 
         // when
         DailyChallengeDetailResponse response1 = dailyChallengeRepository.findDetailChallenge(challengeId1, member1);
         DailyChallengeDetailResponse response2 = dailyChallengeRepository.findDetailChallenge(challengeId1, member2);
+        DailyChallengeDetailResponse response3 = dailyChallengeRepository.findDetailChallenge(challengeId1, member3);
 
         // then
         assertThat(response1.getStatus()).isTrue();
         assertThat(response2.getStatus()).isFalse();
+        assertThat(response3.getStatus()).isFalse();
+
     }
 
     @DisplayName("데일리 챌린지 디테일 view - 인증 사진 목록 응답 테스트")
@@ -143,34 +154,44 @@ class DailyChallengeRepositoryImplTest {
         Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1");
         Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2");
         Member member3 = Member.createMember("tester3@test.copm", "tester3", "test3");
+        Member member4 = Member.createMember("tester4@test.copm", "tester4", "test4");
+        Member member5 = Member.createMember("tester5@test.copm", "tester5", "test5");
+        Member member6 = Member.createMember("tester6@test.copm", "tester6", "test6");
         memberRepository.save(member1);
         memberRepository.save(member2);
         memberRepository.save(member3);
+        memberRepository.save(member4);
+        memberRepository.save(member5);
+        memberRepository.save(member6);
 
         Long challengeId1 = 1L;
         DailyChallenge challenge1 = dailyChallengeRepository.findById(challengeId1).orElseThrow(NoSuchElementException::new);
 
-        DailyAuth auth1 = DailyAuth.toEntity(member1, challenge1, "https://test.url/test.jpng");
-        DailyAuth auth2 = DailyAuth.toEntity(member2, challenge1, "https://test.url/test.jpng");
-        DailyAuth auth3 = DailyAuth.toEntity(member3, challenge1, "https://test.url/test.jpng");
+        DailyAuth auth1 = DailyAuth.toEntity(member1, challenge1, "https://test.url/test.jpg");
+        DailyAuth auth2 = DailyAuth.toEntity(member2, challenge1, "https://test.url/test.jpg");
+        DailyAuth auth3 = DailyAuth.toEntity(member3, challenge1, "https://test.url/test.jpg");
+        DailyAuth auth4 = DailyAuth.toEntity(member4, challenge1, "https://test.url/test.jpg");
+        DailyAuth auth5 = DailyAuth.toEntity(member5, challenge1, "https://test.url/test.jpg");
+        DailyAuth auth6 = DailyAuth.toEntity(member6, challenge1, "https://test.url/test.jpg");
         dailyAuthRepository.save(auth1);
         dailyAuthRepository.save(auth2);
         dailyAuthRepository.save(auth3);
+        dailyAuthRepository.save(auth4);
+        dailyAuthRepository.save(auth5);
+        dailyAuthRepository.save(auth6);
+
+        em.flush();
+        em.clear();
 
         // when
         Pageable pageable = PageRequest.of(0, 5);
         Page<DailyAuthImageResponse> responses = dailyChallengeRepository.findAllAuthList(challengeId1, pageable);
 
-        for (DailyAuthImageResponse respons : responses) {
-            System.out.println("테스트 : challengeId =  " + respons.getChallengeId());
-            System.out.println("테스트 : memberId = " + respons.getMemberId());
-            System.out.println("테스트 : nickName = " + respons.getNickName());
-            System.out.println("테스트 : imageUrl = " + respons.getImageUrl());
-            System.out.println("----------------------------------------------------------------");
-        }
 
         // then
-        assertThat(responses.getTotalElements()).isEqualTo(3);
+        assertThat(responses.getNumber()).isEqualTo(0); // 현재 페이지 번호
+        assertThat(responses.getSize()).isEqualTo(5);
+        assertThat(responses.getTotalPages()).isEqualTo(2);
     }
 
 }

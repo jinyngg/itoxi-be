@@ -36,7 +36,7 @@ public class DailyChallengeService {
 
     public List<DailyChallengeListResponse> respDailyChallengeList(Member loginMember) {
         // 반환에 필요한 데이터 : 챌린지 id, 챌리지명, 로그인한 유저의 참여 여부, 썸네일 url
-        return dailyChallengeRepository.findAllWithAuthStatus(loginMember);
+        return dailyChallengeRepository.findAllAuthStatus(loginMember);
     }
 
     public Page<DailyAuthImageResponse> respDailyChallengeAuthList(

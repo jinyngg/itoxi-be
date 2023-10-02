@@ -43,4 +43,5 @@ public class DailyChallengeAdminController {
             throw new Exception400(INVALID_FILE_REQUEST);
         }
     }
+
 }

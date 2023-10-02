@@ -56,7 +56,6 @@ public class DailyAuthService {
     }
 
     private void isDupeAuthMember(Long loginMemberId, Long dailyChallengeId) {
-        // Todo: 날짜 체크를 우선 query에서 비교하도록 구현하였음.
         if (dailyAuthRepository.dupeAuthCheck(loginMemberId, dailyChallengeId)) {
             throw new Exception400(ErrorCode.DUPE_POST_MEMBER);
         }
