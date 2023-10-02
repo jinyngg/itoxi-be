@@ -73,5 +73,8 @@ public class PointChallenge extends BaseTimeEntity {
         this.poster = poster;
     }
 
+    public void updateStatus(PointChallengeStatus status) {
+        this.status = status;
+    }
 
 }
