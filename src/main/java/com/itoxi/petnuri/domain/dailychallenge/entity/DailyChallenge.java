@@ -4,16 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itoxi.petnuri.domain.dailychallenge.dto.request.DailyChallengeRequest;
 import com.itoxi.petnuri.domain.dailychallenge.type.ChallengeStatus;
 import com.itoxi.petnuri.global.common.BaseTimeEntity;
+import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import javax.persistence.*;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 /**
  * author         : matrix
  * date           : 2023-09-13
@@ -67,6 +61,11 @@ public class DailyChallenge extends BaseTimeEntity {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;      // 챌린지 종료 일자 : 9999-12-31 23:59:59
 
+    public DailyChallenge changeStatus(ChallengeStatus challengeStatus) {
+        this.challengeStatus = challengeStatus;
+        return this;
+    }
+
     public static DailyChallenge toEntity(DailyChallengeRequest request, String thumbnail, String banner) {
         return DailyChallenge.builder()
                 .title(request.getTitle())
@@ -81,4 +80,5 @@ public class DailyChallenge extends BaseTimeEntity {
                 .endDate(LocalDate.of(9999,12,31))
                 .build();
     }
+
 }
