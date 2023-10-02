@@ -17,7 +17,6 @@ public enum ErrorCode {
     INVALID_FILE_REQUEST("유효하지 않은 파일이 전송되었습니다."), // 400
     REQUIRED_LOGIN_ERROR("로그인을 해야 사용 가능한 메뉴입니다."),
 
-
     // REDIS
     INVALID_OR_EXPIRED_KEY("만료되었거나 유효하지 않은 키입니다."),
     NOT_MATCH_TOKEN("토큰이 일치하지 않습니다."),
@@ -50,6 +49,10 @@ public enum ErrorCode {
     DUPE_CHALLENGE_JOIN("이미 챌린지 참여 내역이 존재합니다."),
     NOT_FOUND_CHALLENGE_KIT("챌린지에 등록된 검진 키트가 없습니다!"), //500 err
     NOT_FOUND_EVENT_CHALLENGE_ID("유효하지 않은 이벤트 챌린지 ID 입니다."),
+
+    // 챌린지 리뷰
+    NOT_FOUND_MEMBER_REVIEW("회원이 작성한 이벤트 챌린지 리뷰가 없습니다."),
+    ALREADY_WRITTEN_REVIEW("당일에 이미 작성한 챌린지 리뷰가 있습니다."),
 
     // 포인트
     OUT_OF_POINT("보유 포인트가 부족합니다."),
