@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,7 @@ public class PetTalkPostController {
 
     private final PetTalkService petTalkService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Object> write(
             @RequestPart MultipartFile[] files,
@@ -68,6 +70,7 @@ public class PetTalkPostController {
         return ResponseEntity.ok(data);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/{petTalkId}")
     public ResponseEntity<Object> deletePetTalkPost(
             @PathVariable Long petTalkId,

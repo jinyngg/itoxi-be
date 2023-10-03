@@ -18,14 +18,14 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    public static final Long EXP_ACCESS = 1000L * 60 * 30; // 30분
+    public static final Long EXP_ACCESS = 1000L * 60 * 30 * 6; // 180분
     public static final Long EXP_REFRESH = 1000L * 60 * 60 * 24 * 14; // 14일
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER = "Authorization";
 
     private final PrincipalDetailsService principalDetailsService;
 
-    private Key JWT_KEY;
+    private final Key JWT_KEY;
 
     @Autowired
     public JwtTokenProvider(@Value("${jwt.key}") String secretKey, PrincipalDetailsService principalDetailsService) {
@@ -36,22 +36,20 @@ public class JwtTokenProvider {
     }
 
     public String createAccessToken(Member member) {
-        String jwt = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(member.getEmail())
                 .setExpiration(new Date(System.currentTimeMillis() + EXP_ACCESS))
                 .claim("id", member.getId())
                 .claim("role", String.valueOf(member.getRole()))
                 .signWith(JWT_KEY, SignatureAlgorithm.HS256)
                 .compact();
-        return jwt;
     }
 
     public String createRefreshToken(Member member) {
-        String jwt = Jwts.builder()
+        return Jwts.builder()
                 .setExpiration(new Date(System.currentTimeMillis() + EXP_REFRESH))
                 .signWith(JWT_KEY, SignatureAlgorithm.HS256)
                 .compact();
-        return jwt;
     }
 
     public String resolveToken(String header) {
@@ -100,7 +98,7 @@ public class JwtTokenProvider {
                 .getBody()
                 .getExpiration();
 
-        Long now = new Date().getTime();
+        long now = new Date().getTime();
         return (expiration.getTime() - now);
     }
 }

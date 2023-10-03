@@ -3,9 +3,11 @@ package com.itoxi.petnuri.domain.eventChallenge.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itoxi.petnuri.domain.eventChallenge.type.PointMethod;
 import java.time.LocalDate;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class WritePointChallengePostRequest {
 
     private String title;

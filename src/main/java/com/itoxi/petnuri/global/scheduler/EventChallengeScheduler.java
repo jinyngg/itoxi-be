@@ -101,6 +101,7 @@ public class EventChallengeScheduler {
         }
     }
 
+    // TODO FLAG 추가(한 번 CSV로 작성된 파일은 더이상 작성하지 않는다.
     @Scheduled(cron = "${scheduler.event.point.upload.csv.test.cron}")
     public void UploadPointChallengeRewardCSV() {
         String pathPrefix = fileUploadComponent.getFileUploadPath();
