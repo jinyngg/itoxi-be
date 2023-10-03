@@ -101,9 +101,8 @@ public class EventChallengeScheduler {
         }
     }
 
-    // TODO CLOSED 챌린지일 경우, PointChallengeReward 테이블 csv 저장후 데이터 삭제하는 스케쥴러
     @Scheduled(cron = "${scheduler.event.point.upload.csv.test.cron}")
-    public void createPointChallengeRewardCsv() {
+    public void UploadPointChallengeRewardCSV() {
         String pathPrefix = fileUploadComponent.getFileUploadPath();
 
         // 1. 종료된 챌린지 리스트 조회
