@@ -1,11 +1,12 @@
 package com.itoxi.petnuri.domain.member.controller;
 
 import com.itoxi.petnuri.domain.member.dto.request.JoinReq;
-import com.itoxi.petnuri.domain.member.dto.response.ExistEmailResp;
+import com.itoxi.petnuri.domain.member.dto.response.ExistNickNameResp;
 import com.itoxi.petnuri.domain.member.dto.response.ExistReferralCodeResp;
 import com.itoxi.petnuri.domain.member.dto.response.ReissueResp;
 import com.itoxi.petnuri.domain.member.dto.response.JoinResp;
 import com.itoxi.petnuri.domain.member.service.AuthService;
+import com.itoxi.petnuri.global.common.customValid.valid.ValidNickName;
 import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
 import com.itoxi.petnuri.global.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Email;
@@ -21,6 +23,7 @@ import javax.validation.constraints.NotBlank;
 
 @RequestMapping("/auth")
 @RestController
+@Validated
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -54,11 +57,11 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/email")
-    public ResponseEntity<ExistEmailResp> checkEmail(
-            @RequestParam @Email String email
+    @GetMapping("/nickname")
+    public ResponseEntity<ExistNickNameResp> checkNickName(
+            @RequestParam @ValidNickName String nickname
     ) {
-        ExistEmailResp response = authService.checkEmail(email);
+        ExistNickNameResp response = authService.checkNickName(nickname);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -171,9 +171,9 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public ExistEmailResp checkEmail(String email) {
-        Boolean isExists = memberRepository.existsByEmail(email);
-        return new ExistEmailResp(email, isExists);
+    public ExistNickNameResp checkNickName(String nickname) {
+        Boolean isExists = memberRepository.existsByNickname(nickname);
+        return new ExistNickNameResp(nickname, isExists);
     }
 
     @Transactional(readOnly = true)
