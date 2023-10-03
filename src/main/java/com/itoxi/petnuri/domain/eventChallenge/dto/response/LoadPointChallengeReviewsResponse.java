@@ -5,7 +5,9 @@ import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallengeReview;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class LoadPointChallengeReviewsResponse {
 
