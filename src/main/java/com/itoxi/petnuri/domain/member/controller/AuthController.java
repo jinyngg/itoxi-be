@@ -18,7 +18,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @RequestMapping("/auth")
