@@ -55,13 +55,13 @@ class DailyAuthSchedulerTest {
                 });
     }
 
-    @DisplayName("READY 상태인 데일리 챌린지 OPENED 업데이트 테스트")
+    @DisplayName("READY 상태인 데일리 챌린지의 OPENED 업데이트 테스트")
     @Test
     public void dailyChallengeUpdate_test() throws Exception {
         // given
-        DailyChallenge dailyChallenge = DailyChallenge.builder()
+        DailyChallenge dailyChallenge1 = DailyChallenge.builder()
                 .title("놀아주기 챌린지")
-                .subTitle("반려동물에게 간식주는 사진을 인증해요!")
+                .subTitle("반려동물과 즐거운 시간을 보내는 사진을 인증해요!")
                 .authMethod("인증 사진 업로드!")
                 .payment(100L)
                 .paymentMethod("참여완료 즉시 지급")
@@ -71,13 +71,26 @@ class DailyAuthSchedulerTest {
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.of(9999, 12, 31))
                 .build();
-        dailyChallengeRepository.save(dailyChallenge);
+        DailyChallenge dailyChallenge2 = DailyChallenge.builder()
+                .title("위생관리 챌린지")
+                .subTitle("반려동물의 위생/청결관리 사진을 인증해요!")
+                .authMethod("인증 사진 업로드!")
+                .payment(100L)
+                .paymentMethod("참여완료 즉시 지급")
+                .thumbnail("https://www.test.url/thumbnail.jpg")
+                .banner("https://www.test.url/banner.jpg")
+                .challengeStatus(ChallengeStatus.READY)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.of(9999, 12, 31))
+                .build();
+        dailyChallengeRepository.save(dailyChallenge1);
+        dailyChallengeRepository.save(dailyChallenge2);
         em.flush();
         em.clear();
 
         // when
         long result = dailyAuthScheduler.openDailyChallengeByStartDateAfter();
-        DailyChallenge challenge = dailyChallengeRepository.findById(dailyChallenge.getId())
+        DailyChallenge challenge = dailyChallengeRepository.findById(dailyChallenge1.getId())
                 .orElseThrow(NoSuchElementException::new);
 
         // then

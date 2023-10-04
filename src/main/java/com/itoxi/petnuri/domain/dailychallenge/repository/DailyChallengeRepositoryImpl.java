@@ -8,11 +8,10 @@ import com.itoxi.petnuri.domain.dailychallenge.entity.QDailyChallenge;
 import com.itoxi.petnuri.domain.dailychallenge.type.ChallengeStatus;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.entity.QMember;
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.DatePath;
 import com.querydsl.core.types.dsl.DateTimePath;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -101,6 +100,17 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+    @Override
+    public long updateDailyChallenge() {
+        long result = queryFactory
+                .update(dailyChallenge)
+                .set(dailyChallenge.challengeStatus, ChallengeStatus.OPENED)
+                .where(dailyChallenge.challengeStatus.eq(ChallengeStatus.READY)
+                        .and(eqToday(dailyChallenge.startDate)))
+                .execute();
+        return result;
+    }
+
 
     // 로그인 하지 않은 유저는 존재할 수 없는 id 0과 비교.
     private BooleanExpression memberEq(QMember qMember, Member loginMember) {
@@ -112,6 +122,10 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
 
     private BooleanExpression goeToday(DateTimePath<LocalDateTime> compareDate) {
         return compareDate.goe(LocalDate.now().atStartOfDay());
+    }
+
+    private BooleanExpression eqToday(DatePath<LocalDate> startDate) {
+        return startDate.eq(LocalDate.now());
     }
 
 }

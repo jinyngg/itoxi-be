@@ -24,4 +24,6 @@ public interface DailyChallengeRepositoryCustom {
     DailyChallengeDetailResponse findDetailChallenge(
             Long dailyChallengeId, Member loginMember);
 
+    long updateDailyChallenge();
+
 }

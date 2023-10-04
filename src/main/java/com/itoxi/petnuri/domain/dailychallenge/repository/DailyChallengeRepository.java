@@ -19,7 +19,4 @@ public interface DailyChallengeRepository extends JpaRepository<DailyChallenge, 
 
     Optional<DailyChallenge> findByIdAndChallengeStatus(Long challengeId, ChallengeStatus status);
 
-    List<DailyChallenge> findByChallengeStatusAndStartDateEquals(
-            ChallengeStatus challengeStatus, LocalDate today);
-
 }

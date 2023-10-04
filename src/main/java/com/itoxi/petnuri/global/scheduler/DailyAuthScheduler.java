@@ -1,18 +1,17 @@
 package com.itoxi.petnuri.global.scheduler;
 
-import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import com.itoxi.petnuri.domain.dailychallenge.repository.DailyAuthRepository;
 import com.itoxi.petnuri.domain.dailychallenge.repository.DailyChallengeRepository;
-import com.itoxi.petnuri.domain.dailychallenge.type.ChallengeStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * author         : Jisang Lee
@@ -27,6 +26,7 @@ public class DailyAuthScheduler {
 
     private final DailyAuthRepository dailyAuthRepository;
     private final DailyChallengeRepository dailyChallengeRepository;
+    private final EntityManager em;
 
     // Todo: S3 파일 삭제는 S3 서버에서 설정.
     @Scheduled(cron = "${scheduler.daily-challenge.cron}")
@@ -37,18 +37,14 @@ public class DailyAuthScheduler {
     }
 
     @Scheduled(cron = "${scheduler.daily-challenge.cron}")
+    @Modifying(clearAutomatically = true)
     public long openDailyChallengeByStartDateAfter() {
-        List<DailyChallenge> results = dailyChallengeRepository
-                .findByChallengeStatusAndStartDateEquals(
-                        ChallengeStatus.READY, LocalDate.now());
-        long count = results.size();
-
-        if (results.size() < 1) {
-            log.info("오픈 예정인 데일리 챌린지가 없습니다. " + LocalDateTime.now());
+        em.flush();
+        long count = dailyChallengeRepository.updateDailyChallenge();
+        if (count < 1) {
+            log.info("오픈된 데일리 챌린지가 없습니다. " + LocalDateTime.now());
             return count;
         }
-
-        results.forEach(result -> result.changeStatus(ChallengeStatus.OPENED));
         log.info(count + " 건의 데일리 챌린지가 OPEN 되었습니다. " + LocalDateTime.now());
         return count;
     }
