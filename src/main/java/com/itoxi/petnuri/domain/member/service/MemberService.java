@@ -70,7 +70,7 @@ public class MemberService {
         return new ProfileUpdateResp(changeNickname, originImageUrl);
     }
 
-
+    @Transactional
     public void savePet(Member member, PetSaveReq petSaveReq) {
 
         try{
@@ -88,6 +88,7 @@ public class MemberService {
 
     }
 
+    @Transactional
     public void savePet(Member member, PetProfileReq petProfileReq, MultipartFile image) {
 
         String originUrl = null;
