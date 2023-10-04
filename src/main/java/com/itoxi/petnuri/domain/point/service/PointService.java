@@ -6,6 +6,7 @@ import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND
 import com.itoxi.petnuri.domain.dailychallenge.dto.DailyAuthDto;
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
+import com.itoxi.petnuri.domain.point.dto.response.PointResponse;
 import com.itoxi.petnuri.domain.point.entity.Point;
 import com.itoxi.petnuri.domain.point.entity.PointHistory;
 import com.itoxi.petnuri.domain.point.repository.PointHistoryRepository;
@@ -44,6 +45,17 @@ public class PointService {
         pointHistoryRepository.save(pointHistory);
 
         return point.getHavePoint();
+    }
+
+    public PointResponse getPointResponse(Long memberId) {
+        isValidMemberId(memberId);
+        return pointRepository.findPointByMemberId(memberId);
+    }
+
+    public void isValidMemberId(Long memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new Exception400(NOT_FOUND_MEMBER_ID);
+        }
     }
 
 }

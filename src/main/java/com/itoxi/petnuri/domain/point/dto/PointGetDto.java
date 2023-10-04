@@ -1,4 +1,4 @@
-package com.itoxi.petnuri.domain.point;
+package com.itoxi.petnuri.domain.point.dto;
 
 import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import lombok.*;

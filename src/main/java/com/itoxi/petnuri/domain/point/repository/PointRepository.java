@@ -11,7 +11,7 @@ import java.util.Optional;
  * date           : 2023-09-19
  * description    :
  */
-public interface PointRepository extends JpaRepository<Point, Long> {
+public interface PointRepository extends JpaRepository<Point, Long>, PointRepositoryCustom {
     Optional<Point> findByMember(Member member);
 
 }
