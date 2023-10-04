@@ -41,6 +41,12 @@ public class DeliveryService {
     @Transactional
     public void deleteDeliveryAddress(Long deliveryAddressId) {
         deliveryAddressRepository.deleteById(deliveryAddressId);
+
+        List<DeliveryAddress> deliveryAddressList = deliveryAddressRepository.findAll();
+
+        for(DeliveryAddress deliveryAddress : deliveryAddressList){
+            deliveryAddress.updateIsBased(true);
+        }
     }
 
     @Transactional
