@@ -92,7 +92,7 @@ public class MemberService {
     public void savePet(Member member, PetProfileReq petProfileReq, MultipartFile image) {
 
         String originUrl = null;
-        List<Pet> petList = petRepository.findAll();
+        List<Pet> petList = petRepository.findAllByMember(member);
 
         if (!image.isEmpty()) {
             originUrl = amazonS3Service.uploadPetProfileImage(image);
