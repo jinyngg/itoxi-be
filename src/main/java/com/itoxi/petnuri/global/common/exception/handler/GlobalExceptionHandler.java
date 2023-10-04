@@ -2,11 +2,7 @@ package com.itoxi.petnuri.global.common.exception.handler;
 
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INTERNAL_SERVER_ERROR;
 
-import com.itoxi.petnuri.global.common.exception.Exception400;
-import com.itoxi.petnuri.global.common.exception.Exception401;
-import com.itoxi.petnuri.global.common.exception.Exception403;
-import com.itoxi.petnuri.global.common.exception.Exception404;
-import com.itoxi.petnuri.global.common.exception.Exception500;
+import com.itoxi.petnuri.global.common.exception.*;
 import com.itoxi.petnuri.global.common.response.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.validation.ConstraintViolationException;
 
 
 @Slf4j
@@ -60,4 +58,15 @@ public class GlobalExceptionHandler {
                 new ErrorResponse(INTERNAL_SERVER_ERROR.getMessage()));
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> inValidParam(ConstraintViolationException e) {
+        log.warn(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> validationError(ValidationException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }
 }
