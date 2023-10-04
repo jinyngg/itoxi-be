@@ -9,6 +9,7 @@ import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.entity.MainCategory;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalkView;
 import com.itoxi.petnuri.domain.petTalk.entity.SubCategory;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.common.exception.Exception400;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +30,7 @@ public class PetTalkRepository {
 
     private final AmazonS3Service amazonS3Service;
     private final PetTalkJpaRepository petTalkJpaRepository;
+    private final PetTalkViewJpaRepository petTalkViewJpaRepository;
     private final PetTalkEmotionRepository petTalkEmotionRepository;
     private final MainCategoryJpaRepository mainCategoryJpaRepository;
     private final SubCategoryJpaRepository subCategoryJpaRepository;
@@ -58,10 +61,16 @@ public class PetTalkRepository {
                 page, size, mainCategoryId, subCategoryId, petType);
     }
 
-    public Page<PetTalk> loadBestPetTalkPostsByCategoryAndPetType(
+    public Page<PetTalkView> loadBestPetTalkViewsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
-        return petTalkJpaRepository.loadBestPetTalkPostsByCategoryAndPetType(
+        return petTalkJpaRepository.loadBestPetTalkViewsByCategoryAndPetType(
                 page, size, mainCategoryId, subCategoryId, petType);
+    }
+
+    public Page<PetTalk> loadBestPetTalkPostsByCategoryAndPetType(
+            List<Long> petTalkIds, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return petTalkJpaRepository.findAllByIdIn(petTalkIds, pageable);
     }
 
     public PetTalk loadPetTalkPostsDetails(Long petTalkId) {

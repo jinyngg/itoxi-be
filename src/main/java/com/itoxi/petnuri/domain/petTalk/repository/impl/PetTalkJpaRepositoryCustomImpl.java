@@ -3,11 +3,21 @@ package com.itoxi.petnuri.domain.petTalk.repository.impl;
 import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.ACTIVE;
 
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalkView;
 import com.itoxi.petnuri.domain.petTalk.entity.QPetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.QPetTalkEmotion;
+import com.itoxi.petnuri.domain.petTalk.entity.QPetTalkView;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkJpaRepositoryCustom;
+import com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -30,7 +40,7 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
     private final JPAQueryFactory queryFactory;
 
     QPetTalk qPetTalk = QPetTalk.petTalk;
-    QPetTalkEmotion qPetTalkEmotion = QPetTalkEmotion.petTalkEmotion;
+    QPetTalkView qPetTalkView = QPetTalkView.petTalkView;
 
     @Override
     public Page<PetTalk> loadLatestPetTalkPostsByCategoryAndPetType(
@@ -54,59 +64,24 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
     }
 
     @Override
-    public Page<PetTalk> loadBestPetTalkPostsByCategoryAndPetType(
+    public Page<PetTalkView> loadBestPetTalkViewsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
         Pageable pageable = PageRequest.of(page, size);
 
-//        Expression<Long> emojiCountSubquery = JPAExpressions.select(qPetTalkEmotion.petTalk.count())
-//                .from(qPetTalkEmotion)
-//                .where(qPetTalkEmotion.petTalk.eq(qPetTalk));
-//
-//        List<PetTalk> petTalks = queryFactory
-//                .selectFrom(qPetTalk)
-//                .leftJoin(qPetTalkEmotion).on(qPetTalk.id.eq(qPetTalkEmotion.petTalk.id))
-//                .where(eqActive()
-//                        .and(qPetTalk.createdAt.after(LocalDateTime.now().minusDays(3)))
-//                        .and(qPetTalk.petType.eq(petType)))
-//                .orderBy(new OrderSpecifier<>(Order.DESC, emojiCountSubquery)) // Order by the calculated score
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .fetch();
-
-        List<PetTalk> petTalks = queryFactory
-                .selectFrom(qPetTalk)
-                .where(eqActive()
-                        .and(recentlyCreated())
-                        .and(eqPetType(petType)))
+        List<PetTalkView> petTalkViews = queryFactory
+                .selectFrom(qPetTalkView)
+                .where(eqViewActive()
+                        .and(eqViewMainCategory(mainCategoryId))
+                        .and(eqViewSubCategory(subCategoryId))
+                        .and(eqViewPetType(petType))
+                        .and(recentlyCreated()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        // Ranking Algorithm
-        List<PetTalk> sortedPetTalks = petTalks.stream()
-                .sorted((current, next) -> {
-                    Long currentEmojiCount = current.getEmojiCount();
-                    Long nextEmojiCount = next.getEmojiCount();
+        long totalCount = petTalkViews.size();
 
-                    LocalDateTime currentCreatedAt = current.getCreatedAt();
-                    LocalDateTime nextCreatedAt = next.getCreatedAt();
-
-                    long currentHoursElapsed = Duration.between(currentCreatedAt, LocalDateTime.now()).toHours();
-                    long nextHoursElapsed = Duration.between(nextCreatedAt, LocalDateTime.now()).toHours();
-
-                    double currentScore = (currentEmojiCount - 1) / Math.pow(currentHoursElapsed + 2, 2);
-                    double nextScore = (nextEmojiCount - 1) / Math.pow(nextHoursElapsed + 2, 2);
-
-                    return Double.compare(nextScore, currentScore);
-                })
-                .collect(Collectors.toList());
-
-        // Paging
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), sortedPetTalks.size());
-        List<PetTalk> pagePetTalks = sortedPetTalks.subList(start, end);
-
-        long totalCount = petTalks.size();
-
-        return PageableExecutionUtils.getPage(pagePetTalks, pageable, () -> totalCount);
+        return PageableExecutionUtils.getPage(petTalkViews, pageable, () -> totalCount);
     }
 
     @Override
@@ -133,10 +108,6 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
         return qPetTalk.id.eq(petTalkId);
     }
 
-    private BooleanExpression recentlyCreated() {
-        return qPetTalk.createdAt.after(LocalDateTime.now().minusDays(RECENT_DAYS));
-    }
-
     private BooleanExpression eqActive() {
         return qPetTalk.status.eq(ACTIVE);
     }
@@ -159,5 +130,33 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
         }
 
         return qPetTalk.subCategory.id.eq(subCategoryId);
+    }
+
+    private BooleanExpression eqViewActive() {
+        return qPetTalkView.status.eq(ACTIVE);
+    }
+
+    private BooleanExpression eqViewPetType(PetType petType) {
+        return qPetTalkView.petType.eq(petType);
+    }
+
+    private BooleanExpression eqViewMainCategory(Long mainCategoryId) {
+        if (mainCategoryId == null) {
+            return null;
+        }
+
+        return qPetTalkView.mainCategoryId.eq(mainCategoryId);
+    }
+
+    private BooleanExpression eqViewSubCategory(Long subCategoryId) {
+        if (subCategoryId == null) {
+            return null;
+        }
+
+        return qPetTalkView.subCategoryId.eq(subCategoryId);
+    }
+
+    private BooleanExpression recentlyCreated() {
+        return qPetTalkView.createdAt.after(LocalDateTime.now().minusDays(RECENT_DAYS));
     }
 }

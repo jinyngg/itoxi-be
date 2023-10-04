@@ -5,13 +5,16 @@ import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.MISMATCH_
 import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.dto.request.WritePetTalkRequest;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalkView;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import com.itoxi.petnuri.domain.petTalk.type.OrderType;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.redis.RedisService;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -64,8 +67,15 @@ public class PetTalkService {
         boolean isNonMember = (member == null);
         switch (order) {
             case BEST:
-                Page<PetTalk> bestPetTalks = petTalkRepository.loadBestPetTalkPostsByCategoryAndPetType(
+                Page<PetTalkView> petTalkViews = petTalkRepository.loadBestPetTalkViewsByCategoryAndPetType(
                         page, size, mainCategoryId, subCategoryId, petType);
+
+                Page<PetTalk> bestPetTalks =
+                        petTalkRepository.loadBestPetTalkPostsByCategoryAndPetType(
+                                petTalkViews.stream()
+                                        .map(PetTalkView::getPetTalkId)
+                                        .collect(Collectors.toList()), page, size);
+
                 if (isNonMember) {
                     return bestPetTalks;
                 }
