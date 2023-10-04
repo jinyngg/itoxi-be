@@ -10,6 +10,7 @@ import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 public class RewardChallengerController {
     private final RewardChallengerService rewardChallengerService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{challengeId}/join/my")
     public ResponseEntity<GetMyRewardChallengeJoinResp> getMyJoin(
             @PathVariable @ValidId Long challengeId,
@@ -32,6 +34,7 @@ public class RewardChallengerController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{challengeId}/join/other")
     public ResponseEntity<GetOtherRewardChallengeJoinResp> getOtherJoin(
             @PathVariable @ValidId Long challengeId,
@@ -42,6 +45,7 @@ public class RewardChallengerController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/{challengeId}/join")
     public ResponseEntity<Object> create(
             @PathVariable @ValidId Long challengeId,

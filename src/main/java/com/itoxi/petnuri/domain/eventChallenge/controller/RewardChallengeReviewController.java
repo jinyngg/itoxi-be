@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 public class RewardChallengeReviewController {
     private final RewardChallengeReviewService reviewService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping(
             path = "/{challengeId}/review",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}

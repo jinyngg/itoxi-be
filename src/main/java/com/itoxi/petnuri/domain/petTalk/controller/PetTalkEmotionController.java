@@ -10,6 +10,7 @@ import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 public class PetTalkEmotionController {
     private final PetTalkEmotionService petTalkEmotionService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/{petTalkId}/emotion")
     public ResponseEntity<Object> create(
             @PathVariable @ValidId Long petTalkId,
@@ -34,6 +36,7 @@ public class PetTalkEmotionController {
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/{petTalkId}/emotion")
     public ResponseEntity<Object> delete(
             @PathVariable @ValidId Long petTalkId,
