@@ -11,4 +11,6 @@ public interface DeliveryAddressRepository extends JpaRepository<DeliveryAddress
     Optional<DeliveryAddress> findByMember(Member member);
 
     List<DeliveryAddress> findAllByMember(Member member);
+
+    int countByMember(Member member);
 }

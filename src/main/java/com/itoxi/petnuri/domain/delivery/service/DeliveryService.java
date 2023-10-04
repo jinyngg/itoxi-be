@@ -45,7 +45,7 @@ public class DeliveryService {
 
     @Transactional
     public void save(Member member, SaveAddressReq request) {
-        if (deliveryAddressRepository.count() >= 2) {
+        if (deliveryAddressRepository.countByMember(member) >= 2) {
             throw new Exception400(ErrorCode.FULL_ADDRESS);
         }
         DeliveryAddress deliveryAddress = deliveryAddressRepository.findByMember(member)
