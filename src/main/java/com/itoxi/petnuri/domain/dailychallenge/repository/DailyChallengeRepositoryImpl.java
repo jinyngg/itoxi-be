@@ -102,10 +102,10 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
     }
 
 
-    // 회원이 로그인 하지 않았다면 인증글 작성 여부를 false가 되도록 리턴.
+    // 로그인 하지 않은 유저는 존재할 수 없는 id 0과 비교.
     private BooleanExpression memberEq(QMember qMember, Member loginMember) {
         if (loginMember == null) {
-            return qMember.isNull();
+            return qMember.id.eq(0L);
         }
         return qMember.id.eq(loginMember.getId());
     }
