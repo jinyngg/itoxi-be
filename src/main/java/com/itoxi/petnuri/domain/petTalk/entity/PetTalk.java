@@ -74,10 +74,10 @@ public class PetTalk extends BaseTimeEntity {
     private boolean reacted; // 로그인된 사용자 이모지 반응 boolean 값
 
     @Transient
-    private Long emojiCount;
+    private Long emojiCount = 0L;
 
     @Transient
-    private Long replyCount;
+    private Long replyCount = 0L;
 
     public static PetTalk createByChallengeReview(
             Member member, String challengeTitle, String content, MainCategory mainCategory, PetType petType
@@ -97,17 +97,17 @@ public class PetTalk extends BaseTimeEntity {
     }
 
     public PetTalk addEmojiCount() {
-        this.emojiCount += 1;
+        this.emojiCount += 1L;
         return this;
     }
 
     public PetTalk subtractEmojiCount() {
-        this.emojiCount -= 1;
+        this.emojiCount -= 1L;
         return this;
     }
 
     public PetTalk addReplyCount() {
-        this.replyCount += 1;
+        this.replyCount += 1L;
         return this;
     }
 
