@@ -4,15 +4,13 @@ import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.common.customValid.valid.ValidEnum;
 import lombok.Getter;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 @Getter
 public class WriteReviewReq {
     @ValidEnum(enumClass = PetType.class)
     private PetType petType;
 
-    @Min(15)
-    @Max(500)
+    @Size(min = 15, max = 500, message = "글자수는 15~500자 이어야 합니다.")
     private String content;
 }
