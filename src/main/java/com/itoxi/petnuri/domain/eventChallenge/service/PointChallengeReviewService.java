@@ -72,8 +72,8 @@ public class PointChallengeReviewService {
                         request.getPetType());
 
         // 7-3. 펫톡 게시글 저장
+        petTalkRepository.uploadPetTalkPhoto(file, petTalk);
         petTalkRepository.write(petTalk);
-        petTalkRepository.uploadPetTalkPhotos(new MultipartFile[]{file}, petTalk);
     }
 
     @Transactional(readOnly = true)
