@@ -43,24 +43,24 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
     QPetTalkView qPetTalkView = QPetTalkView.petTalkView;
 
     @Override
-    public Page<PetTalk> loadLatestPetTalkPostsByCategoryAndPetType(
+    public Page<PetTalkView> loadLatestPetTalkViewsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
         Pageable pageable = PageRequest.of(page, size);
 
-        List<PetTalk> petTalks = queryFactory
-                .selectFrom(qPetTalk)
-                .where(eqActive()
-                        .and(eqMainCategory(mainCategoryId))
-                        .and(eqSubCategory(subCategoryId))
-                        .and(eqPetType(petType)))
-                .orderBy(qPetTalk.updatedAt.desc())
+        List<PetTalkView> petTalkViews = queryFactory
+                .selectFrom(qPetTalkView)
+                .where(eqViewActive()
+                        .and(eqViewMainCategory(mainCategoryId))
+                        .and(eqViewSubCategory(subCategoryId))
+                        .and(eqViewPetType(petType)))
+                .orderBy(qPetTalkView.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long totalCount = petTalks.size();
+        long totalCount = petTalkViews.size();
 
-        return PageableExecutionUtils.getPage(petTalks, pageable, () -> totalCount);
+        return PageableExecutionUtils.getPage(petTalkViews, pageable, () -> totalCount);
     }
 
     @Override
@@ -85,13 +85,18 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
     }
 
     @Override
-    public Optional<PetTalk> loadPetTalkPostsDetails(Long petTalkId) {
-        return Optional.ofNullable(
-                queryFactory
-                        .selectFrom(qPetTalk)
-                        .where(eqActive()
-                                .and(eqPetTalkId(petTalkId)))
-                        .fetchOne());
+    public Optional<PetTalkView> loadPetTalkPostsDetails(Long petTalkId) {
+//        return Optional.ofNullable(
+//                queryFactory
+//                        .selectFrom(qPetTalk)
+//                        .where(eqActive()
+//                                .and(eqPetTalkId(petTalkId)))
+//                        .fetchOne());
+        return Optional.ofNullable(queryFactory
+                .selectFrom(qPetTalkView)
+                .where(eqViewActive()
+                        .and(eqViewPetTalkId(petTalkId)))
+                .fetchOne());
     }
 
     @Override
@@ -108,28 +113,8 @@ public class PetTalkJpaRepositoryCustomImpl implements PetTalkJpaRepositoryCusto
         return qPetTalk.id.eq(petTalkId);
     }
 
-    private BooleanExpression eqActive() {
-        return qPetTalk.status.eq(ACTIVE);
-    }
-
-    private BooleanExpression eqPetType(PetType petType) {
-        return qPetTalk.petType.eq(petType);
-    }
-
-    private BooleanExpression eqMainCategory(Long mainCategoryId) {
-        if (mainCategoryId == null) {
-            return null;
-        }
-
-        return qPetTalk.mainCategory.id.eq(mainCategoryId);
-    }
-
-    private BooleanExpression eqSubCategory(Long subCategoryId) {
-        if (subCategoryId == null) {
-            return null;
-        }
-
-        return qPetTalk.subCategory.id.eq(subCategoryId);
+    private BooleanExpression eqViewPetTalkId(Long petTalkId) {
+        return qPetTalkView.petTalkId.eq(petTalkId);
     }
 
     private BooleanExpression eqViewActive() {

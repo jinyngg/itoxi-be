@@ -8,13 +8,13 @@ import org.springframework.data.domain.Page;
 
 public interface PetTalkJpaRepositoryCustom {
 
-    Page<PetTalk> loadLatestPetTalkPostsByCategoryAndPetType(
+    Page<PetTalkView> loadLatestPetTalkViewsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType);
 
     Page<PetTalkView> loadBestPetTalkViewsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType);
 
-    Optional<PetTalk> loadPetTalkPostsDetails(Long petTalkId);
+    Optional<PetTalkView> loadPetTalkPostsDetails(Long petTalkId);
 
     void addViewCountFromRedis(Long petTalkId, Long petTalkViewCount);
 
