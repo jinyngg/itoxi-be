@@ -63,7 +63,7 @@ public class MemberService {
             // 사진이 들어왔을 경우
             originImageUrl = amazonS3Service.uploadProfileImage(file);
         }
-        String changeNickname = request.getNickName();
+        String changeNickname = request.getNickname();
         member.updateProfile(changeNickname, originImageUrl);
         memberRepository.save(member);
 
@@ -146,8 +146,14 @@ public class MemberService {
 
     @Transactional
     public void withdraw(Member member, String accessToken) {
-        memberRepository.delete(member);
-        invalidatedToken(accessToken);
+        try {
+            memberRepository.delete(member);
+            memberRepository.flush();
+
+            invalidatedToken(accessToken);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void invalidatedToken(String accessToken) {

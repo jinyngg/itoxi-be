@@ -7,6 +7,8 @@ import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkReply;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkReplyRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
+import com.itoxi.petnuri.global.common.exception.Exception400;
+import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +30,11 @@ public class PetTalkReplyService {
         // 자식 댓글인 경우 부모 update
         if (request.getParentId() != null) {
             PetTalkReply parent = petTalkReplyRepository.findById(request.getParentId())
-                    .orElseThrow(() -> new RuntimeException("존재하지 않는 댓글입니다"));
+                    .orElseThrow(() -> new Exception400(ErrorCode.REPLY_NOT_FOUND));
 
             // 같은 게시글에 대한 댓글인지 체크
             if (!parent.getPetTalk().equals(petTalkReply.getPetTalk())) {
-                throw new RuntimeException("게시글 id가 다릅니다");
+                throw new Exception400(ErrorCode.MISMATCH_PET_TALK_ID);
             }
 
             petTalkReply.updateParent(parent);

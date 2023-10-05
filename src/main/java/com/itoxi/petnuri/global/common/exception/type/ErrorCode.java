@@ -38,6 +38,10 @@ public enum ErrorCode {
     DUPLICATED_NICKNAME("이미 사용중인 닉네임입니다."),
     REFERRAL_CODE_NOT_FOUND("잘못된 추천인 코드입니다."),
     POINT_NOT_FOUND("회원 포인트 정보를 찾을 수 없습니다."),
+    DUPLICATED_DATA("이미 등록된 데이터입니다."),
+    DATA_NOT_FOUND("존재하지 않는 데이터입니다."),
+    REPLY_NOT_FOUND("존재하지 않는 댓글입니다"),
+    MISMATCH_PET_TALK_ID("게시글 id가 다릅니다"),
 
     // 회원
     NOT_FOUND_MEMBER_ID("존재하지 않는 회원 ID 입니다."),

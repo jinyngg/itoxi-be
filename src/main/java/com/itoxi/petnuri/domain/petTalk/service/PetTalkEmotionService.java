@@ -7,6 +7,9 @@ import com.itoxi.petnuri.domain.petTalk.entity.PetTalkEmotion;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkEmotionRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import com.itoxi.petnuri.domain.petTalk.type.EmojiType;
+import com.itoxi.petnuri.global.common.exception.Exception400;
+import com.itoxi.petnuri.global.common.exception.Exception404;
+import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +28,7 @@ public class PetTalkEmotionService {
         boolean isExists = petTalkEmotionRepository.existsByMemberAndPetTalkAndEmoji(member,
                 petTalk, request.getEmoji());
         if (isExists) {
-            throw new RuntimeException("이미 등록된 데이터입니다.");
+            throw new Exception400(ErrorCode.DUPLICATED_DATA);
         }
 
         PetTalkEmotion petTalkEmotion = PetTalkEmotion.create(member, petTalk, request.getEmoji());
@@ -39,7 +42,7 @@ public class PetTalkEmotionService {
 
         PetTalkEmotion petTalkEmotion = petTalkEmotionRepository.findByMemberAndPetTalkAndEmoji(member,
                         petTalk, emoji)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 데이터입니다."));
+                .orElseThrow(() -> new Exception400(ErrorCode.DATA_NOT_FOUND));
 
         petTalkRepository.subtractEmojiCount(petTalk);
         petTalkEmotionRepository.delete(petTalkEmotion);
