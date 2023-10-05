@@ -2,6 +2,7 @@ package com.itoxi.petnuri.domain.eventChallenge.repository;
 
 import static com.itoxi.petnuri.domain.eventChallenge.type.EventChallengeType.POINT;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_EVENT_CHALLENGE_ID;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_MEMBER_ID;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.NOT_FOUND_MEMBER_REVIEW;
 
 import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallenge;
@@ -9,6 +10,10 @@ import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallengeReview;
 import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallengeReward;
 import com.itoxi.petnuri.domain.eventChallenge.type.PointChallengeStatus;
 import com.itoxi.petnuri.domain.member.entity.Member;
+import com.itoxi.petnuri.domain.point.entity.Point;
+import com.itoxi.petnuri.domain.point.entity.PointHistory;
+import com.itoxi.petnuri.domain.point.repository.PointHistoryRepository;
+import com.itoxi.petnuri.domain.point.repository.PointRepository;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
 import java.util.List;
@@ -24,10 +29,29 @@ public class PointChallengeRepository {
     private final PointChallengeJpaRepository pointChallengeJpaRepository;
     private final PointChallengeReviewJpaRepository pointChallengeReviewJpaRepository;
     private final PointChallengeRewardJpaRepository pointChallengeRewardJpaRepository;
+    private final PointRepository pointRepository;
+    private final PointHistoryRepository pointHistoryRepository;
+
+    public Point getPointByMember(Member member) {
+        return pointRepository.findByMember(member)
+                .orElseThrow(() -> new Exception400(NOT_FOUND_MEMBER_ID));
+    }
+
+    public void savePointsByPointHistories(List<PointHistory> pointHistories) {
+        pointHistoryRepository.saveAll(pointHistories);
+    }
 
     public PointChallenge getPointChallengeById(Long pointChallengeId) {
         return pointChallengeJpaRepository.findById(pointChallengeId)
                 .orElseThrow(() -> new Exception400(NOT_FOUND_EVENT_CHALLENGE_ID));
+    }
+
+    public void updateWrittenReviewToday(PointChallenge pointChallenge, Member reviewer) {
+        boolean isWrittenReviewToday =
+                pointChallengeReviewJpaRepository.existsTodayReviewByPointChallengeAndReviewer(
+                        pointChallenge, reviewer);
+
+        pointChallenge.updateWrittenReviewToday(isWrittenReviewToday);
     }
 
     public void updatePointChallenge(PointChallenge pointChallenge) {

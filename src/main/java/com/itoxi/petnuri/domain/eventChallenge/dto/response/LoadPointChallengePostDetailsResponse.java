@@ -28,6 +28,8 @@ public class LoadPointChallengePostDetailsResponse {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    private boolean isWrittenReviewToday;
+
     public static LoadPointChallengePostDetailsResponse fromEntity(PointChallenge pointChallenge) {
         return LoadPointChallengePostDetailsResponse.builder()
                 .id(pointChallenge.getId())
@@ -41,6 +43,7 @@ public class LoadPointChallengePostDetailsResponse {
                 .status(pointChallenge.getStatus())
                 .startDate(pointChallenge.getStartDate())
                 .endDate(pointChallenge.getEndDate())
+                .isWrittenReviewToday(pointChallenge.isWrittenReviewToday())
                 .build();
     }
 

@@ -144,3 +144,36 @@ CREATE TABLE challenge_delivery
     FOREIGN KEY (member_id) REFERENCES member (member_id),
     FOREIGN KEY (challenge_product_id) REFERENCES challenge_product (challenge_product_id)
 );
+
+CREATE VIEW pet_talk_view AS
+SELECT
+    pt.pet_talk_id AS pet_talk_id, pt.title, pt.content, pt.pet_type, pt.status, pt.created_at,
+    pt.member_id, pt.main_category_id, pt.sub_category_id, pt.view_count,
+    COUNT(CASE WHEN pe.emoji = 'CUTE' THEN 1 ELSE NULL END) AS cute_count,
+    COUNT(CASE WHEN pe.emoji = 'FUN' THEN 1 ELSE NULL END) AS fun_count,
+    COUNT(CASE WHEN pe.emoji = 'KISS' THEN 1 ELSE NULL END) AS kiss_count,
+    COUNT(CASE WHEN pe.emoji = 'OMG' THEN 1 ELSE NULL END) AS omg_count,
+    COUNT(CASE WHEN pe.emoji = 'SAD' THEN 1 ELSE NULL END) AS sad_count,
+    (
+        IFNULL(
+            (
+                (COUNT(CASE WHEN pe.emoji = 'CUTE' THEN 1 ELSE NULL END) + COUNT(CASE WHEN pe.emoji = 'FUN' THEN 1 ELSE NULL END) +
+                COUNT(CASE WHEN pe.emoji = 'KISS' THEN 1 ELSE NULL END) + COUNT(CASE WHEN pe.emoji = 'OMG' THEN 1 ELSE NULL END) +
+                COUNT(CASE WHEN pe.emoji = 'SAD' THEN 1 ELSE NULL END) - 1)
+                /
+                POWER((TIMESTAMPDIFF(HOUR, pt.created_at, NOW()) + 2), 2)
+            ),
+                -100
+            )
+    ) AS score,
+    (
+            COUNT(CASE WHEN pe.emoji = 'CUTE' THEN 1 ELSE NULL END) + COUNT(CASE WHEN pe.emoji = 'FUN' THEN 1 ELSE NULL END) +
+            COUNT(CASE WHEN pe.emoji = 'KISS' THEN 1 ELSE NULL END) + COUNT(CASE WHEN pe.emoji = 'OMG' THEN 1 ELSE NULL END) +
+            COUNT(CASE WHEN pe.emoji = 'SAD' THEN 1 ELSE NULL END)
+        ) AS total_emoji_count,
+    COUNT(pr.pet_talk_reply_id) AS reply_count
+FROM pet_talk pt
+         LEFT JOIN pet_talk_emotion pe ON pt.pet_talk_id = pe.pet_talk_id
+         LEFT JOIN pet_talk_reply pr ON pt.pet_talk_id = pr.pet_talk_id
+GROUP BY pt.pet_talk_id, pt.title, pt.content, pt.view_count, pt.created_at, pt.pet_type, pt.status, pt.member_id, pt.main_category_id, pt.sub_category_id
+ORDER BY score DESC;

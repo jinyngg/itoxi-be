@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,6 +69,13 @@ public class PointChallenge extends BaseTimeEntity {
     @Builder.Default
     @Column(name = "is_saved")
     private boolean saved = false;
+
+    @Transient
+    private boolean writtenReviewToday = false;
+
+    public void updateWrittenReviewToday(boolean isWrittenReviewToday) {
+        this.writtenReviewToday = isWrittenReviewToday;
+    }
 
     public void save() {
         this.saved = true;

@@ -10,6 +10,8 @@ import com.itoxi.petnuri.domain.eventChallenge.entity.PointChallengeReward;
 import com.itoxi.petnuri.domain.eventChallenge.repository.PointChallengeRepository;
 import com.itoxi.petnuri.domain.eventChallenge.type.PointChallengeStatus;
 import com.itoxi.petnuri.domain.member.entity.Member;
+import com.itoxi.petnuri.domain.point.entity.Point;
+import com.itoxi.petnuri.domain.point.entity.PointHistory;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.component.FileUploadComponent;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
@@ -85,23 +87,30 @@ public class EventChallengeScheduler {
             PointChallenge key = entry.getKey();
             List<Member> value = entry.getValue();
             List<PointChallengeReward> pointChallengeRewards = new ArrayList<>();
+            List<PointHistory> pointHistories = new ArrayList<>();
+
+            Long pointToReward = key.getPoint();
+            String pointMethod = key.getPointMethod().getDescription();
 
             for (Member member : value) {
                 pointChallengeRewards.add(PointChallengeReward.builder()
                         .pointChallenge(key)
                         .member(member)
                         .build());
+
+                // 3-1. 포인트 적립
+                Point point = pointChallengeRepository.getPointByMember(member);
+                PointHistory pointHistory = PointHistory.createGetPointHistory(point, pointToReward, pointMethod);
+                pointHistories.add(pointHistory);
             }
 
-            // 3-1. 챌린지 리워드 저장
+            // 3-2. 챌린지 리워드 저장
             pointChallengeRepository.updatePointChallengeRewards(pointChallengeRewards);
+            pointChallengeRepository.savePointsByPointHistories(pointHistories);
 
-            // TODO
-            // 3-2. 포인트 적립
         }
     }
 
-    // TODO FLAG 추가(한 번 CSV로 작성된 파일은 더이상 작성하지 않는다.
     @Scheduled(cron = "${scheduler.event.point.upload.csv.test.cron}")
     public void UploadPointChallengeRewardCSV() {
         String pathPrefix = fileUploadComponent.getFileUploadPath();

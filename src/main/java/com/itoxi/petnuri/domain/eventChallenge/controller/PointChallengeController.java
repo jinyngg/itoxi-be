@@ -31,10 +31,11 @@ public class PointChallengeController {
 
     @GetMapping("/{pointChallengeId}")
     public ResponseEntity<LoadPointChallengePostDetailsResponse> loadPointChallengePostDetails(
+            Authentication authentication,
             @PathVariable Long pointChallengeId) {
         LoadPointChallengePostDetailsResponse data =
                 LoadPointChallengePostDetailsResponse.fromEntity(
-                        pointChallengeService.loadPointChallengePostDetails(pointChallengeId));
+                        pointChallengeService.loadPointChallengePostDetails(authentication, pointChallengeId));
 
         return ResponseEntity.ok(data);
     }
