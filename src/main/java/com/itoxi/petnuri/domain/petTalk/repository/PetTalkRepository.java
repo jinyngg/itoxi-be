@@ -143,4 +143,12 @@ public class PetTalkRepository {
     public List<PetTalk> findTopPetTalksOrderByRanking(LocalDateTime oneWeekAgo, Pageable pageable) {
         return petTalkJpaRepository.findTopPetTalksOrderByRanking(oneWeekAgo, pageable);
     }
+
+    public List<PetTalk> findAllByWriter(Member member) {
+        return petTalkJpaRepository.findAllByWriter(member);
+    }
+
+    public void deleteAll(List<PetTalk> petTalkList) {
+        petTalkJpaRepository.deleteAll(petTalkList);
+    }
 }

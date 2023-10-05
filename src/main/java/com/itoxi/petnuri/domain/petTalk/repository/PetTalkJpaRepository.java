@@ -1,5 +1,6 @@
 package com.itoxi.petnuri.domain.petTalk.repository;
 
+import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,5 @@ public interface PetTalkJpaRepository extends JpaRepository<PetTalk, Long>, PetT
 
     Page<PetTalk> findAllByIdIn(List<Long> petTalkIds, Pageable pageable);
 
+    List<PetTalk> findAllByWriter(Member member);
 }

@@ -60,7 +60,6 @@ public class PetTalk extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member writer;
 
     @OneToMany(mappedBy = "petTalk", cascade = CascadeType.ALL, orphanRemoval = true)

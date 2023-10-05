@@ -45,6 +45,7 @@ public enum ErrorCode {
 
     // 회원
     NOT_FOUND_MEMBER_ID("존재하지 않는 회원 ID 입니다."),
+    FAIL_WITHDRAW("회원 탈퇴 실패"),
 
     // 챌린지
     NOT_FOUND_CHALLENGE_ID("유효하지 않은 챌린지 ID 입니다."),

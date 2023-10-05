@@ -15,14 +15,17 @@ import com.itoxi.petnuri.domain.member.entity.Pet;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import com.itoxi.petnuri.domain.member.repository.PetRepository;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
+import com.itoxi.petnuri.domain.petTalk.repository.PetTalkReplyRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import com.itoxi.petnuri.domain.petTalk.type.PetGender;
 import com.itoxi.petnuri.global.common.exception.Exception404;
+import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
 import com.itoxi.petnuri.global.redis.RedisService;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -39,6 +42,7 @@ import java.util.stream.Collectors;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.PET_GENDER_NOT_FOUND;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.PET_NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -46,6 +50,7 @@ public class MemberService {
     private final PetRepository petRepository;
     private final MemberRepository memberRepository;
     private final PetTalkRepository petTalkRepository;
+    private final PetTalkReplyRepository petTalkReplyRepository;
     private final RewardChallengeRepository rewardChallengeRepository;
     private final DailyChallengeRepository dailyChallengeRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -147,12 +152,20 @@ public class MemberService {
     @Transactional
     public void withdraw(Member member, String accessToken) {
         try {
+            petTalkReplyRepository.deleteByWriter(member);
+            List<PetTalk> petTalkList = petTalkRepository.findAllByWriter(member);
+
+            for (PetTalk petTalk : petTalkList) {
+                petTalkReplyRepository.deleteAllByPetTalk(petTalk);
+            }
+
+            petTalkRepository.deleteAll(petTalkList);
             memberRepository.delete(member);
-            memberRepository.flush();
 
             invalidatedToken(accessToken);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
+            System.out.println(ErrorCode.FAIL_WITHDRAW);
         }
     }
 

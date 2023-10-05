@@ -27,7 +27,6 @@ public class PetTalkReply extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,7 +40,7 @@ public class PetTalkReply extends BaseTimeEntity {
     @JoinColumn(name = "parent_id")
     private PetTalkReply parent;
 
-    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PetTalkReply> children = new ArrayList<>();
 
     public static PetTalkReply create(Member writer, PetTalk petTalk, String content) {
