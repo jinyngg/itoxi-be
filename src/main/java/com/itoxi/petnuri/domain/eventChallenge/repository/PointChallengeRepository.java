@@ -32,6 +32,10 @@ public class PointChallengeRepository {
     private final PointRepository pointRepository;
     private final PointHistoryRepository pointHistoryRepository;
 
+    public Member getPointChallengeRewardMember(Long PointChallengeRewardId) {
+        return pointChallengeRewardJpaRepository.findMemberById(PointChallengeRewardId);
+    }
+
     public Point getPointByMember(Member member) {
         return pointRepository.findByMember(member)
                 .orElseThrow(() -> new Exception400(NOT_FOUND_MEMBER_ID));

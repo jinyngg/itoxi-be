@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -139,7 +138,8 @@ public class EventChallengeScheduler {
                 for (PointChallengeReward pointChallengeReward : pointChallengeRewards) {
                     sb.append(pointChallengeReward.getId()).append(",");
                     sb.append(pointChallenge.getTitle()).append(",");
-                    sb.append(pointChallengeReward.getMember().getEmail()).append(",");
+                    sb.append(pointChallengeRepository.getPointChallengeRewardMember(
+                            pointChallengeReward.getId()).getEmail()).append(",");
                     sb.append(pointChallengeReward.getRewardedAt()).append(lineBreak);
                 }
 
