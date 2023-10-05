@@ -8,7 +8,6 @@ import com.itoxi.petnuri.domain.petTalk.repository.PetTalkEmotionRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import com.itoxi.petnuri.domain.petTalk.type.EmojiType;
 import com.itoxi.petnuri.global.common.exception.Exception400;
-import com.itoxi.petnuri.global.common.exception.Exception404;
 import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
