@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface RewardChallengerRepository extends JpaRepository<RewardChallenger, Long> {
     Optional<RewardChallenger> findByChallengerAndRewardChallenge(Member challenger, RewardChallenge rewardChallenge);
 
-    List<RewardChallenger> findAllByRewardChallengeAndChallengerNot(RewardChallenge rewardChallenge, Member challenger);
+    List<RewardChallenger> findAllByRewardChallenge(RewardChallenge rewardChallenge);
 
     boolean existsByChallengerAndRewardChallenge(Member challenger, RewardChallenge rewardChallenge);
 }

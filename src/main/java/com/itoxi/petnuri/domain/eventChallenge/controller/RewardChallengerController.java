@@ -34,14 +34,11 @@ public class RewardChallengerController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{challengeId}/join/other")
     public ResponseEntity<GetOtherRewardChallengeJoinResp> getOtherJoin(
-            @PathVariable @ValidId Long challengeId,
-            @AuthenticationPrincipal PrincipalDetails principalDetails
+            @PathVariable @ValidId Long challengeId
     ) {
-        Member member = principalDetails.getMember();
-        GetOtherRewardChallengeJoinResp response = rewardChallengerService.getOtherJoin(member, challengeId);
+        GetOtherRewardChallengeJoinResp response = rewardChallengerService.getOtherJoin(challengeId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

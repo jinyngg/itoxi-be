@@ -51,27 +51,27 @@ public class RewardChallengerService {
     }
 
     @Transactional(readOnly = true)
-    public GetOtherRewardChallengeJoinResp getOtherJoin(Member member, Long challengeId) {
+    public GetOtherRewardChallengeJoinResp getOtherJoin(Long challengeId) {
         // 챌린지
         RewardChallenge rewardChallenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new Exception404(NOT_FOUND_CHALLENGE_ID));
 
-        List<GetOtherRewardChallengeJoinResp.JoinMemberDTO> JoinMembers = getJoinMembers(rewardChallenge, member);
+        List<GetOtherRewardChallengeJoinResp.JoinMemberDTO> JoinMembers = getJoinMembers(rewardChallenge);
         return new GetOtherRewardChallengeJoinResp(JoinMembers);
     }
 
     @Transactional(readOnly = true)
-    public List<GetOtherRewardChallengeJoinResp.JoinMemberDTO> getJoinMembers(RewardChallenge rewardChallenge, Member member) {
+    public List<GetOtherRewardChallengeJoinResp.JoinMemberDTO> getJoinMembers(RewardChallenge rewardChallenge) {
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(rewardChallenge.getReviewStartDate())) {
             // 신청 ~ 키트 수령기간
-            List<RewardChallenger> challengers = challengerRepository.findAllByRewardChallengeAndChallengerNot(rewardChallenge, member);
+            List<RewardChallenger> challengers = challengerRepository.findAllByRewardChallenge(rewardChallenge);
             return challengers.stream()
                     .map(GetOtherRewardChallengeJoinResp.JoinMemberDTO::new)
                     .collect(Collectors.toList());
         } else {
             // 리뷰 작성 기간
-            List<RewardChallengeReview> reviews = reviewRepository.findAllByRewardChallengeAndChallengerNot(rewardChallenge, member);
+            List<RewardChallengeReview> reviews = reviewRepository.findAllByRewardChallenge(rewardChallenge);
             return reviews.stream()
                     .map(GetOtherRewardChallengeJoinResp.JoinMemberDTO::new)
                     .collect(Collectors.toList());

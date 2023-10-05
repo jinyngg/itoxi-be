@@ -10,5 +10,5 @@ import java.util.List;
 public interface RewardChallengeReviewRepository extends JpaRepository<RewardChallengeReview, Long> {
     boolean existsByChallengerAndRewardChallengeId(Member challenger, Long rewardChallengeId);
 
-    List<RewardChallengeReview> findAllByRewardChallengeAndChallengerNot(RewardChallenge rewardChallenge, Member challenger);
+    List<RewardChallengeReview> findAllByRewardChallenge(RewardChallenge rewardChallenge);
 }
