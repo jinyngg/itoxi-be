@@ -3,7 +3,6 @@ package com.itoxi.petnuri.domain.petTalk.controller;
 import com.itoxi.petnuri.domain.petTalk.dto.request.WritePetTalkRequest;
 import com.itoxi.petnuri.domain.petTalk.dto.response.LoadPetTalkPostDetailsResponse;
 import com.itoxi.petnuri.domain.petTalk.dto.response.LoadPetTalkPostsResponse;
-import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkView;
 import com.itoxi.petnuri.domain.petTalk.service.PetTalkService;
 import com.itoxi.petnuri.domain.petTalk.type.OrderType;
@@ -17,14 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -37,7 +29,7 @@ public class PetTalkPostController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Object> write(
-            @RequestPart MultipartFile[] files,
+            @RequestPart(required = false) MultipartFile[] files,
             @RequestPart WritePetTalkRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         petTalkService.write(principalDetails, files, request);
