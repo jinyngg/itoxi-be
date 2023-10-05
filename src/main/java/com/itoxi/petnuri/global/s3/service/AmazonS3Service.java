@@ -1,11 +1,13 @@
 package com.itoxi.petnuri.global.s3.service;
 
 import static com.itoxi.petnuri.domain.eventChallenge.type.EventChallengeType.POINT;
+import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.FILE_TRANSFER_ERROR;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
+import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.common.exception.Exception500;
 import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
 import com.itoxi.petnuri.domain.eventChallenge.type.EventChallengeType;
@@ -72,13 +74,37 @@ public class AmazonS3Service {
                         .petTalk(petTalk)
                         .build());
             }
-
+            log.info("[펫톡] 이미지 업로드 완료");
+            return petTalkPhotos;
         } catch (Exception e) {
             log.error("[펫톡] 이미지 업로드 중 오류 발생 : " + e.getMessage());
+            throw new Exception400(FILE_TRANSFER_ERROR);
         }
+    }
 
-        log.info("[펫톡] 이미지 업로드 완료");
-        return petTalkPhotos;
+    @Transactional
+    public List<PetTalkPhoto> uploadPetTalkPhoto(MultipartFile file, PetTalk petTalk) {
+        try {
+            log.info("[펫톡] 이미지 업로드 진행");
+
+            String originalFilename = file.getOriginalFilename();
+            String imageUrl = uploadMultipartFileToBucket(PET_TALK_PHOTO_PREFIX, file);
+
+            PetTalkPhoto petTalkPhoto = PetTalkPhoto.builder()
+                    .name(originalFilename)
+                    .url(imageUrl)
+                    .petTalk(petTalk)
+                    .build();
+
+            log.info("[펫톡] 이미지 업로드 완료");
+
+            List<PetTalkPhoto> petTalkPhotos = new ArrayList<>();
+            petTalkPhotos.add(petTalkPhoto);
+            return petTalkPhotos;
+        } catch (Exception e) {
+            log.error("[펫톡] 이미지 업로드 중 오류 발생 : " + e.getMessage());
+            throw new Exception400(FILE_TRANSFER_ERROR);
+        }
     }
 
     public String uploadPointChallengeCSV(File file) {

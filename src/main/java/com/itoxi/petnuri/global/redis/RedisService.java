@@ -3,6 +3,7 @@ package com.itoxi.petnuri.global.redis;
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_OR_EXPIRED_KEY;
 
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalkView;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.util.JsonConverter;
 import java.time.Duration;
@@ -62,16 +63,17 @@ public class RedisService {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
 
-    public void increasePetTalkViewCountToRedis(PetTalk petTalk) {
-            String key = "PetTalkViewCount::" + petTalk.getId();
+    public void increasePetTalkViewCountToRedis(PetTalkView petTalkView) {
+            String key = "PetTalkViewCount::" + petTalkView.getPetTalkId();
             ValueOperations<String, String> vop = redisTemplate.opsForValue();
             if (vop.get(key) == null) {
             vop.set(
                     key,
-                    String.valueOf(petTalk.getViewCount() + 1),
+                    String.valueOf(petTalkView.getViewCount() + 1),
                     Duration.ofMinutes(TIME_TO_UPDATE_VIEW_COUNT));
         } else {
             vop.increment(key);
         }
     }
+
 }
