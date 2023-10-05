@@ -30,6 +30,10 @@ public class PointChallengeRepository {
                 .orElseThrow(() -> new Exception400(NOT_FOUND_EVENT_CHALLENGE_ID));
     }
 
+    public void updatePointChallenge(PointChallenge pointChallenge) {
+        pointChallengeJpaRepository.save(pointChallenge);
+    }
+
     public void writePointChallengePost(PointChallenge pointChallenge) {
         pointChallengeJpaRepository.save(pointChallenge);
     }
@@ -82,7 +86,7 @@ public class PointChallengeRepository {
     }
 
     public List<PointChallenge> getPointChallengeByStatus(PointChallengeStatus status) {
-        return pointChallengeJpaRepository.findAllByStatus(status);
+        return pointChallengeJpaRepository.findAllBySavedAndStatus(false, status);
     }
 
     public List<PointChallenge> getPointChallengeExceptClosed() {
