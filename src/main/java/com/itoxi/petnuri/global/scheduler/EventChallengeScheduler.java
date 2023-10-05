@@ -115,7 +115,8 @@ public class EventChallengeScheduler {
                 List<PointChallengeReward> pointChallengeRewards =
                         pointChallengeRepository.getPointChallengesRewardByPointChallenge(pointChallenge);
 
-                String filename = pathPrefix + UUID.randomUUID().toString();
+                String filename =
+                        pathPrefix + pointChallenge.getId();
                 File file = new File(filename);
                 BufferedWriter bw = new BufferedWriter(new FileWriter(file));
                 String lineBreak = System.lineSeparator();
@@ -140,6 +141,9 @@ public class EventChallengeScheduler {
                 String url = amazonS3Service.uploadPointChallengeCSV(file);
                 log.info("CSV URL : " + url);
                 file.delete();
+
+                pointChallenge.save();
+                pointChallengeRepository.updatePointChallenge(pointChallenge);
             }
 
         } catch (Exception e) {
