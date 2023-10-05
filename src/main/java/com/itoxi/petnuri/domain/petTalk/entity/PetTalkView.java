@@ -2,18 +2,14 @@ package com.itoxi.petnuri.domain.petTalk.entity;
 
 import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.ACTIVE;
 
+import com.itoxi.petnuri.domain.member.entity.Member;
 import com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,6 +35,9 @@ public class PetTalkView {
     @Column(name = "sub_category_id")
     private Long subCategoryId;
 
+    @Column(name = "member_id")
+    private Long memberId;
+
     @Column(name = "title")
     private String title;
 
@@ -53,11 +52,11 @@ public class PetTalkView {
     @Enumerated(EnumType.STRING)
     private PetTalkStatus status;
 
-    @Column(name = "view_count")
-    private Long viewCount;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "view_count")
+    private Long viewCount;
 
     @Column(name = "cute_count")
     private Long cuteCount;
@@ -74,9 +73,41 @@ public class PetTalkView {
     @Column(name = "sad_count")
     private Long sadCount;
 
+    @Column(name = "total_emoji_count")
+    private Long totalEmojiCount;
+
     @Column(name = "score")
     private Double score;
 
-    @Column(name = "total_emoji_count")
-    private Long totalEmojiCount;
+    @Column(name = "reply_count")
+    private Long replyCount;
+
+    @Transient
+    private boolean reacted;
+
+    @Transient
+    private String thumbnail;
+
+    @Transient
+    private Member writer;
+
+    @Transient
+    private List<PetTalkPhoto> petTalkPhotos = new ArrayList<>();
+
+    public void updateWriter(Member member) {
+        this.writer = member;
+    }
+
+    public void react(boolean reacted) {
+        this.reacted = reacted;
+    }
+
+    public void uploadPetTalkPhotos(List<PetTalkPhoto> petTalkPhotos) {
+        this.petTalkPhotos = petTalkPhotos;
+    }
+
+    public void uploadThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
 }
