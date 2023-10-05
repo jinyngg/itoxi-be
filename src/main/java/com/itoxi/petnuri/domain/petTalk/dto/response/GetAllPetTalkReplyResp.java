@@ -18,12 +18,14 @@ public class GetAllPetTalkReplyResp {
     @Getter
     public static class ReplyDTO {
         private final WriterDTO writer;
+        private final Long replyId;
         private final String content;
         private final LocalDateTime createdAt;
         private final TagDTO tag;
 
         public ReplyDTO(PetTalkReply reply, TagDTO tag) {
             this.writer = new WriterDTO(reply.getWriter());
+            this.replyId = reply.getId();
             this.content = reply.getContent();
             this.createdAt = reply.getCreatedAt();
             this.tag = tag;
