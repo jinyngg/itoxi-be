@@ -4,6 +4,7 @@ import com.itoxi.petnuri.domain.petTalk.dto.request.WritePetTalkRequest;
 import com.itoxi.petnuri.domain.petTalk.dto.response.LoadPetTalkPostDetailsResponse;
 import com.itoxi.petnuri.domain.petTalk.dto.response.LoadPetTalkPostsResponse;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalkView;
 import com.itoxi.petnuri.domain.petTalk.service.PetTalkService;
 import com.itoxi.petnuri.domain.petTalk.type.OrderType;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
@@ -52,7 +53,7 @@ public class PetTalkPostController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int size,
             Authentication authentication) {
-        Page<PetTalk> petTalkPosts = petTalkService.loadPetTalkPosts(
+        Page<PetTalkView> petTalkPosts = petTalkService.loadPetTalkPosts(
                 authentication, mainCategory, subCategory, petType, orderType, page, size);
 
         LoadPetTalkPostsResponse data =
@@ -64,9 +65,9 @@ public class PetTalkPostController {
     public ResponseEntity<LoadPetTalkPostDetailsResponse> loadPetTalkPostDetails(
             @PathVariable Long petTalkId,
             Authentication authentication) {
-        PetTalk petTalk = petTalkService.loadPetTalkPostDetails(authentication, petTalkId);
+        PetTalkView petTalkView = petTalkService.loadPetTalkPostDetails(authentication, petTalkId);
         LoadPetTalkPostDetailsResponse data =
-                LoadPetTalkPostDetailsResponse.fromEntity(petTalk);
+                LoadPetTalkPostDetailsResponse.fromEntity(petTalkView);
         return ResponseEntity.ok(data);
     }
 
