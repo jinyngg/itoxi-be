@@ -23,7 +23,7 @@ public class PointRepositoryImpl implements PointRepositoryCustom {
     public PointResponse findPointByMemberId(Long memberId) {
         return queryFactory
                 .select(Projections.constructor(PointResponse.class,
-                        member.id.as("memberId"), member.nickname, point.havePoint))
+                        member.nickname, member.profileImageUrl, point.havePoint))
                 .from(point)
                 .join(member)
                 .on(point.member.id.eq(member.id))

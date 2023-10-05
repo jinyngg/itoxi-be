@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * date           : 2023-10-05
  * description    :
  */
-//@AutoConfigureMockMvc
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Transactional
@@ -45,13 +44,13 @@ class PointRepositoryImplTest {
         // when
         PointResponse result = pointRepository.findPointByMemberId(member.getId());
 
-        System.out.println("테스트 : memberId = " + result.getMemberId());
         System.out.println("테스트 : nickname = " + result.getNickname());
+        System.out.println("테스트 : profileImageUrl = " + result.getProfileImageUrl());
         System.out.println("테스트 : point = " + result.getHavePoint());
 
         // Then
-        assertThat(result.getMemberId()).isEqualTo(member.getId());
         assertThat(result.getNickname()).isEqualTo(member.getNickname());
+        assertThat(result.getProfileImageUrl()).isEqualTo(member.getProfileImageUrl());
         assertThat(result.getHavePoint()).isEqualTo(point.getHavePoint());
     }
 

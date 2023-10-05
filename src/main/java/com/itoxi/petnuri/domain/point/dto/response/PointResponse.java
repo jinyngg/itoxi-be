@@ -13,8 +13,8 @@ import lombok.*;
 @Builder
 public class PointResponse {
 
-    private Long memberId;
     private String nickname;
+    private String profileImageUrl;
     private Long havePoint;
 
 }

@@ -26,11 +26,10 @@ public class PointController {
     private final PointService pointService;
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/{memberId}")
+    @GetMapping("/get")
     public ResponseEntity getPoint(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable @ValidId Long memberId) {
-        PointResponse response = pointService.getPointResponse(memberId);
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        PointResponse response = pointService.getPointResponse(principalDetails.getMember().getId());
         return ResponseEntity.ok(response);
     }
 
