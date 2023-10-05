@@ -11,6 +11,6 @@ public interface PointChallengeJpaRepository extends JpaRepository<PointChalleng
     @Query("SELECT challenge FROM PointChallenge challenge WHERE challenge.status != 'CLOSED'")
     List<PointChallenge> findAllExceptClosed();
 
-    List<PointChallenge> findAllByStatus(PointChallengeStatus status);
+    List<PointChallenge> findAllBySavedAndStatus(boolean isSaved, PointChallengeStatus status);
 
 }

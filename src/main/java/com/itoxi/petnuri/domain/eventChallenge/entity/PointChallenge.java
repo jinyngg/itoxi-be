@@ -65,6 +65,14 @@ public class PointChallenge extends BaseTimeEntity {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    @Builder.Default
+    @Column(name = "is_saved")
+    private boolean saved = false;
+
+    public void save() {
+        this.saved = true;
+    }
+
     public void uploadThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
