@@ -6,9 +6,5 @@ import lombok.Getter;
 @Getter
 public class ProfileUpdateReq {
     @ValidNickName
-    private final String nickName;
-
-    public ProfileUpdateReq(String nickName) {
-        this.nickName = nickName;
-    }
+    private String nickname;
 }
