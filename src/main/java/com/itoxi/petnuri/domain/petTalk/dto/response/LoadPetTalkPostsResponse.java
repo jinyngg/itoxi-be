@@ -3,6 +3,8 @@ package com.itoxi.petnuri.domain.petTalk.dto.response;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalkView;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,7 @@ public class LoadPetTalkPostsResponse {
 
     private List<LoadPetTalkPreviewPostResponse> petTalkPosts;
 
-    public static LoadPetTalkPostsResponse fromPage(Page<PetTalk> page) {
+    public static LoadPetTalkPostsResponse fromPage(Page<PetTalkView> page) {
         List<LoadPetTalkPreviewPostResponse> loadPetTalkPreviewPostResponses =
                 page.getContent()
                         .stream()
