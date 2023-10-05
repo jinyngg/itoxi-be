@@ -12,9 +12,9 @@ import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.redis.RedisService;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
-import java.util.List;
+
 import java.util.Objects;
-import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -53,7 +53,7 @@ public class PetTalkService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PetTalk> loadPetTalkPosts(
+    public Page<PetTalkView> loadPetTalkPosts(
             Authentication authentication, Long mainCategoryId, Long subCategoryId,
             PetType petType, OrderType order, int page, int size) {
         // 1. 로그인된 회원 정보 확인
@@ -67,36 +67,43 @@ public class PetTalkService {
         boolean isNonMember = (member == null);
         switch (order) {
             case BEST:
-                Page<PetTalkView> petTalkViews = petTalkRepository.loadBestPetTalkViewsByCategoryAndPetType(
+                Page<PetTalkView> bestPetTalks = petTalkRepository.loadBestPetTalkViewsByCategoryAndPetType(
                         page, size, mainCategoryId, subCategoryId, petType);
 
-                Page<PetTalk> bestPetTalks =
-                        petTalkRepository.loadBestPetTalkPostsByCategoryAndPetType(
-                                petTalkViews.stream()
-                                        .map(PetTalkView::getPetTalkId)
-                                        .collect(Collectors.toList()), page, size);
-
                 if (isNonMember) {
+                    bestPetTalks.stream()
+                            .filter(petTalkView -> petTalkView.getMemberId() != null)
+                            .forEach(petTalkRepository::updateWriterAndPhotosToPetTalkView);
                     return bestPetTalks;
                 }
-                petTalkRepository.updateReactedStatusByMemberAndPetTalks(bestPetTalks, member);
+                petTalkRepository.updateReactedStatusByMemberAndPetTalkViews(bestPetTalks, member);
+                bestPetTalks.stream()
+                        .filter(petTalkView -> petTalkView.getMemberId() != null)
+                        .forEach(petTalkRepository::updateWriterAndPhotosToPetTalkView);
                 return bestPetTalks;
 
             case LATEST:
-
             default:
-                Page<PetTalk> latestPetTalks = petTalkRepository.loadLatestPetTalkPostsByCategoryAndPetType(
+                Page<PetTalkView> latestPetTalks = petTalkRepository.loadLatestPetTalkPostsByCategoryAndPetType(
                         page, size, mainCategoryId, subCategoryId, petType);
+
                 if (isNonMember) {
+                    latestPetTalks.stream()
+                            .filter(petTalkView -> petTalkView.getMemberId() != null)
+                            .forEach(petTalkRepository::updateWriterAndPhotosToPetTalkView);
                     return latestPetTalks;
                 }
-                petTalkRepository.updateReactedStatusByMemberAndPetTalks(latestPetTalks, member);
+
+                petTalkRepository.updateReactedStatusByMemberAndPetTalkViews(latestPetTalks, member);
+                latestPetTalks.stream()
+                        .filter(petTalkView -> petTalkView.getMemberId() != null)
+                        .forEach(petTalkRepository::updateWriterAndPhotosToPetTalkView);
                 return latestPetTalks;
         }
     }
 
     @Transactional(readOnly = true)
-    public PetTalk loadPetTalkPostDetails(Authentication authentication, Long petTalkId) {
+    public PetTalkView loadPetTalkPostDetails(Authentication authentication, Long petTalkId) {
         // 1. 로그인된 회원 정보 확인
         Member member = null;
         if (authentication != null) {
@@ -105,17 +112,21 @@ public class PetTalkService {
         }
 
         // 2. 게시글 조회
-        PetTalk petTalk = petTalkRepository.loadPetTalkPostsDetails(petTalkId);
+        PetTalkView petTalkView = petTalkRepository.loadPetTalkPostsDetails(petTalkId);
 
         // 3. 로그인된 사용자 이모지 여부 확인
         if (member != null) {
-            petTalkRepository.updateReactedStatusByMemberAndPetTalk(petTalk, member);
+            petTalkRepository.updateReactedStatusByMemberAndPetTalk(petTalkView, member);
         }
         
         // 4. 조회수 증가
-        redisService.increasePetTalkViewCountToRedis(petTalk);
+        redisService.increasePetTalkViewCountToRedis(petTalkView);
 
-        return petTalk;
+        if (petTalkView.getMemberId() != null) {
+            petTalkRepository.updateWriterAndPhotosToPetTalkView(petTalkView);
+        }
+
+        return petTalkView;
     }
 
     @Transactional

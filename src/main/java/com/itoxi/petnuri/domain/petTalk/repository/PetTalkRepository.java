@@ -6,6 +6,7 @@ import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_P
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_SUB_CATEGORY_ID;
 
 import com.itoxi.petnuri.domain.member.entity.Member;
+import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import com.itoxi.petnuri.domain.petTalk.entity.MainCategory;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
@@ -30,10 +31,11 @@ public class PetTalkRepository {
 
     private final AmazonS3Service amazonS3Service;
     private final PetTalkJpaRepository petTalkJpaRepository;
-    private final PetTalkViewJpaRepository petTalkViewJpaRepository;
+    private final PetTalkPhotoJpaRepository petTalkPhotoJpaRepository;
     private final PetTalkEmotionRepository petTalkEmotionRepository;
     private final MainCategoryJpaRepository mainCategoryJpaRepository;
     private final SubCategoryJpaRepository subCategoryJpaRepository;
+    private final MemberRepository memberRepository;
 
     public PetTalk getById(Long petTalkId) {
         return petTalkJpaRepository.findById(petTalkId)
@@ -55,9 +57,20 @@ public class PetTalkRepository {
         petTalk.uploadPetTalkPhotos(photos);
     }
 
-    public Page<PetTalk> loadLatestPetTalkPostsByCategoryAndPetType(
+    public void uploadPetTalkPhoto(MultipartFile files, PetTalk petTalk) {
+        List<PetTalkPhoto> photos = amazonS3Service.uploadPetTalkPhoto(files, petTalk);
+
+        if (!photos.isEmpty()) {
+            String thumbnail = photos.get(0).getUrl();
+            petTalk.uploadThumbnail(thumbnail);
+        }
+
+        petTalk.uploadPetTalkPhotos(photos);
+    }
+
+    public Page<PetTalkView> loadLatestPetTalkPostsByCategoryAndPetType(
             int page, int size, Long mainCategoryId, Long subCategoryId, PetType petType) {
-        return petTalkJpaRepository.loadLatestPetTalkPostsByCategoryAndPetType(
+        return petTalkJpaRepository.loadLatestPetTalkViewsByCategoryAndPetType(
                 page, size, mainCategoryId, subCategoryId, petType);
     }
 
@@ -67,29 +80,33 @@ public class PetTalkRepository {
                 page, size, mainCategoryId, subCategoryId, petType);
     }
 
-    public Page<PetTalk> loadBestPetTalkPostsByCategoryAndPetType(
-            List<Long> petTalkIds, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return petTalkJpaRepository.findAllByIdIn(petTalkIds, pageable);
+    public void updateWriterAndPhotosToPetTalkView(PetTalkView petTalkView) {
+        memberRepository.findById(petTalkView.getMemberId()).ifPresent(petTalkView::updateWriter);
+        List<PetTalkPhoto> petTalkPhotos = petTalkPhotoJpaRepository.findAllByPetTalkIdOrderByIdAsc(petTalkView.getPetTalkId());
+        if (!petTalkPhotos.isEmpty()) {
+            petTalkView.uploadThumbnail(petTalkPhotos.get(0).getUrl());
+            petTalkView.uploadPetTalkPhotos(petTalkPhotos);
+        }
+
     }
 
-    public PetTalk loadPetTalkPostsDetails(Long petTalkId) {
+    public PetTalkView loadPetTalkPostsDetails(Long petTalkId) {
         return petTalkJpaRepository.loadPetTalkPostsDetails(petTalkId)
                 .orElseThrow(() -> new Exception400(INVALID_PET_TALK_ID));
     }
 
-    public void updateReactedStatusByMemberAndPetTalks(Page<PetTalk> petTalks, Member member) {
-        for (PetTalk petTalk : petTalks) {
+    public void updateReactedStatusByMemberAndPetTalkViews(Page<PetTalkView> petTalkViews, Member member) {
+        for (PetTalkView petTalkView : petTalkViews) {
             boolean reacted =
-                    petTalkEmotionRepository.existsByMemberIdAndPetTalkId(member.getId(), petTalk.getId());
-            petTalk.react(reacted);
+                    petTalkEmotionRepository.existsByMemberIdAndPetTalkId(member.getId(), petTalkView.getPetTalkId());
+            petTalkView.react(reacted);
         }
     }
 
-    public void updateReactedStatusByMemberAndPetTalk(PetTalk petTalk, Member member) {
+    public void updateReactedStatusByMemberAndPetTalk(PetTalkView petTalkView, Member member) {
         boolean reacted =
-                petTalkEmotionRepository.existsByMemberIdAndPetTalkId(member.getId(), petTalk.getId());
-        petTalk.react(reacted);
+                petTalkEmotionRepository.existsByMemberIdAndPetTalkId(member.getId(), petTalkView.getPetTalkId());
+        petTalkView.react(reacted);
     }
 
     public void addEmojiCount(PetTalk petTalk) {
