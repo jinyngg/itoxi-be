@@ -45,7 +45,7 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
         return queryFactory
                 .select(Projections.constructor(DailyChallengeListResponse.class,
                         dailyChallenge.id, dailyChallenge.title,
-                        dailyChallenge.thumbnail, dailyAuth.member.isNotNull()))
+                        dailyChallenge.thumbnail, dailyAuth.member.id.isNotNull()))
                 .from(dailyChallenge)
                 .leftJoin(dailyAuth)
                 .on(dailyChallenge.id.eq(dailyAuth.dailyChallenge.id)
@@ -63,7 +63,7 @@ public class DailyChallengeRepositoryImpl implements DailyChallengeRepositoryCus
                 .select(Projections.constructor(DailyChallengeDetailResponse.class,
                         dailyChallenge.id, dailyChallenge.banner, dailyChallenge.title,
                         dailyChallenge.subTitle, dailyChallenge.authMethod, dailyChallenge.payment,
-                        dailyChallenge.paymentMethod, dailyAuth.member.isNotNull()))
+                        dailyChallenge.paymentMethod, dailyAuth.member.id.isNotNull()))
                 .from(dailyChallenge)
                 .leftJoin(dailyAuth)
                 .on(dailyChallenge.id.eq(dailyAuth.dailyChallenge.id)

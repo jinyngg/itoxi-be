@@ -4,8 +4,6 @@ import com.itoxi.petnuri.domain.dailychallenge.entity.DailyChallenge;
 import com.itoxi.petnuri.domain.dailychallenge.type.ChallengeStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 /**

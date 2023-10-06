@@ -201,15 +201,4 @@ public class AmazonS3Service {
         return amazonS3.getUrl(bucket, fileKey).toString();
     }
 
-    // S3 deleteObject()의 filename 생성용
-    private String getFileNameFromUrl(String url) {
-        // 1. amazonaws.com 이 위치한 문자열 index를 가져온다.
-        int startIndex = url.indexOf(".com");
-
-        // 2. startIndex에서부터 처음 나오는 "/"의 위치 다움 문자 인덱스를 가져 온다.
-        int fromIndex = url.indexOf("/", startIndex) + 1;
-
-        // 3. fromIndex부터 끝까지 문자열을 잘라서 filename을 만들어서 반환.
-        return url.substring(fromIndex, url.length());
-    }
 }

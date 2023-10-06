@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.INVALID_FILE_REQUEST;
-import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.REQUIRED_LOGIN_ERROR;
 
 /**
  * author         : matrix
