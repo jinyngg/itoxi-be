@@ -7,6 +7,7 @@ import com.itoxi.petnuri.domain.dailychallenge.type.ChallengeStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,9 @@ import static org.awaitility.Awaitility.await;
  * date           : 2023-10-01
  * description    :
  */
-@SpringBootTest(properties = {"scheduler.daily-challenge.cron=1 * * * * *"})
+@AutoConfigureMockMvc
+@SpringBootTest(properties = {"scheduler.daily-challenge.cron=1 * * * * *"},
+        webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Transactional
 class DailyAuthSchedulerTest {
 
@@ -49,9 +52,8 @@ class DailyAuthSchedulerTest {
         await()
                 .atMost(3, TimeUnit.SECONDS)
                 .untilAsserted(() -> {
-                    dailyAuthScheduler.deleteDailyAuthDataByTodayBefore();
-                    long result = dailyAuthRepository.count();
-                    assertThat(result).isEqualTo(0);
+                    long result = dailyAuthScheduler.deleteDailyAuthDataByTodayBefore();
+                    assertThat(result).isEqualTo(1);
                 });
     }
 

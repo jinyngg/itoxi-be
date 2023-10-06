@@ -30,10 +30,15 @@ public class DailyAuthScheduler {
 
     // Todo: S3 파일 삭제는 S3 서버에서 설정.
     @Scheduled(cron = "${scheduler.daily-challenge.cron}")
-    public void deleteDailyAuthDataByTodayBefore() {
-        dailyAuthRepository.deleteDailyAuthByUpdatedAtBefore(
+    public long deleteDailyAuthDataByTodayBefore() {
+        long result = dailyAuthRepository.deleteDailyAuthByUpdatedAtBefore(
                 LocalDate.now().atStartOfDay());
-        log.info(LocalDate.now() + "일자 이전의 인증글이 삭제 되었습니다. " + LocalDateTime.now());
+        if (result == 0) {
+            log.info(LocalDate.now() + "일 이전의 삭제된 인증글이 없습니다. " + LocalDateTime.now());
+        } else {
+            log.info(LocalDate.now() + "일 이전의 인증글이 삭제되었습니다. " + LocalDateTime.now());
+        }
+        return result;
     }
 
     @Scheduled(cron = "${scheduler.daily-challenge.cron}")

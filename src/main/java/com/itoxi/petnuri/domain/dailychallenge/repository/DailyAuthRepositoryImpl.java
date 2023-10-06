@@ -1,7 +1,6 @@
 package com.itoxi.petnuri.domain.dailychallenge.repository;
 
 import com.itoxi.petnuri.domain.dailychallenge.entity.QDailyAuth;
-import com.itoxi.petnuri.domain.member.entity.Member;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,14 +22,15 @@ public class DailyAuthRepositoryImpl implements DailyAuthRepositoryCustom {
 
     @Override
     public boolean dupeAuthCheck(Long loginMemberId, Long dailyChallengeId) {
-        Member member = queryFactory
-                .select(dailyAuth.member)
+        return queryFactory
+                .selectOne()
                 .from(dailyAuth)
-                .where(dailyAuth.dailyChallenge.id.eq(dailyChallengeId)
-                        .and(dailyAuth.member.id.eq(loginMemberId))
-                        .and(goeToday(dailyAuth.updatedAt)))
-                .fetchOne();
-        return (member != null) ? true : false; // true : 중복 인증
+                .where(
+                        dailyAuth.dailyChallenge.id.eq(dailyChallengeId),
+                        dailyAuth.member.id.eq(loginMemberId),
+                        goeToday(dailyAuth.updatedAt)
+                )
+                .fetchFirst() != null; // true : 중복 인증
     }
 
     private BooleanExpression goeToday(DateTimePath<LocalDateTime> compareDate) {
