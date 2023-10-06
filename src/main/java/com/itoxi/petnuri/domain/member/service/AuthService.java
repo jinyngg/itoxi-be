@@ -132,7 +132,7 @@ public class AuthService {
         }
 
         String referralCode = generateRandomCode();
-        Member joinMember = Member.createMember(email, nickname, referralCode);
+        Member joinMember = Member.createMember(email, nickname, referralCode, request.getIsAgreed());
         memberRepository.save(joinMember);
 
         Point pointByJoin = Point.createPoint(joinMember);

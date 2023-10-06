@@ -51,8 +51,8 @@ class DailyChallengeRepositoryImplTest {
     @Test
     public void findAllChallenge_test() throws Exception {
         // given
-        Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1");
-        Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2");
+        Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1", true);
+        Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2", true);
         Member member3 = null;
         memberRepository.save(member1);
         memberRepository.save(member2);
@@ -123,8 +123,8 @@ class DailyChallengeRepositoryImplTest {
     @Test
     public void findDetailChallenge_test() throws Exception {
         // given
-        Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1");
-        Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2");
+        Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1", true);
+        Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2", true);
         Member member3 = null;
         memberRepository.save(member1);
         memberRepository.save(member2);
@@ -151,12 +151,12 @@ class DailyChallengeRepositoryImplTest {
     @Test
     public void findAllAuthList_test() throws Exception {
         // given
-        Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1");
-        Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2");
-        Member member3 = Member.createMember("tester3@test.copm", "tester3", "test3");
-        Member member4 = Member.createMember("tester4@test.copm", "tester4", "test4");
-        Member member5 = Member.createMember("tester5@test.copm", "tester5", "test5");
-        Member member6 = Member.createMember("tester6@test.copm", "tester6", "test6");
+        Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1", true);
+        Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2", true);
+        Member member3 = Member.createMember("tester3@test.copm", "tester3", "test3", true);
+        Member member4 = Member.createMember("tester4@test.copm", "tester4", "test4", true);
+        Member member5 = Member.createMember("tester5@test.copm", "tester5", "test5", true);
+        Member member6 = Member.createMember("tester6@test.copm", "tester6", "test6", true);
         memberRepository.save(member1);
         memberRepository.save(member2);
         memberRepository.save(member3);

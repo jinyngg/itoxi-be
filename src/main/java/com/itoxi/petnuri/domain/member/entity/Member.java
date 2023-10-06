@@ -45,11 +45,14 @@ public class Member extends BaseTimeEntity {
     @Column(name = "referral_code")
     private String referralCode;
 
-    public static Member createMember(String email, String nickname, String referralCode) {
+    private boolean isAgreed;
+
+    public static Member createMember(String email, String nickname, String referralCode, boolean isAgreed) {
         return Member.builder()
                 .email(email)
                 .nickname(nickname)
                 .referralCode(referralCode)
+                .isAgreed(isAgreed)
                 .build();
     }
 

@@ -38,8 +38,8 @@ class DailyAuthRepositoryImplTest {
     @Test
     public void dupePostByOneMember_and_querydslDateCompare_test() throws Exception {
         // given
-        Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1");
-        Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2");
+        Member member1 = Member.createMember("tester1@test.copm", "tester1", "test1", true);
+        Member member2 = Member.createMember("tester2@test.copm", "tester2", "test2", true);
         memberRepository.save(member1);
         memberRepository.save(member2);
 

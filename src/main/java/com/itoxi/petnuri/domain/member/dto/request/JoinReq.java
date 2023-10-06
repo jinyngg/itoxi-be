@@ -15,4 +15,5 @@ public class JoinReq {
     private String nickname;
 
     private String referralCode;
+    private Boolean isAgreed;
 }
