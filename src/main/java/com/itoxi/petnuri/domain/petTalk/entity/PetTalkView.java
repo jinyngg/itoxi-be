@@ -1,15 +1,19 @@
 package com.itoxi.petnuri.domain.petTalk.entity;
 
-import static com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus.ACTIVE;
-
 import com.itoxi.petnuri.domain.member.entity.Member;
+import com.itoxi.petnuri.domain.petTalk.type.EmojiType;
 import com.itoxi.petnuri.domain.petTalk.type.PetTalkStatus;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -86,6 +90,17 @@ public class PetTalkView {
     private boolean reacted;
 
     @Transient
+    private boolean isCute;
+    @Transient
+    private boolean isFun;
+    @Transient
+    private boolean isKiss;
+    @Transient
+    private boolean isOmg;
+    @Transient
+    private boolean isSad;
+
+    @Transient
     private String thumbnail;
 
     @Transient
@@ -96,6 +111,28 @@ public class PetTalkView {
 
     public void updateWriter(Member member) {
         this.writer = member;
+    }
+
+    public void reactedEmoji(EmojiType emojiType) {
+        switch (emojiType) {
+            case CUTE:
+                isCute = true;
+                break;
+            case FUN:
+                isFun = true;
+                break;
+            case KISS:
+                isKiss = true;
+                break;
+            case OMG:
+                isOmg = true;
+                break;
+            case SAD:
+                isSad = true;
+                break;
+            default:
+                break;
+        }
     }
 
     public void react(boolean reacted) {

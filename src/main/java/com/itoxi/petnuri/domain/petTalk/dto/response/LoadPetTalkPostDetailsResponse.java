@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itoxi.petnuri.domain.member.dto.Writer;
 import com.itoxi.petnuri.domain.petTalk.dto.EmojiCount;
 import com.itoxi.petnuri.domain.petTalk.dto.PetTalkPhotoDTO;
-import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkView;
 import java.time.LocalDateTime;
 import java.util.List;

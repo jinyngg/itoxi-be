@@ -117,8 +117,9 @@ public class PetTalkService {
         // 3. 로그인된 사용자 이모지 여부 확인
         if (member != null) {
             petTalkRepository.updateReactedStatusByMemberAndPetTalk(petTalkView, member);
+            petTalkRepository.reactEmoji(petTalkId, petTalkView);
         }
-        
+
         // 4. 조회수 증가
         redisService.increasePetTalkViewCountToRedis(petTalkView);
 

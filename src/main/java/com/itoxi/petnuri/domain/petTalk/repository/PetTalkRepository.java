@@ -12,12 +12,13 @@ import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkView;
 import com.itoxi.petnuri.domain.petTalk.entity.SubCategory;
+import com.itoxi.petnuri.domain.petTalk.type.EmojiType;
 import com.itoxi.petnuri.domain.petTalk.type.PetType;
 import com.itoxi.petnuri.global.common.exception.Exception400;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +40,20 @@ public class PetTalkRepository {
     public PetTalk getById(Long petTalkId) {
         return petTalkJpaRepository.findById(petTalkId)
                 .orElseThrow(() -> new Exception400(INVALID_PET_TALK_ID));
+    }
+
+    public PetTalkView reactEmoji(Long petTalkId, PetTalkView petTalkView) {
+        if (!Objects.equals(petTalkId, petTalkView.getPetTalkId())) {
+            throw new Exception400(INVALID_PET_TALK_ID);
+        }
+
+        for (EmojiType emojiType : EmojiType.values()) {
+            boolean react = petTalkEmotionRepository.existsByPetTalkIdAndEmoji(petTalkId, emojiType);
+            if (react) {
+                petTalkView.reactedEmoji(emojiType);
+            }
+        }
+        return petTalkView;
     }
 
     public void write(PetTalk petTalk) {
