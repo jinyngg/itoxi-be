@@ -129,16 +129,26 @@ public class MemberService {
 
     @Transactional
     public void updatePet(Member member, PetProfileReq petProfileReq, MultipartFile image){
-        String originUrl = null;
         List<Pet> petList = petRepository.findAll();
         Pet pet = petRepository.findById(petProfileReq.getPetId())
                 .orElseThrow(() -> new Exception404(PET_NOT_FOUND));
+
+        String originUrl = null;
 
         if (!image.isEmpty()) {
             originUrl = amazonS3Service.uploadPetProfileImage(image);
         }
 
+        //원래 대표 프로필인 경우
+        if(pet.getIsSelected()){
+            pet.updatePet(member, petProfileReq, originUrl);
+            pet.updateIsSelected(true);
+            petRepository.save(pet);
+            return;
 
+        }
+
+        //대표 프로필이 아닌 경우
         if(petProfileReq.getIsSelected()){
             checkIsSelected(petList);
             pet.updatePet(member, petProfileReq, originUrl);
@@ -148,6 +158,7 @@ public class MemberService {
 
         pet.updatePet(member, petProfileReq, originUrl);
         petRepository.save(pet);
+
     }
 
     @Transactional
