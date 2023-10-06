@@ -46,7 +46,9 @@ public class PetTalkService {
                 .build();
 
         // 3. 게시글 이미지 업로드
-        petTalkRepository.uploadPetTalkPhotos(files, petTalk);
+        if (files != null && files.length != 0) {
+            petTalkRepository.uploadPetTalkPhotos(files, petTalk);
+        }
 
         // 4. 게시글 저장
         petTalkRepository.write(petTalk);
