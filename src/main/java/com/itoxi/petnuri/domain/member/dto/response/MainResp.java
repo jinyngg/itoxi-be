@@ -98,11 +98,11 @@ public class MainResp {
         private final String thumbnail;
         private final LocalDateTime createdAt;
 
-        public PetTalkDTO(PetTalk petTalk) {
+        public PetTalkDTO(PetTalk petTalk, String thumbnail) {
             this.id = petTalk.getId();
             this.title = petTalk.getTitle();
             this.writer = petTalk.getWriter().getNickname();
-            this.thumbnail = petTalk.getThumbnail();
+            this.thumbnail = thumbnail;
             this.createdAt = petTalk.getCreatedAt();
         }
     }

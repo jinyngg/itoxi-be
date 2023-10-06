@@ -15,6 +15,8 @@ import com.itoxi.petnuri.domain.member.entity.Pet;
 import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import com.itoxi.petnuri.domain.member.repository.PetRepository;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
+import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
+import com.itoxi.petnuri.domain.petTalk.repository.PetTalkPhotoJpaRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkReplyRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import com.itoxi.petnuri.domain.petTalk.type.PetGender;
@@ -37,6 +39,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.itoxi.petnuri.global.common.exception.type.ErrorCode.PET_GENDER_NOT_FOUND;
@@ -51,6 +54,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PetTalkRepository petTalkRepository;
     private final PetTalkReplyRepository petTalkReplyRepository;
+    private final PetTalkPhotoJpaRepository petTalkPhotoJpaRepository;
     private final RewardChallengeRepository rewardChallengeRepository;
     private final DailyChallengeRepository dailyChallengeRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -269,7 +273,11 @@ public class MemberService {
         List<PetTalk> randomPetTalk = petTalkList.subList(0, numToSelect);
 
         return randomPetTalk.stream()
-                .map(MainResp.PetTalkDTO::new)
+                .map(petTalk -> {
+                    PetTalkPhoto petTalkPhoto = petTalkPhotoJpaRepository.findTop1ByPetTalkOrderByIdAsc(petTalk).orElse(null);
+                    String thumbnail = (petTalkPhoto != null) ? petTalkPhoto.getUrl() : null;
+                    return new MainResp.PetTalkDTO(petTalk, thumbnail);
+                })
                 .collect(Collectors.toList());
     }
 }
