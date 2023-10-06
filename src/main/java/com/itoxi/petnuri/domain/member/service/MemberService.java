@@ -22,7 +22,6 @@ import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
 import com.itoxi.petnuri.domain.petTalk.type.PetGender;
 import com.itoxi.petnuri.global.common.exception.Exception404;
 import com.itoxi.petnuri.global.common.exception.type.ErrorCode;
-import com.itoxi.petnuri.global.redis.RedisService;
 import com.itoxi.petnuri.global.s3.service.AmazonS3Service;
 import com.itoxi.petnuri.global.security.auth.PrincipalDetails;
 import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
@@ -57,7 +56,6 @@ public class MemberService {
     private final RewardChallengeRepository rewardChallengeRepository;
     private final DailyChallengeRepository dailyChallengeRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisService redisService;
 
     @Transactional(readOnly = true)
     public MyPageResp getMyPage(Member member) {
