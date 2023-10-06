@@ -32,6 +32,10 @@ public class PointChallengeRepository {
     private final PointRepository pointRepository;
     private final PointHistoryRepository pointHistoryRepository;
 
+    public boolean existsTodayAttendanceByGetMethod(Member member, String getMethod) {
+        return pointHistoryRepository.existsTodayAttendanceByGetMethod(getMethod, member);
+    }
+
     public Member getPointChallengeRewardMember(Long PointChallengeRewardId) {
         return pointChallengeRewardJpaRepository.findMemberById(PointChallengeRewardId);
     }
@@ -43,6 +47,10 @@ public class PointChallengeRepository {
 
     public void savePointsByPointHistories(List<PointHistory> pointHistories) {
         pointHistoryRepository.saveAll(pointHistories);
+    }
+
+    public void savePointsByPointHistory(PointHistory pointHistory) {
+        pointHistoryRepository.save(pointHistory);
     }
 
     public PointChallenge getPointChallengeById(Long pointChallengeId) {

@@ -1,6 +1,7 @@
 package com.itoxi.petnuri.domain.point.entity;
 
 import com.itoxi.petnuri.domain.point.PointStatus;
+import com.itoxi.petnuri.global.common.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -18,7 +19,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "point_history_tb")
-public class PointHistory {
+public class PointHistory extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
