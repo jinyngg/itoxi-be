@@ -229,6 +229,8 @@ public class AuthService {
         Member member = memberRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new Exception400(ErrorCode.USER_NOT_FOUND));
 
+        jwtTokenProvider.invalidatedToken(accessToken);
+
         String newAT = jwtTokenProvider.createAccessToken(member);
         String newRT = jwtTokenProvider.createRefreshToken(member);
 

@@ -165,23 +165,16 @@ public class MemberService {
             petTalkRepository.deleteAll(petTalkList);
             memberRepository.delete(member);
 
-            invalidatedToken(accessToken);
+            jwtTokenProvider.invalidatedToken(accessToken);
         } catch (Exception e) {
             log.error(e.getMessage());
             System.out.println(ErrorCode.FAIL_WITHDRAW);
         }
     }
 
-    private void invalidatedToken(String accessToken) {
-        Long expiration = jwtTokenProvider.getExpiration(accessToken);
-        String email = jwtTokenProvider.getEmail(accessToken);
-
-        redisService.addBlacklist(accessToken, email, expiration);
-    }
-
     public void logout(String accessToken) {
         accessToken = jwtTokenProvider.resolveToken(accessToken);
-        invalidatedToken(accessToken);
+        jwtTokenProvider.invalidatedToken(accessToken);
     }
 
     public void checkIsSelected(List<Pet> petList) {
