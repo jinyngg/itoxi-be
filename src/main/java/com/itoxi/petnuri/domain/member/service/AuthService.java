@@ -57,7 +57,6 @@ public class AuthService {
         body.add("client_id", provider.getClientId());
         body.add("redirect_uri", provider.getRedirectUri());
         body.add("code", code);
-        body.add("client_secret", provider.getClientSecret());
 
         WebClient wc = WebClient.create(provider.getProviderDetails().getTokenUri());
         String response = wc.post()
