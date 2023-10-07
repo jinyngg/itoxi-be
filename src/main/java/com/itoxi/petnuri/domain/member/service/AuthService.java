@@ -19,6 +19,10 @@ import com.itoxi.petnuri.global.security.jwt.JwtTokenProvider;
 import com.itoxi.petnuri.global.util.JsonConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
@@ -26,7 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
@@ -50,24 +54,29 @@ public class AuthService {
     private final JsonConverter jsonConverter;
 
     //프론트에서 전달받은 code로 accessToken 발급 받기
-    public KakaoToken getAccessToken(String code, ClientRegistration provider) {
+    public KakaoToken getAccessToken(String code) {
+        RestTemplate rt = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", provider.getClientId());
-        body.add("redirect_uri", provider.getRedirectUri());
+        body.add("client_id", "3ac81920e28faa750b5754a1ae9d8e35");
+        body.add("redirect_uri", "http://localhost:5173/auth/kakao/login");
         body.add("code", code);
 
-        WebClient wc = WebClient.create(provider.getProviderDetails().getTokenUri());
-        String response = wc.post()
-                .uri(provider.getProviderDetails().getTokenUri())
-                .body(BodyInserters.fromFormData(body))
-                .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
+                new HttpEntity<>(body, headers);
 
-        KakaoToken kakaoToken = jsonConverter.jsonToObject(response, KakaoToken.class);
+        ResponseEntity<String> accessTokenResponse = rt.exchange(
+                "https://kauth.kakao.com/oauth/token",
+                HttpMethod.POST,
+                kakaoTokenRequest,
+                String.class
+        );
+
+        KakaoToken kakaoToken = jsonConverter.jsonToObject(accessTokenResponse.getBody(), KakaoToken.class);
 
         return kakaoToken;
     }
@@ -94,9 +103,8 @@ public class AuthService {
     //가입되어 있지 않다면 회원가입에 필요한 정보 프론트에 넘겨주기
     //이미 가입되어 있다면 로그인(자동 로그인?)에 필요한 jwtToken 넘겨주기
     public LoginRes kakaoLogin(String code)  {
-
         ClientRegistration provider = inMemoryRepository.findByRegistrationId("kakao");
-        KakaoToken tokenResponse = getAccessToken(code, provider);
+        KakaoToken tokenResponse = getAccessToken(code);
 
         KakaoInfo kakaoInfo = getMemberProfile(provider, tokenResponse);
 
