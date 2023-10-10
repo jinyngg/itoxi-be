@@ -17,4 +17,6 @@ public interface PetTalkEmotionRepository extends JpaRepository<PetTalkEmotion, 
     boolean existsByMemberIdAndPetTalkId(Long memberId, Long PetTalkId);
 
     boolean existsByPetTalkIdAndEmoji(Long petTalkId, EmojiType emojiType);
+
+    void deleteByMember(Member member);
 }

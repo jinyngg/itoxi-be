@@ -16,6 +16,7 @@ import com.itoxi.petnuri.domain.member.repository.MemberRepository;
 import com.itoxi.petnuri.domain.member.repository.PetRepository;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalk;
 import com.itoxi.petnuri.domain.petTalk.entity.PetTalkPhoto;
+import com.itoxi.petnuri.domain.petTalk.repository.PetTalkEmotionRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkPhotoJpaRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkReplyRepository;
 import com.itoxi.petnuri.domain.petTalk.repository.PetTalkRepository;
@@ -53,6 +54,7 @@ public class MemberService {
     private final PetTalkRepository petTalkRepository;
     private final PetTalkReplyRepository petTalkReplyRepository;
     private final PetTalkPhotoJpaRepository petTalkPhotoJpaRepository;
+    private final PetTalkEmotionRepository petTalkEmotionRepository;
     private final RewardChallengeRepository rewardChallengeRepository;
     private final DailyChallengeRepository dailyChallengeRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -165,10 +167,12 @@ public class MemberService {
     public void withdraw(Member member, String accessToken) {
         try {
             petTalkReplyRepository.deleteByWriter(member);
+            petTalkEmotionRepository.deleteByMember(member);
             List<PetTalk> petTalkList = petTalkRepository.findAllByWriter(member);
 
             for (PetTalk petTalk : petTalkList) {
                 petTalkReplyRepository.deleteAllByPetTalk(petTalk);
+                petTalkPhotoJpaRepository.deleteAllByPetTalk(petTalk);
             }
 
             petTalkRepository.deleteAll(petTalkList);

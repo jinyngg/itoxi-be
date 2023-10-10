@@ -11,4 +11,6 @@ public interface PetTalkPhotoJpaRepository extends JpaRepository<PetTalkPhoto, L
     List<PetTalkPhoto> findAllByPetTalkIdOrderByIdAsc(Long petTalkId);
 
     Optional<PetTalkPhoto> findTop1ByPetTalkOrderByIdAsc(PetTalk petTalk);
+
+    void deleteAllByPetTalk(PetTalk petTalk);
 }
