@@ -43,6 +43,9 @@
 
 </br>
 
+## Architecture
+![image](https://github.com/user-attachments/assets/5fa6036b-81fa-4cd9-b141-cfe152cdf7e9)
+
 ## 💫 Trouble Shooting
 
 - #### [Ranking Algorithm를 통한 인기순 조회 구현(with. View Table)](https://jinyngg.tistory.com/23)
